@@ -189,6 +189,7 @@ document.addEventListener('DOMContentLoaded', function() {
      * @param {number} stepNumber - The step number to display.
      */
     function showStep(stepNumber) {
+        console.log(`Attempting to show step: ${stepNumber}. Current step: ${currentStep}`);
         // Hide all step sections
         Object.values(stepSections).forEach(section => section.classList.add('hidden'));
         // Deactivate all nav items
@@ -197,12 +198,19 @@ document.addEventListener('DOMContentLoaded', function() {
         // Show the current step section
         if (stepSections[stepNumber]) {
             stepSections[stepNumber].classList.remove('hidden');
+            console.log(`Step ${stepNumber} made visible.`);
+        } else {
+            console.error(`Error: Step section with ID 'step${stepNumber}' not found!`);
         }
         // Activate the current step nav item
         if (navItems[stepNumber]) {
             navItems[stepNumber].classList.add('active');
+            console.log(`Nav item for step ${stepNumber} activated.`);
+        } else {
+            console.error(`Error: Nav item with ID 'nav-step${stepNumber}' not found!`);
         }
         currentStep = stepNumber;
+        console.log(`currentStep updated to: ${currentStep}`);
 
         // Ensure dynamic sections (like loan type or specific savings input) are updated
         updateVisibilityBasedOnInputs();
@@ -221,9 +229,11 @@ document.addEventListener('DOMContentLoaded', function() {
      * Dynamically shows/hides sections based on user selections (e.g., loan type, savings use).
      */
     function updateVisibilityBasedOnInputs() {
+        console.log('updateVisibilityBasedOnInputs called.');
         // Step 1: Goal Type specific visibility
         if (formData.goalType === 'take_loan') {
             loanTypeSection.classList.remove('hidden');
+            console.log('Loan Type section shown.');
         } else {
             loanTypeSection.classList.add('hidden');
             // Ensure loan type is reset to home_loan when 'buy_home' is selected, to avoid invalid state
@@ -231,17 +241,21 @@ document.addEventListener('DOMContentLoaded', function() {
             formData.loanType = 'home_loan'; // Update formData
             roiInput.value = 8.5; // Reset ROI
             formData.roi = 8.5; // Update formData
+            console.log('Loan Type section hidden, defaults reset.');
         }
 
         // Step 2: Savings Use & Home Loan Details visibility
         if (formData.useAllSavings === 'no') {
             specificSavingsInputDiv.classList.remove('hidden');
+            console.log('Specific Savings Input div shown.');
         } else {
             specificSavingsInputDiv.classList.add('hidden');
+            console.log('Specific Savings Input div hidden.');
         }
 
         if (formData.goalType === 'buy_home') {
             homeLoanDetails.classList.remove('hidden');
+            console.log('Home Loan Details shown.');
         } else {
             homeLoanDetails.classList.add('hidden');
             // Clear home loan specific fields in UI if goal changes away from 'buy_home'
@@ -250,6 +264,7 @@ document.addEventListener('DOMContentLoaded', function() {
             formData.homeLoanTargetYear = new Date().getFullYear() + 5;
             targetAmountInput.value = 50;
             formData.homeLoanTargetAmount = 50;
+            console.log('Home Loan Details hidden, defaults reset.');
         }
 
         // Step 3: Budgeting vs Immediate Loan Scenario visibility
@@ -257,20 +272,20 @@ document.addEventListener('DOMContentLoaded', function() {
             if (formData.goalType === 'buy_home') {
                 budgetingSection.classList.remove('hidden');
                 immediateLoanScenario.classList.add('hidden');
+                console.log('Budgeting section shown, Immediate Loan hidden.');
             } else if (formData.goalType === 'take_loan') {
                 budgetingSection.classList.add('hidden');
                 immediateLoanScenario.classList.remove('hidden');
+                console.log('Budgeting section hidden, Immediate Loan shown.');
             }
         }
-
-        // Step 4: Results sections visibility
-        // These are controlled directly by performAllCalculationsAndDisplayResults when on step 4
     }
 
     /**
      * Updates the displayed monthly budget allocations based on input percentages and income.
      */
     function updateBudgetDisplay() {
+        console.log('updateBudgetDisplay called.');
         const needs = parseFloat(budgetNeedsInput.value) || 0;
         const wants = parseFloat(budgetWantsInput.value) || 0;
         const savings = parseFloat(budgetSavingsInput.value) || 0;
@@ -287,6 +302,7 @@ document.addEventListener('DOMContentLoaded', function() {
      * Checks if the budget percentages sum up to 100% and shows a warning if not.
      */
     function checkBudgetSum() {
+        console.log('checkBudgetSum called.');
         const needs = parseFloat(budgetNeedsInput.value) || 0;
         const wants = parseFloat(budgetWantsInput.value) || 0;
         const savings = parseFloat(budgetSavingsInput.value) || 0;
@@ -295,8 +311,10 @@ document.addEventListener('DOMContentLoaded', function() {
         currentBudgetSumDisplay.textContent = total; // Update display of current sum
         if (total !== 100) {
             budgetSumWarning.classList.remove('hidden');
+            console.error(`Validation Failed: Budget percentages do not sum to 100%. Current sum: ${total}%`);
         } else {
             budgetSumWarning.classList.add('hidden');
+            console.log('Budget sum is 100%.');
         }
     }
 
@@ -306,68 +324,73 @@ document.addEventListener('DOMContentLoaded', function() {
      * Advances to the next step after validating current step's inputs.
      */
     window.nextStep = function() {
+        console.log(`nextStep called from button. Current step is: ${currentStep}`);
         // Always collect current form data before validation or moving
         collectFormData();
+        console.log('formData after collect:', JSON.stringify(formData));
 
         let isValid = true; // Flag to track validation status
 
         // Validation based on the CURRENT step
         if (currentStep === 1) {
+            console.log('Validating Step 1...');
             if (formData.goalType === 'take_loan') {
                 if (!formData.loanType) {
-                    alert('Please select a loan type.');
+                    console.error('Validation Error (Step 1): Please select a loan type.');
                     isValid = false;
                 }
             }
             if (formData.roi <= 0 || isNaN(formData.roi)) {
-                alert('Please enter a valid Expected Annual ROI (must be greater than 0).');
+                console.error('Validation Error (Step 1): Please enter a valid Expected Annual ROI (must be greater than 0).');
                 isValid = false;
             }
         } else if (currentStep === 2) {
+            console.log('Validating Step 2...');
             if (formData.goalType === 'buy_home') {
                 if (formData.homeLoanTargetYear <= new Date().getFullYear() || isNaN(formData.homeLoanTargetYear)) {
-                    alert('Please enter a valid future target year (e.g., ' + (new Date().getFullYear() + 1) + ' or later).');
+                    console.error('Validation Error (Step 2): Please enter a valid future target year (e.g., ' + (new Date().getFullYear() + 1) + ' or later).');
                     isValid = false;
                 }
                 if (formData.homeLoanTargetAmount <= 0 || isNaN(formData.homeLoanTargetAmount)) {
-                    alert('Please enter a valid target home amount (in Lakhs, must be greater than 0).');
+                    console.error('Validation Error (Step 2): Please enter a valid target home amount (in Lakhs, must be greater than 0).');
                     isValid = false;
                 }
             }
 
             if (formData.currentSavings < 0 || isNaN(formData.currentSavings)) {
-                alert('Please enter valid current savings (can be 0 if none).');
+                console.error('Validation Error (Step 2): Please enter valid current savings (can be 0 if none).');
                 isValid = false;
             }
             if (formData.monthlyIncome <= 0 || isNaN(formData.monthlyIncome)) {
-                alert('Please enter valid monthly income (must be greater than 0).');
+                console.error('Validation Error (Step 2): Please enter valid monthly income (must be greater than 0).');
                 isValid = false;
             }
             if (formData.useAllSavings === 'no') {
                 if (isNaN(formData.specificSavingsAmount) || formData.specificSavingsAmount <= 0) {
-                    alert('Please enter the specific savings amount/percentage you wish to use (must be greater than 0).');
+                    console.error('Validation Error (Step 2): Please enter the specific savings amount/percentage you wish to use (must be greater than 0).');
                     isValid = false;
                 } else if (formData.savingsInputType === 'absolute' && formData.specificSavingsAmount > formData.currentSavings) {
-                     alert('Specific savings amount (Lakhs) cannot exceed current total savings.');
+                     console.error('Validation Error (Step 2): Specific savings amount (Lakhs) cannot exceed current total savings.');
                      isValid = false;
                 } else if (formData.savingsInputType === 'percentage' && formData.specificSavingsAmount > 100) {
-                     alert('Percentage of savings cannot exceed 100%.');
+                     console.error('Validation Error (Step 2): Percentage of savings cannot exceed 100%.');
                      isValid = false;
                 }
             }
         } else if (currentStep === 3) {
+            console.log('Validating Step 3...');
             if (formData.goalType === 'buy_home') {
                 const sum = formData.budgetNeeds + formData.budgetWants + formData.budgetSavings;
                 if (sum !== 100) {
-                    budgetSumWarning.classList.remove('hidden');
-                    alert('Budget percentages (Needs, Wants, Savings) must add up to 100%.');
+                    budgetSumWarning.classList.remove('hidden'); // Ensure warning is visible
+                    console.error('Validation Error (Step 3): Budget percentages (Needs, Wants, Savings) must add up to 100%.');
                     isValid = false;
                 } else {
-                    budgetSumWarning.classList.add('hidden'); // Hide if it was previously visible
+                    budgetSumWarning.classList.add('hidden');
                 }
             } else if (formData.goalType === 'take_loan') {
                 if (formData.desiredEmi <= 0 || isNaN(formData.desiredEmi)) {
-                    alert('Please enter a valid desired monthly EMI (must be greater than 0).');
+                    console.error('Validation Error (Step 3): Please enter a valid desired monthly EMI (must be greater than 0).');
                     isValid = false;
                 }
             }
@@ -375,9 +398,14 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // Only proceed to the next step if all validations passed for the CURRENT step
         if (isValid) {
+            console.log('Validation passed for current step. Proceeding to next step.');
             if (currentStep < totalSteps) {
                 showStep(currentStep + 1);
+            } else {
+                console.log('Reached last step. No further steps to show.');
             }
+        } else {
+            console.warn('Validation failed. Staying on current step.');
         }
     };
 
@@ -385,8 +413,11 @@ document.addEventListener('DOMContentLoaded', function() {
      * Goes back to the previous step.
      */
     window.prevStep = function() {
+        console.log(`prevStep called. Current step: ${currentStep}`);
         if (currentStep > 1) {
             showStep(currentStep - 1);
+        } else {
+            console.log('Already on first step. Cannot go back.');
         }
     };
 
@@ -395,6 +426,7 @@ document.addEventListener('DOMContentLoaded', function() {
      * This ensures formData is always up-to-date before calculations or validations.
      */
     function collectFormData() {
+        console.log('collectFormData called.');
         // Collect radio button values safely
         formData.goalType = document.querySelector('input[name="goalType"]:checked')?.value || formData.goalType;
         formData.loanType = document.querySelector('input[name="loanType"]:checked')?.value || formData.loanType;
@@ -421,22 +453,32 @@ document.addEventListener('DOMContentLoaded', function() {
      * Performs all necessary calculations and displays results based on the chosen goal.
      */
     function performAllCalculationsAndDisplayResults() {
+        console.log('performAllCalculationsAndDisplayResults called.');
         // Hide all result sections initially
         futureHomeResults.classList.add('hidden');
         immediateLoanResults.classList.add('hidden');
         // Destroy existing chart instances to prevent duplicates
-        if (budgetChartInstance) budgetChartInstance.destroy();
-        if (loanCompareChartInstance) loanCompareChartInstance.destroy();
+        if (budgetChartInstance) {
+            budgetChartInstance.destroy();
+            console.log('Destroyed existing budgetChartInstance.');
+        }
+        if (loanCompareChartInstance) {
+            loanCompareChartInstance.destroy();
+            console.log('Destroyed existing loanCompareChartInstance.');
+        }
 
         // Collect latest form data before calculating
         collectFormData();
+        console.log('Final formData for calculations:', JSON.stringify(formData));
 
         if (formData.goalType === 'buy_home') {
             calculateFutureHomePlan();
             futureHomeResults.classList.remove('hidden');
+            console.log('Displaying Future Home Results.');
         } else if (formData.goalType === 'take_loan') {
             calculateImmediateLoanScenarios();
             immediateLoanResults.classList.remove('hidden');
+            console.log('Displaying Immediate Loan Results.');
         }
     }
 
@@ -444,6 +486,7 @@ document.addEventListener('DOMContentLoaded', function() {
      * Calculates and displays results for the "Buy a Home" goal.
      */
     function calculateFutureHomePlan() {
+        console.log('calculateFutureHomePlan called.');
         const targetYear = formData.homeLoanTargetYear;
         const currentYear = new Date().getFullYear();
         const yearsToBuy = Math.max(0, targetYear - currentYear); // Ensure non-negative years
@@ -486,7 +529,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const monthlyRate = (annualSIPRoi / 12) / 100;
             if (monthlyRate > 0) {
                 const numerator = amountNeededForGoal * monthlyRate;
-                const denominator = (Math.pow(1 + monthlyRate, monthsToInvest) - 1) * (1 + monthlyRate);
+                const denominator = (Math.pow(1 + monthlyRate, monthsToInvest) - 1) / monthlyRate; // Corrected formula
                 requiredAdditionalSIP = numerator / denominator;
             } else { // Handle 0% ROI case for SIP (simple linear accumulation)
                 requiredAdditionalSIP = amountNeededForGoal / monthsToInvest;
@@ -494,6 +537,8 @@ document.addEventListener('DOMContentLoaded', function() {
             // Subtract current potential savings from income to find *additional* required SIP
             requiredAdditionalSIP = Math.max(0, requiredAdditionalSIP - potentialMonthlySavings);
         }
+        console.log(`Required Additional SIP: ${requiredAdditionalSIP}`);
+
 
         // Display results
         resTargetAmount.textContent = targetAmountLakhs.toLocaleString('en-IN');
@@ -511,6 +556,7 @@ document.addEventListener('DOMContentLoaded', function() {
      * Calculates and displays results for immediate loan scenarios.
      */
     function calculateImmediateLoanScenarios() {
+        console.log('calculateImmediateLoanScenarios called.');
         const targetAmountLakhs = formData.homeLoanTargetAmount || 50; // Use home loan target if set, otherwise a default
         const currentSavingsLakhs = formData.currentSavings;
         const loanROI = formData.roi;
@@ -601,8 +647,10 @@ document.addEventListener('DOMContentLoaded', function() {
      * Draws or updates the Budget Allocation Pie Chart.
      */
     function updateBudgetChart() {
+        console.log('updateBudgetChart called.');
         if (budgetChartInstance) {
             budgetChartInstance.destroy(); // Destroy old chart instance if exists
+            console.log('Destroyed existing budgetChartInstance for update.');
         }
 
         const needs = parseFloat(budgetNeedsInput.value) || 0;
@@ -610,6 +658,10 @@ document.addEventListener('DOMContentLoaded', function() {
         const savings = parseFloat(budgetSavingsInput.value) || 0;
 
         const ctx = document.getElementById('budgetChart').getContext('2d');
+        if (!ctx) {
+            console.error("Canvas element for budgetChart not found!");
+            return;
+        }
         budgetChartInstance = new Chart(ctx, {
             type: 'pie',
             data: {
@@ -656,6 +708,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             }
         });
+        console.log('Budget chart drawn/updated.');
     }
 
     /**
@@ -666,26 +719,33 @@ document.addEventListener('DOMContentLoaded', function() {
      * @param {number} loanAmount2 - Principal for Scenario 2.
      */
     function updateLoanCompareChart(emi1, emi2, loanAmount1, loanAmount2) {
+        console.log('updateLoanCompareChart called.');
         if (loanCompareChartInstance) {
             loanCompareChartInstance.destroy();
+            console.log('Destroyed existing loanCompareChartInstance for update.');
         }
 
         // Parse numeric values from text content for chart data, ensuring robustness
-        const parsedTenure1Months = parseFloat(scenario1Tenure.textContent.split(' ')[0]) || 0;
+        // These elements are on Step 4, so they might not have content until results are displayed
+        const parsedTenure1Months = parseFloat(scenario1Tenure?.textContent?.split(' ')[0]) || 0;
         const totalInterest1 = calculateTotalInterest(loanAmount1, emi1, parsedTenure1Months);
         const totalCost1 = loanAmount1 + totalInterest1;
 
-        const parsedTenure2Months = parseFloat(scenario2Tenure.textContent.split(' ')[0]) || 0;
+        const parsedTenure2Months = parseFloat(scenario2Tenure?.textContent?.split(' ')[0]) || 0;
         const totalInterest2 = calculateTotalInterest(loanAmount2, emi2, parsedTenure2Months);
         const totalCost2 = loanAmount2 + totalInterest2;
 
         let investmentReturn2 = 0;
-        const investmentReturn2Text = scenario2InvestmentReturn.textContent;
+        const investmentReturn2Text = scenario2InvestmentReturn?.textContent;
         if (investmentReturn2Text && investmentReturn2Text !== 'N/A') {
             investmentReturn2 = parseFloat(investmentReturn2Text.replace('₹', '').replace(' Lakhs', '').replace(' Crore', '').replace(/,/g, '')) * (investmentReturn2Text.includes('Crore') ? 10000000 : 100000);
         }
 
         const ctx = document.getElementById('loanCompareChart').getContext('2d');
+        if (!ctx) {
+            console.error("Canvas element for loanCompareChart not found!");
+            return;
+        }
         loanCompareChartInstance = new Chart(ctx, {
             type: 'bar',
             data: {
@@ -748,6 +808,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             }
         });
+        console.log('Loan comparison chart drawn/updated.');
     }
 
     // --- Event Listeners (To capture user input and update formData) ---
@@ -755,9 +816,13 @@ document.addEventListener('DOMContentLoaded', function() {
     // Initialize all form inputs with their default formData values on load,
     // then attach event listeners to update formData on change.
     function initializeFormInputs() {
+        console.log('Initializing form inputs with default values.');
         // Step 1
-        document.querySelector(`input[name="goalType"][value="${formData.goalType}"]`).checked = true;
-        document.querySelector(`input[name="loanType"][value="${formData.loanType}"]`).checked = true;
+        const initialGoalTypeRadio = document.querySelector(`input[name="goalType"][value="${formData.goalType}"]`);
+        if (initialGoalTypeRadio) initialGoalTypeRadio.checked = true;
+
+        const initialLoanTypeRadio = document.querySelector(`input[name="loanType"][value="${formData.loanType}"]`);
+        if (initialLoanTypeRadio) initialLoanTypeRadio.checked = true;
         roiInput.value = formData.roi;
 
         // Step 2
@@ -765,8 +830,13 @@ document.addEventListener('DOMContentLoaded', function() {
         targetAmountInput.value = formData.homeLoanTargetAmount;
         currentSavingsInput.value = formData.currentSavings;
         monthlyIncomeInput.value = formData.monthlyIncome;
-        document.querySelector(`input[name="useAllSavings"][value="${formData.useAllSavings}"]`).checked = true;
-        document.querySelector(`input[name="savingsInputType"][value="${formData.savingsInputType}"]`).checked = true;
+        
+        const initialUseAllSavingsRadio = document.querySelector(`input[name="useAllSavings"][value="${formData.useAllSavings}"]`);
+        if (initialUseAllSavingsRadio) initialUseAllSavingsRadio.checked = true;
+
+        const initialSavingsInputTypeRadio = document.querySelector(`input[name="savingsInputType"][value="${formData.savingsInputType}"]`);
+        if (initialSavingsInputTypeRadio) initialSavingsInputTypeRadio.checked = true;
+        
         specificSavingsAmountInput.value = formData.specificSavingsAmount;
 
         // Step 3
@@ -778,6 +848,7 @@ document.addEventListener('DOMContentLoaded', function() {
         // Trigger initial visibility updates based on initial form data
         updateVisibilityBasedOnInputs();
         updateBudgetDisplay(); // For initial budget display on Step 3
+        console.log('Form inputs initialized.');
     }
 
 
@@ -795,6 +866,7 @@ document.addEventListener('DOMContentLoaded', function() {
             case 'personal_loan': roiInput.value = 12.0; break;
             case 'business_loan': roiInput.value = 10.0; break;
             case 'education_loan': roiInput.value = 9.0; break;
+            default: roiInput.value = 8.5; // Fallback
         }
         collectFormData(); // Re-collect to get the new ROI value into formData
     }));
@@ -847,4 +919,5 @@ document.addEventListener('DOMContentLoaded', function() {
     // Initialize the calculator on page load
     initializeFormInputs(); // Set initial values to inputs
     showStep(1); // Show first step
+    console.log('RajyaFunds calculator initialized.');
 });
