@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pure Financial Calculator Test</title>
+    <!-- Link to the pure CSS file -->
+    <link rel="stylesheet" href="calculator_pure.css">
+    <!-- Chart.js CDN for charts -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <div class="test-header">
+        <h1>Pure Calculator Test</h1>
+        <p>This is a simplified version to debug step transitions.</p>
+    </div>
+
+    <main class="main-calculator-content">
+        <section class="calculator-container">
+            <!-- Left Section: Navigation/Progress Tracker -->
+            <div class="calculator-sidebar">
+                <h3>Your Journey</h3>
+                <ul>
+                    <li id="nav-step1" class="active"><i class="fas fa-bullseye"></i> Goal & Loan Type</li>
+                    <li id="nav-step2"><i class="fas fa-wallet"></i> Your Financials</li>
+                    <li id="nav-step3"><i class="fas fa-chart-line"></i> Planning & Scenarios</li>
+                    <li id="nav-step4"><i class="fas fa-receipt"></i> Results</li>
+                </ul>
+            </div>
+
+            <!-- Right Section: Main Calculator Content -->
+            <div class="calculator-content">
+
+                <!-- Step 1: Goal & Loan Type -->
+                <div id="step1" class="step-section active">
+                    <h2>Step 1: Define Your Goal</h2>
+                    <p>This is the content for Step 1.</p>
+                    <div class="form-group">
+                        <label>What is your primary financial goal?</label>
+                        <div class="radio-group">
+                            <input type="radio" id="goal-buy-home" name="goalType" value="buy_home" checked>
+                            <label for="goal-buy-home">Buy a Home</label>
+                            <input type="radio" id="goal-take-loan" name="goalType" value="take_loan">
+                            <label for="goal-take-loan">Take an Immediate Loan</label>
+                        </div>
+                    </div>
+                    <div id="loanTypeSection" class="form-group hidden mt-4">
+                        <label>What type of loan?</label>
+                        <div class="radio-group">
+                            <input type="radio" id="loan-home" name="loanType" value="home_loan" checked>
+                            <label for="loan-home">Home Loan</label>
+                        </div>
+                        <div class="input-group">
+                            <label for="roi">Expected Annual ROI (%):</label>
+                            <input type="number" id="roi" value="8.5" step="0.1" min="0">
+                        </div>
+                    </div>
+                    <div class="navigation-buttons">
+                        <button class="btn btn-primary" onclick="nextStep()">Next</button>
+                    </div>
+                </div>
+
+                <!-- Step 2: Your Financials -->
+                <div id="step2" class="step-section hidden">
+                    <h2>Step 2: Your Financials</h2>
+                    <p>This is the content for Step 2.</p>
+                     <div id="homeLoanDetails" class="space-y-4">
+                        <h3>Home Loan Specifics</h3>
+                        <div class="input-group">
+                            <label for="targetYear">Target Year:</label>
+                            <input type="number" id="targetYear" value="2030" min="2024">
+                        </div>
+                    </div>
+                     <div class="input-group">
+                        <label for="currentSavings">Current Savings (Lakhs):</label>
+                        <input type="number" id="currentSavings" value="7" min="0" step="0.1">
+                    </div>
+                     <div class="input-group">
+                        <label for="monthlyIncome">Monthly Income (INR):</label>
+                        <input type="number" id="monthlyIncome" value="60000" min="0" step="1000">
+                    </div>
+                    <div class="navigation-buttons">
+                        <button class="btn btn-secondary" onclick="prevStep()">Back</button>
+                        <button class="btn btn-primary" onclick="nextStep()">Next</button>
+                    </div>
+                </div>
+
+                <!-- Step 3: Planning & Scenarios -->
+                <div id="step3" class="step-section hidden">
+                    <h2>Step 3: Planning & Scenarios</h2>
+                    <p>This is the content for Step 3.</p>
+                     <div id="budgetingSection" class="hidden">
+                        <h3>Monthly Budget</h3>
+                        <p class="text-sm text-secondary-gray">Your current monthly income: <strong id="displayMonthlyIncome"></strong></p>
+                        <div class="budget-input-grid">
+                            <div class="input-group">
+                                <label for="budgetNeeds">Needs (%):</label>
+                                <input type="number" id="budgetNeeds" value="50" min="0" max="100" step="1">
+                                <p class="budget-allocation">Approx: <span id="displayNeeds"></span></p>
+                            </div>
+                            <div class="input-group">
+                                <label for="budgetWants">Wants (%):</label>
+                                <input type="number" id="budgetWants" value="30" min="0" max="100" step="1">
+                                <p class="budget-allocation">Approx: <span id="displayWants"></span></p>
+                            </div>
+                            <div class="input-group">
+                                <label for="budgetSavings">Savings/Investment (%):</label>
+                                <input type="number" id="budgetSavings" value="20" min="0" max="100" step="1">
+                                <p class="budget-allocation">Approx: <span id="displaySavings"></span></p>
+                            </div>
+                        </div>
+                        <p id="budgetSumWarning" class="warning-message hidden"><i class="fas fa-exclamation-triangle"></i> Percentages must add up to 100%! Current Sum: <span id="currentBudgetSum"></span>%</p>
+                    </div>
+                     <div id="immediateLoanScenario" class="hidden">
+                        <h3>Immediate Loan</h3>
+                        <div class="input-group">
+                            <label for="desiredEmi">Desired Monthly EMI (INR):</label>
+                            <input type="number" id="desiredEmi" value="40000" min="1000" step="1000">
+                        </div>
+                    </div>
+                    <div class="navigation-buttons">
+                        <button class="btn btn-secondary" onclick="prevStep()">Back</button>
+                        <button class="btn btn-primary" onclick="nextStep()">Calculate Results</button>
+                    </div>
+                </div>
+
+                <!-- Step 4: Results -->
+                <div id="step4" class="step-section hidden">
+                    <h2>Step 4: Your Results</h2>
+                    <p>This is the content for Step 4.</p>
+                    <div id="futureHomeResults" class="hidden space-y-4">
+                        <h3>Future Home Plan</h3>
+                        <div class="result-box">
+                            <p>Target Home Value: <span id="resTargetAmount"></span></p>
+                            <p>Years: <span id="resYearsToBuy"></span></p>
+                        </div>
+                        <div class="chart-container"><canvas id="budgetChart"></canvas></div>
+                    </div>
+                    <div id="immediateLoanResults" class="hidden space-y-4">
+                        <h3>Immediate Loan</h3>
+                        <div class="result-box">
+                            <p>Loan Amount: <span id="scenario1LoanAmount"></span></p>
+                            <p>EMI: <span id="scenario1Emi"></span></p>
+                        </div>
+                         <div class="chart-container"><canvas id="loanCompareChart"></canvas></div>
+                    </div>
+                    <div class="navigation-buttons">
+                        <button class="btn btn-secondary" onclick="prevStep()">Back</button>
+                        <a href="index.html" class="btn btn-primary">Start New Calculation</a>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+    </main>
+
+    <!-- Your custom script for calculator logic -->
+    <script src="script.js"></script>
+</body>
+</html>
