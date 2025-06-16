@@ -314,7 +314,7 @@ nav {
 .calculator-content {
     width: 100%; /* Full width on mobile */
     padding: 2rem;
-    display: block; /* CHANGED TO BLOCK */
+    display: block; /* CORRECTED: Changed from flex to block */
     flex-direction: column; /* This line is now redundant with display: block, but harmless */
     justify-content: space-between; /* This line is now redundant with display: block, but harmless */
 }
@@ -348,7 +348,7 @@ nav {
 }
 
 .step-section.active {
-    display: block; /* CHANGED TO BLOCK */
+    display: block; /* CORRECTED: Changed from flex to block */
     flex-direction: column; /* This line is now redundant with display: block, but harmless */
 }
 
@@ -564,8 +564,6 @@ nav {
 }
 
 /* Helper Classes */
-/* The 'hidden' class should set display: none to hide elements.
-   When JS removes this class, the default display property (e.g., block, flex) will take over. */
 .hidden {
     display: none; /* Corrected: Removed !important */
 }
@@ -586,3 +584,31 @@ nav {
 .text-center { text-align: center; }
 .rounded-lg { border-radius: 0.75rem; }
 .shadow-lg { box-shadow: 0 10px 15px rgba(0,0,0,0.1); } /* Tailored shadow for images */
+
+/* --- TEMPORARY DEBUGGING BORDERS --- */
+/* These borders are for debugging step visibility. REMOVE THEM LATER. */
+
+#step1 {
+    border: 5px solid red !important; /* Extremely visible red border for Step 1 */
+    padding: 20px !important; /* Add padding to see border clearly */
+    box-sizing: border-box; /* Ensure padding/border don't cause overflow */
+}
+
+#step2 {
+    border: 5px solid green !important; /* Extremely visible green border for Step 2 */
+    padding: 20px !important; /* Add padding to see border clearly */
+    box-sizing: border-box; /* Ensure padding/border don't cause overflow */
+}
+
+#step3 {
+    border: 5px solid blue !important; /* Extremely visible blue border for Step 3 */
+    padding: 20px !important;
+    box-sizing: border-box;
+}
+
+#step4 {
+    border: 5px solid orange !important; /* Extremely visible orange border for Step 4 */
+    padding: 20px !important;
+    box-sizing: border-box;
+}
+/* --- END TEMPORARY DEBUGGING BORDERS --- */
