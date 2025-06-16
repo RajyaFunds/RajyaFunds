@@ -1,6 +1,7 @@
 document.addEventListener('DOMContentLoaded', function() {
     let currentStep = 1;
     const totalSteps = 4; // Total number of steps in your calculator
+    let formData = {}; // <<-- IMPORTANT: Added this line to initialize formData!
 
     // Object to hold references to navigation list items
     const navItems = {
