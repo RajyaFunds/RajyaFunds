@@ -1,67 +1,119 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>RajyaFunds - Financial Planning</title>
-  <link rel="stylesheet" href="style.css" />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
-  <script src="https://kit.fontawesome.com/a2e0e6d20b.js" crossorigin="anonymous"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RajyaFunds - Your Financial Planning Partner</title>
+    <!-- Google Fonts: Inter for a modern, professional look -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome for sleek icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- Link to your consolidated stylesheet for a unified brand aesthetic -->
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <header class="navbar">
-    <div class="logo">RajyaFunds</div>
-    <nav>
-      <ul>
-        <li><a href="index.html" class="active">Home</a></li>
-        <li><a href="loan-vs-sip.html">Calculators</a></li>
-        <li><a href="#">Articles</a></li>
-        <li><a href="#">Contact</a></li>
-      </ul>
+    <header class="main-header">
+        <div class="container header-content">
+            <h1 class="site-title">RajyaFunds</h1>
+            <p class="tagline">Empowering Your Financial Journey</p>
+        </div>
+    </header>
+
+    <nav class="main-nav">
+        <div class="container nav-links">
+            <a href="index.html" class="nav-item active">Home</a>
+            <a href="loan-vs-sip.html" class="nav-item">Calculators</a>
+            <a href="#articles" class="nav-item">Articles</a>
+            <a href="#contact" class="nav-item">Contact</a>
+        </div>
     </nav>
-  </header>
 
-  <section class="hero">
-    <div class="hero-content">
-      <h1>Plan Your Financial Future Today</h1>
-      <p>We help you make smart money decisions with simple tools and powerful insights.</p>
-      <a href="loan-vs-sip.html" class="btn-primary">Explore Our Financial Tools</a>
-    </div>
-  </section>
+    <main class="main-content-area">
+        <!-- Hero Section: Dynamic, engaging, and action-oriented -->
+        <section class="hero-section">
+            <div class="container hero-grid">
+                <div class="hero-text">
+                    <h2 class="hero-title">Your Future, Designed by You.</h2>
+                    <p class="hero-description">RajyaFunds provides intelligent tools and insights tailored for Indian youth and professionals. Achieve your financial milestones with clarity and confidence.</p>
+                    <a href="loan-vs-sip.html" class="btn btn-primary hero-cta">
+                        Start Your Financial Plan <i class="fas fa-arrow-right ml-2"></i>
+                    </a>
+                </div>
+                <div class="hero-image">
+                    <!-- High-quality placeholder image for visual appeal -->
+                    <img src="https://placehold.co/600x400/003366/ffffff?text=Financial+Success" alt="Financial Success Illustration" class="img-fluid hero-graphic">
+                </div>
+            </div>
+        </section>
 
-  <section class="features">
-    <h2>Why Choose RajyaFunds?</h2>
-    <div class="feature-cards">
-      <div class="card">
-        <i class="fas fa-rupee-sign"></i>
-        <h3>Made for Indians</h3>
-        <p>Tailored for Indian youth and salaried professionals.</p>
-      </div>
-      <div class="card">
-        <i class="fas fa-chart-line"></i>
-        <h3>Data-Driven</h3>
-        <p>Accurate logic using inflation, SIP, and loan math.</p>
-      </div>
-      <div class="card">
-        <i class="fas fa-mobile-alt"></i>
-        <h3>Mobile First</h3>
-        <p>Fully responsive, works on any screen size.</p>
-      </div>
-    </div>
-  </section>
+        <!-- Features Section: Highlight core benefits with appealing visuals -->
+        <section class="features-section section-padded">
+            <div class="container">
+                <h3 class="section-heading">Why RajyaFunds is Your Trusted Partner</h3>
+                <div class="features-grid">
+                    <div class="feature-card">
+                        <i class="fas fa-calculator feature-icon"></i>
+                        <h4 class="feature-title">Precision Calculators</h4>
+                        <p class="feature-description">Utilize advanced tools for home loans, SIPs, and more to plan with accuracy.</p>
+                    </div>
+                    <div class="feature-card">
+                        <i class="fas fa-lightbulb feature-icon"></i>
+                        <h4 class="feature-title">Personalized Insights</h4>
+                        <p class="feature-description">Receive data-driven recommendations to optimize your savings and investments.</p>
+                    </div>
+                    <div class="feature-card">
+                        <i class="fas fa-chart-line feature-icon"></i>
+                        <h4 class="feature-title">Goal-Oriented Planning</h4>
+                        <p class="feature-description">Visualize your path to financial freedom with clear, achievable steps.</p>
+                    </div>
+                    <div class="feature-card">
+                        <i class="fas fa-shield-alt feature-icon"></i>
+                        <h4 class="feature-title">Secure & Reliable</h4>
+                        <p class="feature-description">Your financial data is protected with industry-standard security protocols.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
 
-  <section class="placeholder">
-    <h2>Articles Coming Soon</h2>
-    <p>Get ready for useful guides and tips on money management.</p>
-  </section>
+        <!-- Call to Action Section: Encourage calculator use -->
+        <section class="cta-section section-padded text-center bg-accent-blue">
+            <div class="container">
+                <h3 class="cta-heading">Ready to Take Control of Your Finances?</h3>
+                <p class="cta-text">Our intuitive calculators are designed to simplify complex financial decisions.</p>
+                <a href="loan-vs-sip.html" class="btn btn-secondary cta-btn">
+                    Access Calculators Now <i class="fas fa-external-link-alt ml-2"></i>
+                </a>
+            </div>
+        </section>
 
-  <section class="placeholder contact">
-    <h2>Contact Us</h2>
-    <p>Email: support@rajyafunds.in</p>
-  </section>
+        <!-- Placeholder Sections for future content -->
+        <section id="articles" class="section-padded placeholder-section">
+            <div class="container">
+                <h3 class="section-heading">Latest Articles & Financial Guides</h3>
+                <p class="section-description">Expand your knowledge with expert insights on investments, savings, and wealth creation.</p>
+                <p class="text-secondary-gray mt-4">Content coming soon!</p>
+            </div>
+        </section>
 
-  <footer>
-    <p>&copy; 2025 RajyaFunds. All rights reserved.</p>
-  </footer>
+        <section id="contact" class="section-padded placeholder-section">
+            <div class="container">
+                <h3 class="section-heading">Connect With RajyaFunds</h3>
+                <p class="section-description">Have questions or need support? Reach out to our team.</p>
+                <p class="contact-info text-secondary-gray mt-4">Email: support@rajyafunds.com</p>
+                <p class="contact-info text-secondary-gray">Phone: +91 98765 43210</p>
+            </div>
+        </section>
+    </main>
+
+    <footer class="main-footer">
+        <div class="container">
+            <p>&copy; 2025 RajyaFunds. All rights reserved. Built with precision and passion.</p>
+            <div class="social-links">
+                <a href="#" class="social-icon"><i class="fab fa-facebook-f"></i></a>
+                <a href="#" class="social-icon"><i class="fab fa-twitter"></i></a>
+                <a href="#" class="social-icon"><i class="fab fa-linkedin-in"></i></a>
+            </div>
+        </div>
+    </footer>
 </body>
 </html>
