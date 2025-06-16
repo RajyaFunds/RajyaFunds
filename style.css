@@ -1,48 +1,121 @@
-/* Basic Reset & Font */
+/* --- Your Brand Colors and Global Styles --- */
+:root {
+    /* Define your brand colors for easy reuse */
+    --dark-brand-blue: #003366;
+    --medium-brand-blue: #0055a5;
+    --light-brand-blue: #007bff; /* Your old button color */
+    --accent-green: #10B981; /* Primary Green for calculator highlights/buttons */
+    --accent-yellow: #FBBF24; /* Complementary yellow for charts */
+    --text-primary-dark: #1F2937;
+    --text-secondary-gray: #6B7280;
+    --background-light: #f7f9fc;
+    --white: #ffffff;
+    --light-gray-bg: #F3F4F6; /* Lighter gray for backgrounds */
+    --border-gray: #D1D5DB; /* Standard border color */
+}
+
 body {
+    font-family: Arial, sans-serif;
+    background: var(--background-light);
     margin: 0;
-    font-family: 'Arial', sans-serif;
-    background-color: #F9FAFB; /* Light gray background */
-    color: #1F2937; /* Dark gray for main text */
+    padding: 0;
+    color: var(--text-primary-dark); /* Default text color */
     line-height: 1.6;
 }
 
-/* Header Styling */
-.header {
-    background-color: #10B981; /* Primary Green */
-    color: white;
-    padding: 1.5rem 0;
+/* --- Header & Navigation Styling --- */
+header {
+    background: var(--dark-brand-blue);
+    color: var(--white);
+    padding: 20px;
     text-align: center;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
-.header h1 {
-    font-size: 2.5rem;
+header h1 {
+    font-size: 2.5rem; /* Increased for impact */
     margin-bottom: 0.5rem;
 }
 
-.header p {
+header p {
     font-size: 1.1rem;
     opacity: 0.9;
 }
+
+nav {
+    background: var(--medium-brand-blue);
+    display: flex;
+    justify-content: center;
+    padding: 10px 0;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow for nav */
+}
+
+nav a {
+    color: var(--white);
+    text-decoration: none;
+    margin: 0 15px;
+    font-weight: bold;
+    padding: 5px 0; /* Add padding for click area */
+    transition: color 0.3s ease;
+}
+
+nav a:hover {
+    color: var(--accent-green); /* Hover effect for nav links */
+}
+
+.container {
+    max-width: 1000px;
+    margin: 30px auto;
+    padding: 20px;
+    background: var(--white);
+    box-shadow: 0 0 15px rgba(0,0,0,0.08); /* Stronger shadow for content area */
+    border-radius: 8px; /* Slightly rounded corners for container */
+}
+
+footer {
+    background: var(--dark-brand-blue);
+    color: var(--white);
+    text-align: center;
+    padding: 15px;
+    margin-top: 50px;
+    box-shadow: 0 -4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* --- Calculator Specific Styles --- */
+
+.calculator-section-title {
+    font-size: 1.8rem;
+    font-weight: bold;
+    color: var(--dark-brand-blue);
+    margin-top: 2.5rem;
+    margin-bottom: 1rem;
+    text-align: center;
+}
+
+.calculator-intro-text {
+    font-size: 1.1rem;
+    color: var(--text-secondary-gray);
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
 
 /* Calculator Container - Main Layout */
 .calculator-container {
     display: flex;
     flex-direction: column; /* Stacks vertically on small screens */
-    background-color: white;
+    background-color: var(--white);
     border-radius: 0.75rem; /* Rounded corners */
     box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1); /* Soft shadow */
     overflow: hidden; /* Ensures rounded corners cut off content */
-    max-width: 90%; /* Max width for responsiveness */
-    margin: 2rem auto; /* Center the calculator */
+    max-width: 100%; /* Take full width of parent container */
+    margin: 2rem auto; /* Center within the container */
     min-height: 600px;
+    border: 1px solid #e0e0e0; /* Subtle border around calculator */
 }
 
 @media (min-width: 768px) { /* Applies for screens larger than 768px (md: breakpoint) */
     .calculator-container {
         flex-direction: row; /* Two columns on larger screens */
-        max-width: 1200px; /* Wider for desktop */
     }
 }
 
@@ -50,8 +123,8 @@ body {
 .calculator-sidebar {
     width: 100%; /* Full width on mobile */
     padding: 1.5rem;
-    background-color: #F3F4F6; /* Lighter gray background for sidebar */
-    border-bottom: 1px solid #E5E7EB; /* Separator on mobile */
+    background-color: var(--light-gray-bg); /* Lighter gray background for sidebar */
+    border-bottom: 1px solid var(--border-gray); /* Separator on mobile */
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -62,7 +135,7 @@ body {
 @media (min-width: 768px) {
     .calculator-sidebar {
         width: 25%; /* 1/4 width on desktop */
-        border-right: 1px solid #E5E7EB; /* Vertical separator on desktop */
+        border-right: 1px solid var(--border-gray); /* Vertical separator on desktop */
         border-bottom: none; /* No bottom border on desktop */
         padding: 2.5rem;
     }
@@ -71,7 +144,7 @@ body {
 .calculator-sidebar h2 {
     font-size: 1.75rem;
     font-weight: 700;
-    color: #10B981; /* Primary Green */
+    color: var(--dark-brand-blue); /* Your dark blue for sidebar title */
     margin-bottom: 1.5rem;
 }
 
@@ -83,7 +156,7 @@ body {
 
 .calculator-sidebar li {
     font-size: 1.1rem;
-    color: #6B7280; /* Secondary text color */
+    color: var(--text-secondary-gray); /* Secondary text color */
     padding: 0.75rem 0;
     display: flex;
     align-items: center;
@@ -93,11 +166,11 @@ body {
 
 .calculator-sidebar li.active {
     font-weight: 600;
-    color: #1F2937; /* Darker text for active step */
+    color: var(--text-primary-dark); /* Darker text for active step */
 }
 
 .calculator-sidebar li.active i {
-    color: #10B981; /* Primary green for active icon */
+    color: var(--accent-green); /* Accent green for active icon */
 }
 
 /* Right Section: Calculator Content */
@@ -119,14 +192,14 @@ body {
 .calculator-content h2 {
     font-size: 2rem;
     font-weight: 700;
-    color: #1F2937;
+    color: var(--dark-brand-blue);
     margin-bottom: 1.5rem;
 }
 
 .calculator-content h3 {
     font-size: 1.5rem;
     font-weight: 600;
-    color: #3B82F6; /* Secondary blue */
+    color: var(--medium-brand-blue); /* Your medium blue */
     margin-top: 1.5rem;
     margin-bottom: 1rem;
 }
@@ -151,7 +224,7 @@ body {
     display: block;
     font-size: 1rem;
     font-weight: 500;
-    color: #1F2937;
+    color: var(--text-primary-dark);
     margin-bottom: 0.5rem;
 }
 
@@ -159,18 +232,18 @@ body {
 .input-group input[type="text"] {
     width: 100%;
     padding: 0.75rem 1rem;
-    border: 1px solid #D1D5DB; /* Light gray border */
+    border: 1px solid var(--border-gray); /* Light gray border */
     border-radius: 0.5rem; /* Slightly rounded corners */
     font-size: 1.1rem;
-    color: #1F2937;
+    color: var(--text-primary-dark);
     transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
 .input-group input[type="number"]:focus,
 .input-group input[type="text"]:focus {
     outline: none;
-    border-color: #3B82F6; /* Secondary blue on focus */
-    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2); /* Light blue shadow on focus */
+    border-color: var(--light-brand-blue); /* Your existing button blue on focus */
+    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.2); /* Light blue shadow on focus */
 }
 
 /* Option Group (Radio Buttons) Styling */
@@ -183,7 +256,7 @@ body {
 .option-group label {
     display: flex;
     align-items: center;
-    background-color: #F3F4F6; /* Light gray background */
+    background-color: var(--light-gray-bg); /* Light gray background */
     padding: 0.75rem 1.25rem;
     border-radius: 0.5rem;
     cursor: pointer;
@@ -192,10 +265,10 @@ body {
 }
 
 .option-group label:has(input:checked) {
-    background-color: #E0F2F1; /* Lighter primary color for checked */
-    border-color: #10B981; /* Primary green border when checked */
+    background-color: #E0F2F1; /* Lighter green for checked */
+    border-color: var(--accent-green); /* Accent green border when checked */
     font-weight: 600;
-    color: #10B981; /* Primary green text when checked */
+    color: var(--accent-green); /* Accent green text when checked */
 }
 
 .option-group input[type="radio"] {
@@ -203,7 +276,7 @@ body {
     -webkit-appearance: none;
     width: 1.25rem;
     height: 1.25rem;
-    border: 2px solid #D1D5DB; /* Custom radio button border */
+    border: 2px solid var(--border-gray); /* Custom radio button border */
     border-radius: 50%;
     margin-right: 0.75rem;
     position: relative;
@@ -211,7 +284,7 @@ body {
 }
 
 .option-group input[type="radio"]:checked {
-    border-color: #10B981; /* Primary green when checked */
+    border-color: var(--accent-green); /* Accent green when checked */
 }
 
 .option-group input[type="radio"]:checked::before {
@@ -219,7 +292,7 @@ body {
     display: block;
     width: 0.75rem;
     height: 0.75rem;
-    background-color: #10B981; /* Primary green fill when checked */
+    background-color: var(--accent-green); /* Accent green fill when checked */
     border-radius: 50%;
     position: absolute;
     top: 50%;
@@ -233,7 +306,7 @@ body {
     justify-content: space-between;
     margin-top: auto; /* Pushes buttons to the bottom */
     padding-top: 2rem;
-    border-top: 1px solid #E5E7EB; /* Separator line */
+    border-top: 1px solid var(--border-gray); /* Separator line */
 }
 
 .btn {
@@ -247,8 +320,8 @@ body {
 }
 
 .primary-btn {
-    background-color: #10B981; /* Primary Green */
-    color: white;
+    background-color: var(--accent-green); /* Accent Green */
+    color: var(--white);
 }
 
 .primary-btn:hover {
@@ -257,8 +330,8 @@ body {
 }
 
 .secondary-btn {
-    background-color: #D1D5DB; /* Light gray */
-    color: #1F2937; /* Dark text */
+    background-color: var(--border-gray); /* Light gray */
+    color: var(--text-primary-dark); /* Dark text */
 }
 
 .secondary-btn:hover {
@@ -268,11 +341,11 @@ body {
 
 /* Result Box Styling */
 .result-box {
-    background-color: #F3F4F6;
+    background-color: var(--light-gray-bg);
     padding: 1.5rem;
     border-radius: 0.75rem;
     margin-bottom: 1.5rem;
-    border: 1px solid #E0F2F1;
+    border: 1px solid #E0F2F1; /* Light green border for result box */
 }
 
 .result-box p {
@@ -289,7 +362,7 @@ body {
     width: 100%;
     max-width: 400px; /* Limit chart size */
     margin: 1.5rem auto;
-    background-color: white;
+    background-color: var(--white);
     padding: 1rem;
     border-radius: 0.75rem;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
@@ -308,6 +381,16 @@ body {
     display: none !important;
 }
 
+/* Margin Utilities (to replace some Tailwind-like spacing) */
 .mt-2 { margin-top: 0.5rem; }
 .mt-4 { margin-top: 1rem; }
-.space-y-4 > *:not(:last-child) { margin-bottom: 1rem; } /* Simulates Tailwind's space-y */
+.mb-2 { margin-bottom: 0.5rem; }
+.mb-4 { margin-bottom: 1rem; }
+.space-y-4 > *:not(:last-child) { margin-bottom: 1rem; }
+.p-4 { padding: 1rem; }
+.rounded-lg { border-radius: 0.5rem; }
+.text-red-600 { color: #dc2626; } /* Standard red for warnings */
+.text-sm { font-size: 0.875rem; }
+.text-lg { font-size: 1.125rem; }
+.font-bold { font-weight: bold; }
+.font-semibold { font-weight: 600; }
