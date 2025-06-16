@@ -1,155 +1,204 @@
+/* Base styles */
 body {
-  font-family: "Segoe UI", Roboto, sans-serif;
-  background-color: #f5f7fa;
-  color: #1f2937;
   margin: 0;
-  padding: 0;
+  font-family: 'Inter', sans-serif;
+  background: #f6f8fb;
+  color: #333;
 }
 
-.container {
-  max-width: 960px;
-  margin: auto;
-  padding: 2rem;
+a {
+  text-decoration: none;
+  color: inherit;
 }
 
-h1, h2, h3 {
-  text-align: center;
-  color: #111827;
+input[type="number"] {
+  padding: 0.4rem;
+  width: 100%;
+  max-width: 250px;
+  margin-top: 5px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
 }
 
-.step-tracker {
+/* Navbar */
+.navbar {
+  background: #00264d;
+  color: white;
   display: flex;
-  justify-content: center;
-  margin-bottom: 2rem;
-  gap: 1rem;
-}
-
-.step {
-  width: 2rem;
-  height: 2rem;
-  border-radius: 50%;
-  background-color: #d1d5db;
-  display: flex;
-  justify-content: center;
+  justify-content: space-between;
+  padding: 1rem 2rem;
   align-items: center;
-  color: #111827;
+}
+
+.logo {
+  font-size: 1.4rem;
   font-weight: bold;
-  transition: background-color 0.3s;
 }
 
-.step.active {
-  background-color: #3b82f6;
-  color: #fff;
+.navbar nav ul {
+  list-style: none;
+  display: flex;
+  gap: 1.5rem;
 }
 
-.step-section {
-  background: #ffffff;
-  border-radius: 1rem;
-  box-shadow: 0 0 10px rgba(0,0,0,0.05);
-  padding: 2rem;
-  margin-bottom: 2rem;
-}
-
-label {
+.navbar nav a {
+  color: white;
   font-weight: 500;
 }
 
-input[type="number"],
-select {
-  width: 100%;
-  padding: 0.6rem;
-  margin-top: 0.3rem;
-  margin-bottom: 1rem;
-  border: 1px solid #d1d5db;
-  border-radius: 0.5rem;
-  font-size: 1rem;
+.navbar nav a.active {
+  text-decoration: underline;
 }
 
-input[type="radio"],
-input[type="checkbox"] {
-  margin-right: 0.5rem;
+/* Hero Section */
+.hero {
+  background: #004080;
+  color: white;
+  padding: 4rem 2rem;
+  text-align: center;
 }
 
-input[type="range"] {
-  width: 100%;
+.hero h1 {
+  font-size: 2rem;
 }
 
-button {
-  background-color: #3b82f6;
+.btn-primary {
+  background-color: #00b894;
   color: white;
   border: none;
-  padding: 0.75rem 1.5rem;
-  font-size: 1rem;
-  border-radius: 0.75rem;
-  cursor: pointer;
+  padding: 0.7rem 1.2rem;
   margin-top: 1rem;
-  transition: background-color 0.3s;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
 }
 
-button:hover {
-  background-color: #2563eb;
+.btn-secondary {
+  background-color: #ccc;
+  color: #333;
+  border: none;
+  padding: 0.7rem 1.2rem;
+  margin-right: 1rem;
+  border-radius: 6px;
+  cursor: pointer;
 }
 
-button.secondary {
-  background-color: #9ca3af;
-  color: white;
+/* Feature Section */
+.features {
+  padding: 2rem;
+  text-align: center;
+  background: white;
 }
 
-button.secondary:hover {
-  background-color: #6b7280;
+.feature-cards {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1.5rem;
+  margin-top: 1rem;
 }
 
-.hidden {
-  display: none !important;
+.card {
+  background: #f1f5f9;
+  padding: 1rem;
+  width: 250px;
+  border-radius: 10px;
+  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1);
 }
 
-.section-title {
-  font-size: 1.25rem;
+.card i {
+  font-size: 2rem;
+  color: #00b894;
+  margin-bottom: 0.5rem;
+}
+
+/* Calculator Layout */
+.calculator-container {
+  display: flex;
+  padding: 2rem;
+  gap: 2rem;
+  background: #ffffff;
+}
+
+.steps-sidebar {
+  min-width: 180px;
+  border-right: 1px solid #ccc;
+}
+
+.steps-sidebar ul {
+  list-style: none;
+  padding: 0;
+}
+
+.step-indicator {
+  padding: 1rem;
+  cursor: pointer;
+  border-left: 4px solid transparent;
+}
+
+.step-indicator.active {
   font-weight: bold;
-  margin-bottom: 1.5rem;
-  color: #111827;
-  border-bottom: 2px solid #e5e7eb;
-  padding-bottom: 0.5rem;
+  background: #f0f0f0;
+  border-left: 4px solid #00b894;
+}
+
+.calculator-content {
+  flex: 1;
+}
+
+.step {
+  display: none;
+}
+
+.step.active,
+.step:not(.hidden) {
+  display: block;
+}
+
+.navigation {
+  margin-top: 1.5rem;
 }
 
 .warning {
-  background-color: #fef3c7;
-  color: #92400e;
-  padding: 0.75rem;
-  border-radius: 0.5rem;
-  margin-top: 1rem;
-  font-size: 0.95rem;
+  color: red;
+  font-size: 0.9rem;
 }
 
-.results-box {
-  background: #f9fafb;
-  border: 1px solid #e5e7eb;
-  border-radius: 1rem;
-  padding: 1rem 2rem;
+/* Results Section */
+.result-section {
+  background: #e8f8f5;
+  padding: 1.5rem;
+  border-radius: 10px;
+  margin-top: 1rem;
+}
+
+canvas {
+  max-width: 600px;
+  margin-top: 1rem;
+}
+
+/* Placeholder sections */
+.placeholder {
+  background: #f1f1f1;
+  text-align: center;
+  padding: 2rem;
+}
+
+footer {
+  background: #00264d;
+  color: white;
+  text-align: center;
+  padding: 1rem;
   margin-top: 2rem;
 }
 
-.chart-container {
-  width: 100%;
-  max-width: 500px;
-  margin: 2rem auto;
-}
-
-@media (max-width: 768px) {
-  .step-tracker {
-    flex-wrap: wrap;
+/* Responsive */
+@media screen and (max-width: 768px) {
+  .calculator-container {
+    flex-direction: column;
   }
-  
-  button {
-    width: 100%;
-    margin-top: 0.5rem;
-  }
-
-  .container {
-    padding: 1rem;
-  }
-
-  .step-section {
-    padding: 1rem;
+  .steps-sidebar {
+    border-right: none;
+    border-bottom: 1px solid #ccc;
   }
 }
