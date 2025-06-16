@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Loan vs SIP Calculator</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; background: #f4f4f4; }
+    h2 { text-align: center; color: #333; }
+    .container { background: #fff; padding: 20px; border-radius: 10px; max-width: 700px; margin: auto; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+    label { display: block; margin-top: 10px; font-weight: bold; }
+    input { width: 100%; padding: 8px; margin-top: 5px; }
+    button { margin-top: 20px; padding: 10px; width: 100%; background: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer; }
+    canvas { margin-top: 30px; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Loan vs SIP Calculator</h2>
+    <label for="loanAmount">Loan Amount (₹)</label>
+    <input type="number" id="loanAmount" />
+
+    <label for="loanRate">Loan Interest Rate (%)</label>
+    <input type="number" step="0.1" id="loanRate" />
+
+    <label for="loanTenure">Loan Tenure (Years)</label>
+    <input type="number" id="loanTenure" />
+
+    <label for="sipAmount">SIP Monthly Amount (₹)</label>
+    <input type="number" id="sipAmount" />
+
+    <label for="sipRate">SIP Annual Return Rate (%)</label>
+    <input type="number" step="0.1" id="sipRate" />
+
+    <label for="sipTenure">SIP Duration (Years)</label>
+    <input type="number" id="sipTenure" />
+
+    <button onclick="calculate()">Compare Now</button>
+
+    <canvas id="resultChart" height="100"></canvas>
+    <p id="recommendation" style="font-weight:bold; color:green; text-align:center;"></p>
+  </div>
+
+  <script>
+    function calculate() {
+      const P = parseFloat(document.getElementById("loanAmount").value);
+      const rLoan = parseFloat(document.getElementById("loanRate").value) / 100 / 12;
+      const nLoan = parseFloat(document.getElementById("loanTenure").value) * 12;
+
+      const sip = parseFloat(document.getElementById("sipAmount").value);
+      const rSIP = parseFloat(document.getElementById("sipRate").value) / 100 / 12;
+      const nSIP = parseFloat(document.getElementById("sipTenure").value) * 12;
+
+      const EMI = (P * rLoan * Math.pow(1 + rLoan, nLoan)) / (Math.pow(1 + rLoan, nLoan) - 1);
+      const totalLoanPayment = EMI * nLoan;
+
+      let futureValue = 0;
+      for (let i = 0; i < nSIP; i++) {
+        futureValue += sip * Math.pow(1 + rSIP, nSIP - i);
+      }
+
+      let resultText = "";
+      if (futureValue > totalLoanPayment) {
+        resultText = `📈 Investing via SIP (₹${futureValue.toFixed(0)}) gives better return than taking loan (₹${totalLoanPayment.toFixed(0)})`;
+      } else {
+        resultText = `📉 Loan cost (₹${totalLoanPayment.toFixed(0)}) is lower than what you'd gain through SIP (₹${futureValue.toFixed(0)})`;
+      }
+
+      document.getElementById("recommendation").innerText = resultText;
+
+      const ctx = document.getElementById("resultChart").getContext("2d");
+      new Chart(ctx, {
+        type: "bar",
+        data: {
+          labels: ["Loan Total Payment", "SIP Final Value"],
+          datasets: [
+            {
+              label: "₹ Value",
+              data: [totalLoanPayment, futureValue],
+              backgroundColor: ["#ff4c4c", "#4caf50"],
+            },
+          ],
+        },
+        options: {
+          responsive: true,
+          plugins: { legend: { display: false } },
+          scales: { y: { beginAtZero: true } },
+        },
+      });
+    }
+  </script>
+</body>
+</html>
