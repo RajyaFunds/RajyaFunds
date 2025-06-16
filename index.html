@@ -4,8 +4,11 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>RajyaFunds - Smarter Financial Planning</title>
+    <!-- Link to your consolidated CSS file -->
     <link rel="stylesheet" href="style.css">
+    <!-- Chart.js CDN for charts -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
+    <!-- Font Awesome for icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
@@ -22,6 +25,7 @@
     </nav>
 
     <div class="container">
+        <!-- Your existing homepage welcome content -->
         <h2>Welcome to RajyaFunds!</h2>
         <p>
             Our mission is to simplify financial planning for every Indian — be it a student,
@@ -29,10 +33,12 @@
             planning to take a loan, or investing your first ₹1000 — we’re here to guide you.
         </p>
 
-        <h3 class="calculator-section-title">🚀 Your Personalized Financial Planner is Here!</h3>
+        <!-- NEW: The Integrated Calculator Starts Here -->
+        <h3 id="calculators" class="calculator-section-title">🚀 Your Personalized Financial Planner is Here!</h3>
         <p class="calculator-intro-text">Navigate through the steps below to plan your financial goals.</p>
 
         <main class="calculator-container">
+            <!-- Left Section: Navigation/Progress Tracker -->
             <div class="calculator-sidebar">
                 <h2>Your Journey</h2>
                 <ul>
@@ -43,8 +49,10 @@
                 </ul>
             </div>
 
+            <!-- Right Section: Main Calculator Content -->
             <div class="calculator-content">
 
+                <!-- Step 1: Goal & Loan Type -->
                 <div id="step1" class="step-section active">
                     <h2>1. What is your financial goal?</h2>
                     <div class="option-group">
@@ -71,6 +79,7 @@
                     </div>
                 </div>
 
+                <!-- Step 2: Your Financials -->
                 <div id="step2" class="step-section hidden">
                     <h2>2. Tell us about your finances</h2>
 
@@ -121,6 +130,7 @@
                     </div>
                 </div>
 
+                <!-- Step 3: Planning & Scenarios -->
                 <div id="step3" class="step-section hidden">
                     <h2>3. Planning & Scenarios</h2>
 
@@ -167,6 +177,7 @@
                     </div>
                 </div>
 
+                <!-- Step 4: Results -->
                 <div id="step4" class="step-section hidden">
                     <h2>4. Your Personalized Results</h2>
 
@@ -210,12 +221,13 @@
 
             </div>
         </main>
-        </div>
+    </div>
 
     <footer>
         <p>&copy; 2025 RajyaFunds. Built with passion and purpose.</p>
     </footer>
 
+    <!-- Link to your JavaScript file -->
     <script src="script.js"></script>
 </body>
 </html>
