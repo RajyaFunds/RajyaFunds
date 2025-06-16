@@ -1,794 +1,586 @@
-document.addEventListener('DOMContentLoaded', function() {
-    let currentStep = 1;
-    const totalSteps = 4; // Total number of steps in your calculator
-    let formData = {}; // <<-- THIS IS THE CRUCIAL LINE THAT WAS LIKELY MISSING OR NOT IN EFFECT!
+/* --- Your Brand Colors and Global Styles --- */
+:root {
+    /* Define your brand colors for easy reuse */
+    --dark-brand-blue: #003366;
+    --medium-brand-blue: #0055a5;
+    --light-brand-blue: #007bff; /* Your old button color - primary action/focus */
+    --accent-green: #10B981; /* Primary Green for calculator highlights/buttons */
+    --accent-yellow: #FBBF24; /* Complementary yellow for charts */
+    --text-primary-dark: #1F2937;
+    --text-secondary-gray: #6B7280;
+    --background-light: #f7f9fc; /* Very light gray/off-white background */
+    --white: #ffffff;
+    --light-gray-bg: #F3F4F6; /* Lighter gray for backgrounds */
+    --border-gray: #D1D5DB; /* Standard border color */
+    --dark-gray-text: #374151; /* Darker gray for general text */
+    --success-green: #047857; /* Darker green for success feedback */
+    --warning-red: #DC2626; /* Red for warnings/errors */
+}
 
-    // Object to hold references to navigation list items
-    const navItems = {
-        1: document.getElementById('nav-step1'),
-        2: document.getElementById('nav-step2'),
-        3: document.getElementById('nav-step3'),
-        4: document.getElementById('nav-step4')
-    };
+body {
+    font-family: 'Inter', sans-serif; /* A modern, clean font */
+    background: var(--background-light);
+    margin: 0;
+    padding: 0;
+    color: var(--dark-gray-text); /* Default text color */
+    line-height: 1.6;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh; /* Ensure footer sticks to bottom */
+}
 
-    // Object to hold references to main step sections
-    const stepSections = {
-        1: document.getElementById('step1'),
-        2: document.getElementById('step2'),
-        3: document.getElementById('step3'),
-        4: document.getElementById('step4')
-    };
+/* --- Header & Navigation Styling --- */
+header {
+    background: var(--dark-brand-blue);
+    color: var(--white);
+    padding: 1.5rem 1rem;
+    text-align: center;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); /* Deeper shadow */
+}
 
-    // --- DOM Element References (Inputs for each step) ---
+.header-content h1 {
+    font-size: 2.8rem; /* Larger and impactful */
+    margin-bottom: 0.5rem;
+    font-weight: 700;
+    letter-spacing: -0.05rem; /* Slightly tighter spacing */
+}
 
-    // Step 1 Elements
-    const goalTypeRadios = document.querySelectorAll('input[name="goalType"]');
-    const loanTypeSection = document.getElementById('loanTypeSection'); // Section for loan type options
-    const loanTypeRadios = document.querySelectorAll('input[name="loanType"]');
-    const roiInput = document.getElementById('roi');
+.header-content p {
+    font-size: 1.2rem;
+    opacity: 0.9;
+    font-weight: 300; /* Lighter weight for sub-heading */
+}
 
-    // Step 2 Elements
-    const homeLoanDetails = document.getElementById('homeLoanDetails'); // Section for home loan specifics
-    const targetYearInput = document.getElementById('targetYear');
-    const targetAmountInput = document.getElementById('targetAmount');
-    const currentSavingsInput = document.getElementById('currentSavings');
-    const monthlyIncomeInput = document.getElementById('monthlyIncome');
-    const useAllSavingsRadios = document.querySelectorAll('input[name="useAllSavings"]');
-    const specificSavingsInputDiv = document.getElementById('specificSavingsInput'); // Div for specific savings input
-    const savingsInputTypeRadios = document.querySelectorAll('input[name="savingsInputType']');
-    const specificSavingsAmountInput = document.getElementById('specificSavingsAmount');
+nav {
+    background: var(--medium-brand-blue);
+    display: flex;
+    justify-content: center;
+    padding: 0.75rem 0;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15); /* Distinct shadow for nav */
+}
 
-    // Step 3 Elements
-    const budgetingSection = document.getElementById('budgetingSection'); // Section for budgeting
-    const budgetNeedsInput = document.getElementById('budgetNeeds');
-    const budgetWantsInput = document.getElementById('budgetWants');
-    const budgetSavingsInput = document.getElementById('budgetSavings');
-    const budgetSumWarning = document.getElementById('budgetSumWarning'); // Warning for budget sum not 100%
-    const displayNeeds = document.getElementById('displayNeeds');
-    const displayWants = document.getElementById('displayWants');
-    const displaySavings = document.getElementById('displaySavings');
-    const immediateLoanScenario = document.getElementById('immediateLoanScenario'); // Section for immediate loan scenario
-    const desiredEmiInput = document.getElementById('desiredEmi');
+.nav-links {
+    display: flex;
+    flex-wrap: wrap; /* Allow wrapping on small screens */
+    justify-content: center;
+    max-width: 1200px;
+    width: 100%;
+    padding: 0 1rem;
+}
 
-    // Step 4 Elements (Results Display)
-    const futureHomeResults = document.getElementById('futureHomeResults');
-    const immediateLoanResults = document.getElementById('immediateLoanResults');
+.nav-item {
+    color: var(--white);
+    text-decoration: none;
+    padding: 0.75rem 1.25rem;
+    font-weight: 600;
+    transition: background-color 0.3s ease, color 0.3s ease;
+    border-radius: 0.5rem; /* Rounded corners for nav items */
+}
 
-    const resTargetAmount = document.getElementById('resTargetAmount');
-    const resYearsToBuy = document.getElementById('resYearsToBuy');
-    const resTargetYear = document.getElementById('resTargetYear');
-    const resAccumulateAmount = document.getElementById('resAccumulateAmount');
-    const resMonthlySavingPotential = document.getElementById('resMonthlySavingPotential');
-    const resRequiredSIP = document.getElementById('resRequiredSIP');
-    const resSIPRoi = document.getElementById('resSIPRoi');
+.nav-item:hover,
+.nav-item.active {
+    background-color: var(--dark-brand-blue); /* Darker blue on hover/active */
+    color: var(--accent-green); /* Accent green text */
+}
 
-    const scenario1DownPayment = document.getElementById('scenario1DownPayment');
-    const scenario1LoanAmount = document.getElementById('scenario1LoanAmount');
-    const scenario1Emi = document.getElementById('scenario1Emi');
-    const scenario1Tenure = document.getElementById('scenario1Tenure');
-    const scenario1TotalInterest = document.getElementById('scenario1TotalInterest');
+/* --- Main Content Area for Homepage and Calculator Page --- */
+.main-content, .main-calculator-content {
+    flex-grow: 1; /* Allows main content to fill available space */
+    max-width: 1200px;
+    margin: 2rem auto;
+    padding: 1.5rem;
+    background: var(--white);
+    box-shadow: 0 8px 30px rgba(0,0,0,0.1); /* Elevated shadow */
+    border-radius: 1rem; /* More rounded container */
+    border: 1px solid #e0e0e0; /* Subtle border */
+    display: flex;
+    flex-direction: column;
+    gap: 2rem; /* Spacing between sections */
+}
 
-    const scenario2DownPayment = document.getElementById('scenario2DownPayment');
-    const scenario2LoanAmount = document.getElementById('scenario2LoanAmount');
-    const scenario2Emi = document.getElementById('scenario2Emi');
-    const scenario2Tenure = document.getElementById('scenario2Tenure');
-    const scenario2TotalInterest = document.getElementById('scenario2TotalInterest');
-    const scenario2InvestedAmount = document.getElementById('scenario2InvestedAmount');
-    const scenario2InvestmentReturn = document.getElementById('scenario2InvestmentReturn');
+.section-title {
+    font-size: 2.2rem;
+    font-weight: 700;
+    color: var(--dark-brand-blue);
+    text-align: center;
+    margin-bottom: 1rem;
+}
 
-    // Chart.js instances (initialized to null)
-    let budgetChartInstance = null;
-    let loanCompareChartInstance = null;
+.section-description {
+    font-size: 1.1rem;
+    color: var(--text-secondary-gray);
+    text-align: center;
+    margin-bottom: 2.5rem;
+}
 
-    // --- Helper Functions ---
+/* --- Homepage Specific Sections --- */
+.hero-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2.5rem;
+    padding: 2rem;
+    text-align: center;
+}
 
-    /**
-     * Formats a number as Indian Rupees, converting to Lakhs if >= 100,000.
-     * @param {number} amount - The amount to format.
-     * @returns {string} Formatted currency string.
-     */
-    function formatCurrency(amount) {
-        if (amount === null || isNaN(amount)) return 'N/A';
-        if (amount >= 100000) {
-            return `₹${(amount / 100000).toFixed(2)} Lakhs`;
-        }
-        return `₹${amount.toLocaleString('en-IN', { maximumFractionDigits: 0 })}`;
+@media (min-width: 768px) {
+    .hero-section {
+        flex-direction: row;
+        text-align: left;
+        justify-content: space-between;
     }
-
-    /**
-     * Calculates the Equated Monthly Installment (EMI) for a loan.
-     * @param {number} principal - The principal loan amount.
-     * @param {number} annualRate - The annual interest rate (e.g., 8.5 for 8.5%).
-     * @param {number} tenureMonths - The loan tenure in months.
-     * @returns {number} The calculated EMI.
-     */
-    function calculateEMI(principal, annualRate, tenureMonths) {
-        if (principal <= 0 || annualRate < 0 || tenureMonths <= 0) return 0;
-        const monthlyRate = (annualRate / 12) / 100;
-        if (monthlyRate === 0) return principal / tenureMonths; // Simple division if interest is 0
-        const emi = principal * monthlyRate * Math.pow(1 + monthlyRate, tenureMonths) /
-                    (Math.pow(1 + monthlyRate, tenureMonths) - 1);
-        return isNaN(emi) || !isFinite(emi) ? 0 : emi;
+    .hero-text {
+        flex: 1;
+        padding-right: 2rem;
     }
-
-    /**
-     * Calculates the total interest paid over the loan tenure.
-     * @param {number} principal - The principal loan amount.
-     * @param {number} emi - The monthly EMI.
-     * @param {number} tenureMonths - The loan tenure in months.
-     * @returns {number} The total interest paid.
-     */
-    function calculateTotalInterest(principal, emi, tenureMonths) {
-        return (emi * tenureMonths) - principal;
+    .hero-image {
+        flex: 1;
+        display: flex;
+        justify-content: flex-end;
     }
+}
 
-    /**
-     * Calculates the future value of a Systematic Investment Plan (SIP).
-     * @param {number} monthlyInvestment - The amount invested monthly.
-     * @param {number} annualRate - The annual return rate (e.g., 10 for 10%).
-     * @param {number} years - The investment period in years.
-     * @returns {number} The future value of the SIP.
-     */
-    function calculateSIPFutureValue(monthlyInvestment, annualRate, years) {
-        if (monthlyInvestment <= 0 || annualRate < 0 || years <= 0) return 0;
-        const monthlyRate = (annualRate / 12) / 100;
-        const months = years * 12;
-        if (monthlyRate === 0) return monthlyInvestment * months;
-        // Formula for FV of an ordinary annuity (payments at end of period) * (1 + monthlyRate) for beginning of period
-        const fv = monthlyInvestment * ((Math.pow(1 + monthlyRate, months) - 1) / monthlyRate) * (1 + monthlyRate);
-        return isNaN(fv) || !isFinite(fv) ? 0 : fv;
+.hero-text h2 {
+    font-size: 2.5rem;
+    color: var(--dark-brand-blue);
+    margin-bottom: 1rem;
+    line-height: 1.2;
+}
+
+.hero-text p {
+    font-size: 1.15rem;
+    color: var(--text-primary-dark);
+    margin-bottom: 1.5rem;
+}
+
+.hero-btn {
+    padding: 1rem 2rem;
+    font-size: 1.2rem;
+    display: inline-flex; /* For icon alignment */
+    align-items: center;
+    justify-content: center;
+}
+
+.features-section {
+    padding: 2rem 0;
+    text-align: center;
+}
+
+.features-section h3 {
+    font-size: 2rem;
+    color: var(--medium-brand-blue);
+    margin-bottom: 2.5rem;
+}
+
+.features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 2rem;
+    justify-content: center;
+    align-items: start;
+}
+
+.feature-card {
+    background-color: var(--light-gray-bg);
+    padding: 2rem;
+    border-radius: 0.75rem;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border: 1px solid var(--border-gray);
+}
+
+.feature-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+}
+
+.feature-icon {
+    font-size: 3rem;
+    color: var(--accent-green);
+    margin-bottom: 1rem;
+}
+
+.feature-card h4 {
+    font-size: 1.5rem;
+    color: var(--dark-brand-blue);
+    margin-bottom: 0.75rem;
+}
+
+.feature-card p {
+    font-size: 1rem;
+    color: var(--text-secondary-gray);
+}
+
+.placeholder-section {
+    padding: 2rem;
+    text-align: center;
+    background-color: var(--light-gray-bg);
+    border-radius: 0.75rem;
+    border: 1px dashed var(--border-gray);
+    margin-top: 2rem;
+}
+
+.placeholder-section h3 {
+    color: var(--medium-brand-blue);
+    margin-bottom: 1rem;
+}
+
+/* --- Calculator Specific Styles --- */
+
+.calculator-container {
+    display: flex;
+    flex-direction: column; /* Stacks vertically on small screens */
+    background-color: var(--white);
+    border-radius: 0.75rem; /* Rounded corners */
+    box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1); /* Soft shadow */
+    overflow: hidden; /* Ensures rounded corners cut off content */
+    max-width: 900px; /* Max width for calculator itself */
+    width: 100%;
+    margin: 2rem auto; /* Center within the main-calculator-content */
+    min-height: 600px;
+    border: 1px solid #e0e0e0; /* Subtle border around calculator */
+}
+
+@media (min-width: 768px) { /* Applies for screens larger than 768px (md: breakpoint) */
+    .calculator-container {
+        flex-direction: row; /* Two columns on larger screens */
     }
+}
 
-    /**
-     * Calculates the future value of a lumpsum investment.
-     * @param {number} lumpsumAmount - The initial lumpsum amount.
-     * @param {number} annualRate - The annual return rate (e.g., 8 for 8%).
-     * @param {number} years - The investment period in years.
-     * @returns {number} The future value of the lumpsum.
-     */
-    function calculateLumpsumFutureValue(lumpsumAmount, annualRate, years) {
-        if (lumpsumAmount <= 0 || annualRate < 0 || years <= 0) return 0;
-        const futureValue = lumpsumAmount * Math.pow(1 + (annualRate / 100), years);
-        return isNaN(futureValue) || !isFinite(futureValue) ? 0 : futureValue;
+/* Left Section: Sidebar (Progress Tracker) */
+.calculator-sidebar {
+    width: 100%; /* Full width on mobile */
+    padding: 1.5rem;
+    background-color: var(--dark-brand-blue); /* Dark blue background for sidebar */
+    color: var(--white);
+    border-bottom: 1px solid rgba(255,255,255,0.2); /* Separator on mobile */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+@media (min-width: 768px) {
+    .calculator-sidebar {
+        width: 30%; /* ~1/3 width on desktop */
+        border-right: 1px solid rgba(255,255,255,0.2); /* Vertical separator on desktop */
+        border-bottom: none; /* No bottom border on desktop */
+        padding: 2.5rem;
     }
+}
 
-    // --- UI Update Functions ---
+.calculator-sidebar h3 {
+    font-size: 1.75rem;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+    color: var(--white);
+}
 
-    /**
-     * Shows a specific step in the calculator and updates navigation.
-     * @param {number} stepNumber - The step number to display.
-     */
-    function showStep(stepNumber) {
-        // Hide all step sections
-        Object.values(stepSections).forEach(section => section.classList.add('hidden'));
-        // Deactivate all nav items
-        Object.values(navItems).forEach(nav => nav.classList.remove('active'));
+.calculator-sidebar ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    width: 100%; /* Ensure list items take full width */
+}
 
-        // Show the current step section
-        if (stepSections[stepNumber]) {
-            stepSections[stepNumber].classList.remove('hidden');
-        }
-        // Activate the current step nav item
-        if (navItems[stepNumber]) {
-            navItems[stepNumber].classList.add('active');
-        }
-        currentStep = stepNumber;
+.calculator-sidebar li {
+    font-size: 1.1rem;
+    color: rgba(255,255,255,0.7); /* Lighter text for inactive */
+    padding: 0.75rem 0;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    transition: color 0.3s ease;
+    justify-content: center; /* Center items on mobile */
+}
 
-        // Ensure dynamic sections (like loan type or specific savings input) are updated
-        // and initial budget display is shown if on step 3.
-        updateVisibilityBasedOnInputs();
-        if (currentStep === 3) {
-            updateBudgetDisplay();
-            checkBudgetSum();
-        } else if (currentStep === 4) {
-            performAllCalculationsAndDisplayResults();
-        }
+@media (min-width: 768px) {
+    .calculator-sidebar li {
+        justify-content: flex-start; /* Align to start on desktop */
     }
+}
 
-    /**
-     * Dynamically shows/hides sections based on user selections (e.g., loan type, savings use).
-     */
-    function updateVisibilityBasedOnInputs() {
-        // Read current values from the form elements to ensure accuracy
-        const selectedGoalType = document.querySelector('input[name="goalType"]:checked')?.value || 'buy_home';
-        const useAllSavings = document.querySelector('input[name="useAllSavings"]:checked')?.value || 'yes';
+.calculator-sidebar li.active {
+    font-weight: 600;
+    color: var(--accent-green); /* Accent green for active step text */
+}
 
-        // Step 1: Goal Type specific visibility
-        if (selectedGoalType === 'take_loan') {
-            loanTypeSection.classList.remove('hidden');
-        } else {
-            loanTypeSection.classList.add('hidden');
-            // Reset loan type if goal changes from 'take_loan'
-            document.querySelector('input[name="loanType"][value="home_loan"]').checked = true;
-            roiInput.value = 8.5; // Reset ROI
-        }
+.calculator-sidebar li.active i {
+    color: var(--accent-green); /* Accent green for active icon */
+}
 
-        // Step 2: Savings Use & Home Loan Details visibility
-        if (useAllSavings === 'no') {
-            specificSavingsInputDiv.classList.remove('hidden');
-        } else {
-            specificSavingsInputDiv.classList.add('hidden');
-        }
+/* Right Section: Calculator Content */
+.calculator-content {
+    width: 100%; /* Full width on mobile */
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between; /* Pushes buttons to bottom */
+}
 
-        if (selectedGoalType === 'buy_home') {
-            homeLoanDetails.classList.remove('hidden');
-        } else {
-            homeLoanDetails.classList.add('hidden');
-            // Clear home loan specific fields if goal changes
-            targetYearInput.value = new Date().getFullYear() + 5;
-            targetAmountInput.value = 50;
-        }
-
-        // Step 3: Budgeting vs Immediate Loan Scenario visibility
-        if (currentStep === 3) {
-            if (selectedGoalType === 'buy_home') {
-                budgetingSection.classList.remove('hidden');
-                immediateLoanScenario.classList.add('hidden');
-            } else if (selectedGoalType === 'take_loan') {
-                budgetingSection.classList.add('hidden');
-                immediateLoanScenario.classList.remove('hidden');
-            }
-        }
-
-        // Step 4: Results sections visibility
-        if (currentStep === totalSteps) {
-            if (selectedGoalType === 'buy_home') {
-                futureHomeResults.classList.remove('hidden');
-                immediateLoanResults.classList.add('hidden');
-            } else if (selectedGoalType === 'take_loan') {
-                futureHomeResults.classList.add('hidden');
-                immediateLoanResults.classList.remove('hidden');
-            }
-        }
+@media (min-width: 768px) {
+    .calculator-content {
+        width: 70%; /* ~2/3 width on desktop */
+        padding: 3rem;
     }
-
-    /**
-     * Updates the displayed monthly budget allocations based on input percentages and income.
-     */
-    function updateBudgetDisplay() {
-        const needs = parseFloat(budgetNeedsInput.value) || 0;
-        const wants = parseFloat(budgetWantsInput.value) || 0;
-        const savings = parseFloat(budgetSavingsInput.value) || 0;
-        const income = parseFloat(monthlyIncomeInput.value) || 0;
-
-        displayNeeds.textContent = formatCurrency(income * needs / 100);
-        displayWants.textContent = formatCurrency(income * wants / 100);
-        displaySavings.textContent = formatCurrency(income * savings / 100);
-
-        checkBudgetSum(); // Call checkBudgetSum here as well to immediately update warning
-    }
-
-    /**
-     * Checks if the budget percentages sum up to 100% and shows a warning if not.
-     */
-    function checkBudgetSum() {
-        const needs = parseFloat(budgetNeedsInput.value) || 0;
-        const wants = parseFloat(budgetWantsInput.value) || 0;
-        const savings = parseFloat(budgetSavingsInput.value) || 0;
-        const total = needs + wants + savings;
-
-        if (total !== 100) {
-            budgetSumWarning.classList.remove('hidden');
-        } else {
-            budgetSumWarning.classList.add('hidden');
-        }
-    }
-
-    // --- Navigation Logic ---
-
-    /**
-     * Advances to the next step after validating current step's inputs.
-     */
-    window.nextStep = function() {
-        // Collect current formData right before validation
-        collectFormData();
-
-        let isValid = true; // Flag to track validation status
-
-        if (currentStep === 1) {
-            // If Goal Type is 'take_loan', validate loanType and ROI
-            if (formData.goalType === 'take_loan') {
-                if (!formData.loanType) {
-                    alert('Please select a loan type.');
-                    isValid = false;
-                }
-            }
-            if (formData.roi <= 0 || isNaN(formData.roi)) {
-                alert('Please enter a valid Expected Annual ROI.');
-                isValid = false;
-            }
-        } else if (currentStep === 2) {
-            // Validate fields for 'buy_home' goal
-            if (formData.goalType === 'buy_home') {
-                if (formData.homeLoanTargetYear <= new Date().getFullYear() || isNaN(formData.homeLoanTargetYear)) {
-                    alert('Please enter a valid future target year (e.g., ' + (new Date().getFullYear() + 1) + ' or later).');
-                    isValid = false;
-                }
-                if (formData.homeLoanTargetAmount <= 0 || isNaN(formData.homeLoanTargetAmount)) {
-                    alert('Please enter a valid target home amount (in Lakhs).');
-                    isValid = false;
-                }
-            }
-
-            // Validate common fields for Step 2
-            if (formData.currentSavings < 0 || isNaN(formData.currentSavings)) {
-                alert('Please enter valid current savings (can be 0 if none).');
-                isValid = false;
-            }
-            if (formData.monthlyIncome <= 0 || isNaN(formData.monthlyIncome)) {
-                alert('Please enter valid monthly income.');
-                isValid = false;
-            }
-            // Validate specific savings input if user opts not to use all savings
-            if (formData.useAllSavings === 'no') {
-                if (isNaN(formData.specificSavingsAmount) || formData.specificSavingsAmount <= 0) {
-                    alert('Please enter the specific savings amount/percentage you wish to use.');
-                    isValid = false;
-                } else if (formData.savingsInputType === 'absolute' && formData.specificSavingsAmount > formData.currentSavings) {
-                     alert('Specific savings amount cannot exceed current total savings.');
-                     isValid = false;
-                } else if (formData.savingsInputType === 'percentage' && formData.specificSavingsAmount > 100) {
-                     alert('Percentage of savings cannot exceed 100%.');
-                     isValid = false;
-                }
-            }
-        } else if (currentStep === 3) {
-            // Validate budgeting for 'buy_home' goal
-            if (formData.goalType === 'buy_home') {
-                const sum = parseFloat(budgetNeedsInput.value || 0) + parseFloat(budgetWantsInput.value || 0) + parseFloat(budgetSavingsInput.value || 0);
-                if (sum !== 100) {
-                    budgetSumWarning.classList.remove('hidden');
-                    alert('Budget percentages (Needs, Wants, Savings) must add up to 100%.');
-                    isValid = false;
-                } else {
-                    budgetSumWarning.classList.add('hidden'); // Hide if it was previously visible
-                }
-            }
-            // Validate desired EMI for 'take_loan' goal
-            else if (formData.goalType === 'take_loan') {
-                if (formData.desiredEmi <= 0 || isNaN(formData.desiredEmi)) {
-                    alert('Please enter a valid desired monthly EMI.');
-                    isValid = false;
-                }
-            }
-        }
-
-        // Only proceed to the next step if all validations passed for the CURRENT step
-        if (isValid) {
-            if (currentStep < totalSteps) {
-                showStep(currentStep + 1);
-            }
-        }
-    };
-
-    /**
-     * Goes back to the previous step.
-     */
-    window.prevStep = function() {
-        if (currentStep > 1) {
-            showStep(currentStep - 1);
-        }
-    };
-
-    /**
-     * Collects all current form data from the UI elements into the formData object.
-     * This ensures formData is always up-to-date before calculations or validations.
-     */
-    function collectFormData() {
-        formData.goalType = document.querySelector('input[name="goalType"]:checked')?.value || 'buy_home';
-        formData.loanType = document.querySelector('input[name="loanType"]:checked')?.value || 'home_loan';
-        formData.roi = parseFloat(roiInput.value) || 0;
-
-        formData.homeLoanTargetYear = parseInt(targetYearInput.value) || 0;
-        formData.homeLoanTargetAmount = parseFloat(targetAmountInput.value) || 0;
-        formData.currentSavings = parseFloat(currentSavingsInput.value) || 0;
-        formData.monthlyIncome = parseFloat(monthlyIncomeInput.value) || 0;
-        formData.useAllSavings = document.querySelector('input[name="useAllSavings"]:checked')?.value || 'yes';
-        formData.savingsInputType = document.querySelector('input[name="savingsInputType"]:checked')?.value || 'absolute';
-        formData.specificSavingsAmount = parseFloat(specificSavingsAmountInput.value) || 0;
-
-        formData.budgetNeeds = parseFloat(budgetNeedsInput.value) || 0;
-        formData.budgetWants = parseFloat(budgetWantsInput.value) || 0;
-        formData.budgetSavings = parseFloat(budgetSavingsInput.value) || 0;
-        formData.desiredEmi = parseFloat(desiredEmiInput.value) || 0;
-    }
-
-
-    // --- Calculation Logic ---
-
-    /**
-     * Performs all necessary calculations and displays results based on the chosen goal.
-     */
-    function performAllCalculationsAndDisplayResults() {
-        // Hide all result sections initially
-        futureHomeResults.classList.add('hidden');
-        immediateLoanResults.classList.add('hidden');
-        // Destroy existing chart instances to prevent duplicates
-        if (budgetChartInstance) budgetChartInstance.destroy();
-        if (loanCompareChartInstance) loanCompareChartInstance.destroy();
-
-        // Collect latest form data before calculating
-        collectFormData();
-
-        if (formData.goalType === 'buy_home') {
-            calculateFutureHomePlan();
-            futureHomeResults.classList.remove('hidden');
-        } else if (formData.goalType === 'take_loan') {
-            calculateImmediateLoanScenarios();
-            immediateLoanResults.classList.remove('hidden');
-        }
-    }
-
-    /**
-     * Calculates and displays results for the "Buy a Home" goal.
-     */
-    function calculateFutureHomePlan() {
-        const targetYear = formData.homeLoanTargetYear;
-        const currentYear = new Date().getFullYear();
-        const yearsToBuy = Math.max(0, targetYear - currentYear); // Ensure non-negative years
-        const targetAmountLakhs = formData.homeLoanTargetAmount;
-        const currentSavingsLakhs = formData.currentSavings;
-        const monthlyIncome = formData.monthlyIncome;
-        const annualSIPRoi = 10; // Assuming 10% average for SIP investments
-
-        // Calculate potential monthly saving based on budget (if income is set)
-        const budgetSavingsPercent = formData.budgetSavings;
-        const potentialMonthlySavings = monthlyIncome * (budgetSavingsPercent / 100);
-
-        // Target property value with assumed inflation (5% annual)
-        const targetPropertyValueINR = targetAmountLakhs * 100000; // Convert Lakhs to INR
-        const inflationAdjustedTarget = targetPropertyValueINR * Math.pow(1 + 0.05, yearsToBuy);
-
-        // Future value of existing savings as a lumpsum (assuming 8% return)
-        const currentSavingsFutureValue = calculateLumpsumFutureValue(currentSavingsLakhs * 100000, 8.0, yearsToBuy);
-
-        // Amount still needed to reach the inflation-adjusted target
-        const amountNeededForGoal = Math.max(0, inflationAdjustedTarget - currentSavingsFutureValue);
-
-        let requiredAdditionalSIP = 0;
-        const monthsToInvest = yearsToBuy * 12;
-
-        if (amountNeededForGoal > 0 && monthsToInvest > 0) {
-            // Reverse SIP calculation to find the required monthly investment
-            const monthlyRate = (annualSIPRoi / 12) / 100;
-            if (monthlyRate > 0) {
-                const numerator = amountNeededForGoal * monthlyRate;
-                const denominator = (Math.pow(1 + monthlyRate, monthsToInvest) - 1) * (1 + monthlyRate);
-                requiredAdditionalSIP = numerator / denominator;
-            } else { // Handle 0% ROI case for SIP
-                requiredAdditionalSIP = amountNeededForGoal / monthsToInvest;
-            }
-            // Subtract current potential savings to find *additional* required SIP
-            requiredAdditionalSIP = Math.max(0, requiredAdditionalSIP - potentialMonthlySavings);
-        }
-
-        // Display results
-        resTargetAmount.textContent = targetAmountLakhs.toLocaleString('en-IN');
-        resYearsToBuy.textContent = yearsToBuy;
-        resTargetYear.textContent = targetYear;
-        resAccumulateAmount.textContent = formatCurrency(inflationAdjustedTarget);
-        resMonthlySavingPotential.textContent = formatCurrency(potentialMonthlySavings);
-        resRequiredSIP.textContent = formatCurrency(requiredAdditionalSIP);
-        resSIPRoi.textContent = annualSIPRoi;
-
-        updateBudgetChart(); // Update chart based on latest budget percentages and income
-    }
-
-    /**
-     * Calculates and displays results for immediate loan scenarios.
-     */
-    function calculateImmediateLoanScenarios() {
-        const targetAmountLakhs = formData.homeLoanTargetAmount || 50; // Use home loan target as property value, default to 50L
-        const currentSavingsLakhs = formData.currentSavings;
-        const loanROI = formData.roi;
-        const desiredEmi = formData.desiredEmi;
-
-        // Scenario 1: Max Down Payment
-        let downPayment1 = currentSavingsLakhs * 100000; // All current savings as down payment
-        let loanAmount1 = (targetAmountLakhs * 100000) - downPayment1;
-        loanAmount1 = Math.max(0, loanAmount1); // Ensure loan amount is not negative
-
-        let tenure1Months = 360; // Max 30 years for home loan example
-        // We'll calculate the EMI for this tenure, or if desiredEmi is met, find tenure
-        let emi1 = calculateEMI(loanAmount1, loanROI, tenure1Months);
-
-        // If desired EMI is provided and loanAmount is positive, try to find tenure that matches desired EMI
-        if (loanAmount1 > 0 && desiredEmi > 0 && loanROI > 0) {
-            const monthlyRate = loanROI / 12 / 100;
-            // Calculate tenure based on desired EMI (using a financial formula, simplified)
-            tenure1Months = -Math.log(1 - (loanAmount1 * monthlyRate) / desiredEmi) / Math.log(1 + monthlyRate);
-            if (isNaN(tenure1Months) || !isFinite(tenure1Months) || tenure1Months <= 0) {
-                // If EMI is too low for any tenure, or calculation fails, default to a max reasonable tenure
-                tenure1Months = 360; // Max 30 years
-                emi1 = calculateEMI(loanAmount1, loanROI, tenure1Months); // Recalculate EMI for max tenure
-            } else {
-                emi1 = desiredEmi; // EMI is exactly what was desired
-            }
-        } else if (loanAmount1 <= 0) {
-            tenure1Months = 0; // No loan needed
-            emi1 = 0;
-        }
-
-
-        const totalInterest1 = calculateTotalInterest(loanAmount1, emi1, tenure1Months);
-
-        // Scenario 2: Optimized Down Payment & SIP
-        // Use a portion of savings for down payment, invest the rest
-        let downPayment2 = currentSavingsLakhs * 100000 * 0.3; // Example: 30% of savings as down payment
-        let loanAmount2 = (targetAmountLakhs * 100000) - downPayment2;
-        loanAmount2 = Math.max(0, loanAmount2);
-
-        let tenure2Months = 240; // Example: 20 years for home loan
-        let emi2 = calculateEMI(loanAmount2, loanROI, tenure2Months);
-
-         // Similar logic to adjust tenure based on desired EMI for Scenario 2
-        if (loanAmount2 > 0 && desiredEmi > 0 && loanROI > 0) {
-            const monthlyRate = loanROI / 12 / 100;
-            tenure2Months = -Math.log(1 - (loanAmount2 * monthlyRate) / desiredEmi) / Math.log(1 + monthlyRate);
-            if (isNaN(tenure2Months) || !isFinite(tenure2Months) || tenure2Months <= 0) {
-                tenure2Months = 240; // Max 20 years
-                emi2 = calculateEMI(loanAmount2, loanROI, tenure2Months);
-            } else {
-                emi2 = desiredEmi;
-            }
-        } else if (loanAmount2 <= 0) {
-            tenure2Months = 0;
-            emi2 = 0;
-        }
-
-        const totalInterest2 = calculateTotalInterest(loanAmount2, emi2, tenure2Months);
-
-        const investedSavingsForSIP = currentSavingsLakhs * 100000 - downPayment2; // Remaining savings
-        const sipAnnualROI = 12; // Optimistic 12% annual ROI for SIP comparison
-        const investmentReturnYears = tenure2Months / 12;
-        const futureValueFromInvestment = calculateLumpsumFutureValue(investedSavingsForSIP, sipAnnualROI, investmentReturnYears);
-
-
-        // Display Scenario 1 Results
-        scenario1DownPayment.textContent = formatCurrency(downPayment1);
-        scenario1LoanAmount.textContent = formatCurrency(loanAmount1);
-        scenario1Emi.textContent = formatCurrency(emi1);
-        scenario1Tenure.textContent = `${Math.ceil(tenure1Months)} months (~${(tenure1Months / 12).toFixed(1)} years)`;
-        scenario1TotalInterest.textContent = formatCurrency(totalInterest1);
-
-        // Display Scenario 2 Results
-        scenario2DownPayment.textContent = formatCurrency(downPayment2);
-        scenario2LoanAmount.textContent = formatCurrency(loanAmount2);
-        scenario2Emi.textContent = formatCurrency(emi2);
-        scenario2Tenure.textContent = `${Math.ceil(tenure2Months)} months (~${(tenure2Months / 12).toFixed(1)} years)`;
-        scenario2TotalInterest.textContent = formatCurrency(totalInterest2);
-        scenario2InvestedAmount.textContent = formatCurrency(investedSavingsForSIP);
-        scenario2InvestmentReturn.textContent = formatCurrency(futureValueFromInvestment);
-
-        updateLoanCompareChart(emi1, emi2, loanAmount1, loanAmount2);
-    }
-
-    // --- Charting with Chart.js Functions ---
-
-    /**
-     * Draws or updates the Budget Allocation Pie Chart.
-     */
-    function updateBudgetChart() {
-        if (budgetChartInstance) {
-            budgetChartInstance.destroy(); // Destroy old chart instance if exists
-        }
-
-        const needs = parseFloat(budgetNeedsInput.value) || 0;
-        const wants = parseFloat(budgetWantsInput.value) || 0;
-        const savings = parseFloat(budgetSavingsInput.value) || 0;
-
-        const ctx = document.getElementById('budgetChart').getContext('2d');
-        budgetChartInstance = new Chart(ctx, {
-            type: 'pie',
-            data: {
-                labels: ['Needs', 'Wants', 'Savings/Investment'],
-                datasets: [{
-                    data: [needs, wants, savings],
-                    backgroundColor: [
-                        '#0055a5', // medium-brand-blue (for Needs)
-                        '#FBBF24', // accent-yellow (for Wants)
-                        '#10B981'  // accent-green (for Savings)
-                    ],
-                    borderColor: [
-                        '#0055a5',
-                        '#FBBF24',
-                        '#10B981'
-                    ],
-                    borderWidth: 1
-                }]
-            },
-            options: {
-                responsive: true,
-                plugins: {
-                    legend: {
-                        position: 'top',
-                    },
-                    title: {
-                        display: true,
-                        text: 'Monthly Income Allocation (Percentages)'
-                    },
-                    tooltip: {
-                        callbacks: {
-                            label: function(context) {
-                                let label = context.label || '';
-                                if (label) {
-                                    label += ': ';
-                                }
-                                if (context.parsed !== null) {
-                                    label += context.parsed + '%';
-                                }
-                                return label;
-                            }
-                        }
-                    }
-                }
-            }
-        });
-    }
-
-    /**
-     * Draws or updates the Loan Scenario Comparison Bar Chart.
-     * @param {number} emi1 - EMI for Scenario 1.
-     * @param {number} emi2 - EMI for Scenario 2.
-     * @param {number} loanAmount1 - Principal for Scenario 1.
-     * @param {number} loanAmount2 - Principal for Scenario 2.
-     */
-    function updateLoanCompareChart(emi1, emi2, loanAmount1, loanAmount2) {
-        if (loanCompareChartInstance) {
-            loanCompareChartInstance.destroy();
-        }
-
-        // Ensure these elements exist and have valid text content before attempting split/parse
-        const tenure1Text = scenario1Tenure.textContent;
-        const parsedTenure1Months = tenure1Text ? parseFloat(tenure1Text.split(' ')[0]) : 0;
-        const totalInterest1 = calculateTotalInterest(loanAmount1, emi1, parsedTenure1Months);
-        const totalCost1 = loanAmount1 + totalInterest1;
-
-        const tenure2Text = scenario2Tenure.textContent;
-        const parsedTenure2Months = tenure2Text ? parseFloat(tenure2Text.split(' ')[0]) : 0;
-        const totalInterest2 = calculateTotalInterest(loanAmount2, emi2, parsedTenure2Months);
-        const totalCost2 = loanAmount2 + totalInterest2;
-
-        const investmentReturn2Text = scenario2InvestmentReturn.textContent;
-        // This parsing logic needs to be careful if the text is 'N/A' or empty
-        let investmentReturn2 = 0;
-        if (investmentReturn2Text && investmentReturn2Text !== 'N/A') {
-             // Remove '₹', ' Lakhs', and commas, then parse
-            investmentReturn2 = parseFloat(investmentReturn2Text.replace('₹', '').replace(' Lakhs', '').replace(/,/g, '')) * 100000;
-        }
-
-
-        const ctx = document.getElementById('loanCompareChart').getContext('2d');
-        loanCompareChartInstance = new Chart(ctx, {
-            type: 'bar',
-            data: {
-                labels: ['Scenario 1 (Max DP)', 'Scenario 2 (Optimized)'],
-                datasets: [
-                    {
-                        label: 'Total Loan Cost (Principal + Interest)',
-                        data: [totalCost1, totalCost2],
-                        backgroundColor: '#003366', // dark-brand-blue
-                        borderColor: '#003366',
-                        borderWidth: 1
-                    },
-                    {
-                        label: 'Potential Investment Return (from saved funds)',
-                        data: [0, investmentReturn2], // Only Scenario 2 has this
-                        backgroundColor: '#10B981', // accent-green
-                        borderColor: '#10B981',
-                        borderWidth: 1
-                    }
-                ]
-            },
-            options: {
-                responsive: true,
-                plugins: {
-                    legend: {
-                        position: 'top',
-                    },
-                    title: {
-                        display: true,
-                        text: 'Loan Scenario Comparison (Total Costs & Returns)'
-                    },
-                    tooltip: {
-                        callbacks: {
-                            label: function(context) {
-                                let label = context.dataset.label || '';
-                                if (label) {
-                                    label += ': ';
-                                }
-                                if (context.parsed.y !== null) {
-                                    label += formatCurrency(context.parsed.y);
-                                }
-                                return label;
-                            }
-                        }
-                    }
-                },
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        title: {
-                            display: true,
-                            text: 'Amount (INR)'
-                        },
-                        ticks: {
-                            callback: function(value) {
-                                return formatCurrency(value);
-                            }
-                        }
-                    }
-                }
-            }
-        });
-    }
-
-    // --- Event Listeners (To capture user input and update formData) ---
-
-    // Initial load: show the first step and set up event listeners
-    // All input changes will now trigger collectFormData and updateVisibilityBasedOnInputs
-    // where applicable.
-    goalTypeRadios.forEach(radio => radio.addEventListener('change', () => {
-        collectFormData();
-        updateVisibilityBasedOnInputs();
-    }));
-
-    loanTypeRadios.forEach(radio => radio.addEventListener('change', (e) => {
-        collectFormData(); // Get updated loanType
-        // Set default ROI based on loan type (user can adjust later)
-        switch(e.target.value) {
-            case 'home_loan': roiInput.value = 8.5; break;
-            case 'personal_loan': roiInput.value = 12.0; break;
-            case 'business_loan': roiInput.value = 10.0; break;
-            case 'education_loan': roiInput.value = 9.0; break;
-        }
-        collectFormData(); // Re-collect to get updated ROI
-    }));
-
-    roiInput.addEventListener('input', collectFormData);
-    targetYearInput.addEventListener('input', collectFormData);
-    targetAmountInput.addEventListener('input', collectFormData);
-
-    currentSavingsInput.addEventListener('input', () => {
-        collectFormData();
-        // If "use all savings" is selected, update specificSavingsAmount immediately
-        if(formData.useAllSavings === 'yes') {
-            specificSavingsAmountInput.value = formData.currentSavings;
-            collectFormData(); // Re-collect to get the auto-filled amount
-        }
-    });
-
-    monthlyIncomeInput.addEventListener('input', () => {
-        collectFormData();
-        if (currentStep === 3) updateBudgetDisplay(); // Live update if on budget step
-    });
-
-    useAllSavingsRadios.forEach(radio => radio.addEventListener('change', () => {
-        collectFormData(); // Get updated useAllSavings
-        if (formData.useAllSavings === 'yes') {
-            specificSavingsAmountInput.value = formData.currentSavings; // Auto-fill if all savings
-        } else {
-            specificSavingsAmountInput.value = ''; // Clear for user input
-        }
-        collectFormData(); // Re-collect to get the auto-filled/cleared amount
-        updateVisibilityBasedOnInputs();
-    }));
-
-    savingsInputTypeRadios.forEach(radio => radio.addEventListener('change', () => {
-        collectFormData(); // Get updated savingsInputType
-        specificSavingsAmountInput.value = ''; // Clear current input field to prompt for new type
-        collectFormData(); // Re-collect to get cleared amount
-    }));
-
-    specificSavingsAmountInput.addEventListener('input', collectFormData);
-
-    // Step 3 Listeners (Budgeting & Desired EMI)
-    budgetNeedsInput.addEventListener('input', () => { collectFormData(); updateBudgetDisplay(); });
-    budgetWantsInput.addEventListener('input', () => { collectFormData(); updateBudgetDisplay(); });
-    budgetSavingsInput.addEventListener('input', () => { collectFormData(); updateBudgetDisplay(); });
-    desiredEmiInput.addEventListener('input', collectFormData);
-
-
-    // Initialize the calculator on page load
-    showStep(1);
-});
+}
+
+.calculator-content h2 {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--dark-brand-blue);
+    margin-bottom: 1.5rem;
+}
+
+.calculator-content h3 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--medium-brand-blue); /* Your medium blue */
+    margin-top: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+/* Step Sections */
+.step-section {
+    display: none; /* Hidden by default, shown by JS */
+    flex-grow: 1; /* Allows content to take available space */
+}
+
+.step-section.active {
+    display: flex;
+    flex-direction: column;
+}
+
+/* Form Group Styling */
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-group label {
+    display: block;
+    font-size: 1.05rem;
+    font-weight: 500;
+    color: var(--dark-gray-text);
+    margin-bottom: 0.6rem;
+}
+
+.form-group input[type="number"],
+.form-group input[type="text"] {
+    width: 100%;
+    padding: 0.8rem 1rem;
+    border: 1px solid var(--border-gray); /* Light gray border */
+    border-radius: 0.5rem; /* Rounded corners */
+    font-size: 1.1rem;
+    color: var(--text-primary-dark);
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    box-sizing: border-box; /* Include padding/border in element's total width/height */
+}
+
+.form-group input[type="number"]:focus,
+.form-group input[type="text"]:focus {
+    outline: none;
+    border-color: var(--light-brand-blue); /* Your existing button blue on focus */
+    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.2); /* Light blue shadow on focus */
+}
+
+/* Radio Button Group Styling */
+.radio-group {
+    display: flex;
+    flex-wrap: wrap; /* Allows options to wrap on smaller screens */
+    gap: 1rem;
+}
+
+.radio-group label {
+    display: flex;
+    align-items: center;
+    background-color: var(--light-gray-bg); /* Light gray background */
+    padding: 0.8rem 1.25rem;
+    border-radius: 0.6rem; /* Slightly more rounded */
+    cursor: pointer;
+    transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
+    border: 1px solid var(--border-gray); /* Default border */
+    font-size: 1rem;
+    font-weight: normal; /* Override form-group label font-weight */
+    color: var(--text-primary-dark);
+}
+
+.radio-group label:has(input:checked) {
+    background-color: #E0F2F1; /* Lighter green for checked background */
+    border-color: var(--accent-green); /* Accent green border when checked */
+    font-weight: 600; /* Bolder text when checked */
+    color: var(--success-green); /* Darker green text when checked */
+    box-shadow: 0 2px 8px rgba(16, 185, 129, 0.1); /* Subtle shadow for checked item */
+}
+
+.radio-group input[type="radio"] {
+    appearance: none; /* Hide default radio button */
+    -webkit-appearance: none;
+    width: 1.3rem; /* Slightly larger custom radio button */
+    height: 1.3rem;
+    border: 2px solid var(--border-gray); /* Custom radio button border */
+    border-radius: 50%;
+    margin-right: 0.8rem;
+    position: relative;
+    cursor: pointer;
+    flex-shrink: 0; /* Prevent shrinking */
+}
+
+.radio-group input[type="radio"]:checked {
+    border-color: var(--accent-green); /* Accent green when checked */
+}
+
+.radio-group input[type="radio"]:checked::before {
+    content: '';
+    display: block;
+    width: 0.75rem;
+    height: 0.75rem;
+    background-color: var(--accent-green); /* Accent green fill when checked */
+    border-radius: 50%;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+/* Button Styling */
+.navigation-buttons {
+    display: flex;
+    justify-content: space-between;
+    margin-top: auto; /* Pushes buttons to the bottom */
+    padding-top: 2rem;
+    border-top: 1px solid var(--border-gray); /* Separator line */
+    gap: 1rem; /* Space between buttons */
+    flex-wrap: wrap; /* Allow buttons to wrap */
+}
+
+.btn {
+    padding: 0.9rem 2rem;
+    border: none;
+    border-radius: 0.6rem; /* Slightly more rounded */
+    font-size: 1.15rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+    text-decoration: none; /* For anchor tags acting as buttons */
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-grow: 1; /* Allows buttons to grow */
+    max-width: 250px; /* Max width for individual buttons */
+}
+
+.btn-primary {
+    background-color: var(--accent-green); /* Accent Green */
+    color: var(--white);
+    box-shadow: 0 4px 10px rgba(16, 185, 129, 0.3); /* Subtle green shadow */
+}
+
+.btn-primary:hover {
+    background-color: #0c8c63; /* Slightly darker green on hover */
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(16, 185, 129, 0.4);
+}
+
+.btn-secondary {
+    background-color: var(--border-gray); /* Light gray */
+    color: var(--dark-gray-text); /* Dark text */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+}
+
+.btn-secondary:hover {
+    background-color: #B0B5BB; /* Slightly darker gray on hover */
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.12);
+}
+
+/* Result Box Styling */
+.result-box {
+    background-color: var(--light-gray-bg);
+    padding: 1.8rem;
+    border-radius: 0.8rem; /* More rounded */
+    margin-bottom: 1.5rem;
+    border: 1px solid #E0F2F1; /* Light green border for result box */
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05); /* Subtle shadow */
+}
+
+.result-box p {
+    font-size: 1.1rem;
+    margin-bottom: 0.6rem;
+    color: var(--dark-gray-text);
+}
+
+.result-box p:last-child {
+    margin-bottom: 0;
+}
+
+.highlight-value {
+    font-weight: bold;
+    color: var(--medium-brand-blue); /* Highlight with a brand blue */
+}
+
+
+/* Chart Container */
+.chart-container {
+    width: 100%;
+    max-width: 450px; /* Limit chart size */
+    margin: 1.5rem auto;
+    background-color: var(--white);
+    padding: 1.5rem;
+    border-radius: 0.75rem;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1); /* Stronger shadow for charts */
+    border: 1px solid var(--border-gray);
+}
+
+/* Budgeting Grid for Inputs */
+.budget-input-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); /* Responsive columns */
+    gap: 1.5rem;
+    margin-top: 1.5rem;
+}
+
+.budget-input-grid .form-group p {
+    font-size: 0.95rem;
+    color: var(--text-secondary-gray);
+    margin-top: 0.5rem;
+}
+
+.budget-input-grid .form-group input {
+    text-align: center; /* Center percentage input */
+}
+
+.warning-message {
+    color: var(--warning-red);
+    font-size: 0.95rem;
+    margin-top: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem;
+    background-color: rgba(220, 38, 38, 0.1); /* Light red background */
+    border-left: 4px solid var(--warning-red);
+    border-radius: 0.5rem;
+}
+
+/* Helper Classes */
+.hidden {
+    display: none !important;
+}
+
+/* Margin Utilities (to replace some Tailwind-like spacing) */
+.mt-2 { margin-top: 0.5rem; }
+.mt-4 { margin-top: 1rem; }
+.mb-1 { margin-bottom: 0.25rem; }
+.mb-2 { margin-bottom: 0.5rem; }
+.mb-4 { margin-bottom: 1rem; }
+.mr-2 { margin-right: 0.5rem; }
+.space-y-4 > *:not(:last-child) { margin-bottom: 1rem; }
+.font-bold { font-weight: bold; }
+.font-semibold { font-weight: 600; }
+.text-lg { font-size: 1.125rem; }
+.text-sm { font-size: 0.875rem; }
+.text-secondary-gray { color: var(--text-secondary-gray); }
+.text-center { text-align: center; }
+.rounded-lg { border-radius: 0.75rem; }
+.shadow-lg { box-shadow: 0 10px 15px rgba(0,0,0,0.1); } /* Tailored shadow for images */
