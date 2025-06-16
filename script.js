@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', function() {
     let currentStep = 1;
     const totalSteps = 4; // Total number of steps in your calculator
-    let formData = {}; // <<-- IMPORTANT: Added this line to initialize formData!
+    let formData = {}; // <<-- THIS IS THE CRUCIAL LINE THAT WAS LIKELY MISSING OR NOT IN EFFECT!
 
     // Object to hold references to navigation list items
     const navItems = {
@@ -35,7 +35,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const monthlyIncomeInput = document.getElementById('monthlyIncome');
     const useAllSavingsRadios = document.querySelectorAll('input[name="useAllSavings"]');
     const specificSavingsInputDiv = document.getElementById('specificSavingsInput'); // Div for specific savings input
-    const savingsInputTypeRadios = document.querySelectorAll('input[name="savingsInputType"]');
+    const savingsInputTypeRadios = document.querySelectorAll('input[name="savingsInputType']');
     const specificSavingsAmountInput = document.getElementById('specificSavingsAmount');
 
     // Step 3 Elements
@@ -286,36 +286,42 @@ document.addEventListener('DOMContentLoaded', function() {
         let isValid = true; // Flag to track validation status
 
         if (currentStep === 1) {
-            if (formData.goalType === 'take_loan' && !formData.loanType) {
-                alert('Please select a loan type.');
-                isValid = false;
+            // If Goal Type is 'take_loan', validate loanType and ROI
+            if (formData.goalType === 'take_loan') {
+                if (!formData.loanType) {
+                    alert('Please select a loan type.');
+                    isValid = false;
+                }
             }
             if (formData.roi <= 0 || isNaN(formData.roi)) {
                 alert('Please enter a valid Expected Annual ROI.');
                 isValid = false;
             }
         } else if (currentStep === 2) {
+            // Validate fields for 'buy_home' goal
             if (formData.goalType === 'buy_home') {
                 if (formData.homeLoanTargetYear <= new Date().getFullYear() || isNaN(formData.homeLoanTargetYear)) {
-                    alert('Please enter a valid future target year.');
+                    alert('Please enter a valid future target year (e.g., ' + (new Date().getFullYear() + 1) + ' or later).');
                     isValid = false;
                 }
                 if (formData.homeLoanTargetAmount <= 0 || isNaN(formData.homeLoanTargetAmount)) {
-                    alert('Please enter a valid target home amount.');
+                    alert('Please enter a valid target home amount (in Lakhs).');
                     isValid = false;
                 }
             }
 
+            // Validate common fields for Step 2
             if (formData.currentSavings < 0 || isNaN(formData.currentSavings)) {
-                alert('Please enter valid current savings.');
+                alert('Please enter valid current savings (can be 0 if none).');
                 isValid = false;
             }
             if (formData.monthlyIncome <= 0 || isNaN(formData.monthlyIncome)) {
                 alert('Please enter valid monthly income.');
                 isValid = false;
             }
+            // Validate specific savings input if user opts not to use all savings
             if (formData.useAllSavings === 'no') {
-                if (isNaN(formData.specificSavingsAmount) || formData.specificSavingsAmount <= 0) { // Specific savings must be > 0
+                if (isNaN(formData.specificSavingsAmount) || formData.specificSavingsAmount <= 0) {
                     alert('Please enter the specific savings amount/percentage you wish to use.');
                     isValid = false;
                 } else if (formData.savingsInputType === 'absolute' && formData.specificSavingsAmount > formData.currentSavings) {
@@ -327,6 +333,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             }
         } else if (currentStep === 3) {
+            // Validate budgeting for 'buy_home' goal
             if (formData.goalType === 'buy_home') {
                 const sum = parseFloat(budgetNeedsInput.value || 0) + parseFloat(budgetWantsInput.value || 0) + parseFloat(budgetSavingsInput.value || 0);
                 if (sum !== 100) {
@@ -334,9 +341,11 @@ document.addEventListener('DOMContentLoaded', function() {
                     alert('Budget percentages (Needs, Wants, Savings) must add up to 100%.');
                     isValid = false;
                 } else {
-                    budgetSumWarning.classList.add('hidden');
+                    budgetSumWarning.classList.add('hidden'); // Hide if it was previously visible
                 }
-            } else if (formData.goalType === 'take_loan') {
+            }
+            // Validate desired EMI for 'take_loan' goal
+            else if (formData.goalType === 'take_loan') {
                 if (formData.desiredEmi <= 0 || isNaN(formData.desiredEmi)) {
                     alert('Please enter a valid desired monthly EMI.');
                     isValid = false;
@@ -629,9 +638,24 @@ document.addEventListener('DOMContentLoaded', function() {
             loanCompareChartInstance.destroy();
         }
 
-        const totalCost1 = loanAmount1 + calculateTotalInterest(loanAmount1, emi1, Math.ceil(scenario1Tenure.textContent.split(' ')[0]));
-        const totalCost2 = loanAmount2 + calculateTotalInterest(loanAmount2, emi2, Math.ceil(scenario2Tenure.textContent.split(' ')[0]));
-        const investmentReturn2 = parseFloat(scenario2InvestmentReturn.textContent.replace('₹', '').replace(' Lakhs', '')) * 100000;
+        // Ensure these elements exist and have valid text content before attempting split/parse
+        const tenure1Text = scenario1Tenure.textContent;
+        const parsedTenure1Months = tenure1Text ? parseFloat(tenure1Text.split(' ')[0]) : 0;
+        const totalInterest1 = calculateTotalInterest(loanAmount1, emi1, parsedTenure1Months);
+        const totalCost1 = loanAmount1 + totalInterest1;
+
+        const tenure2Text = scenario2Tenure.textContent;
+        const parsedTenure2Months = tenure2Text ? parseFloat(tenure2Text.split(' ')[0]) : 0;
+        const totalInterest2 = calculateTotalInterest(loanAmount2, emi2, parsedTenure2Months);
+        const totalCost2 = loanAmount2 + totalInterest2;
+
+        const investmentReturn2Text = scenario2InvestmentReturn.textContent;
+        // This parsing logic needs to be careful if the text is 'N/A' or empty
+        let investmentReturn2 = 0;
+        if (investmentReturn2Text && investmentReturn2Text !== 'N/A') {
+             // Remove '₹', ' Lakhs', and commas, then parse
+            investmentReturn2 = parseFloat(investmentReturn2Text.replace('₹', '').replace(' Lakhs', '').replace(/,/g, '')) * 100000;
+        }
 
 
         const ctx = document.getElementById('loanCompareChart').getContext('2d');
