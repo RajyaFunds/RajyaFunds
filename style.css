@@ -1,204 +1,800 @@
-/* Base styles */
+/* --- Global Variables for consistent branding --- */
+:root {
+    --dark-brand-blue: #003366; /* Deep, authoritative blue */
+    --medium-brand-blue: #0055a5; /* Mid-tone blue for secondary elements */
+    --light-brand-blue: #007bff; /* Standard bootstrap blue, good for strong accents/focus */
+    --accent-green: #10B981; /* Vibrant green for primary actions, success, highlights */
+    --accent-yellow: #FBBF24; /* Warm yellow for complementary highlights, charts */
+    --text-primary-dark: #1F2937; /* Very dark gray for main text, highly readable */
+    --text-secondary-gray: #6B7280; /* Lighter gray for descriptions, subtext */
+    --background-light: #f7f9fc; /* Off-white, soft background for overall page */
+    --white: #ffffff; /* Pure white for cards, sections */
+    --light-gray-bg: #F3F4F6; /* Subtle light gray for form elements, subtle backgrounds */
+    --border-gray: #D1D5DB; /* Standard light gray for borders */
+    --dark-gray-text: #374151; /* Slightly softer dark text */
+    --success-green: #047857; /* Darker green for strong success indicators */
+    --warning-red: #DC2626; /* Alert red for errors and warnings */
+    --input-focus-shadow: rgba(0, 123, 255, 0.25); /* Subtle blue shadow on input focus */
+    --main-shadow: 0 8px 30px rgba(0,0,0,0.08); /* General card/section shadow */
+    --hover-shadow: 0 12px 35px rgba(0,0,0,0.12); /* Enhanced shadow on hover */
+    --button-shadow: 0 4px 10px rgba(16, 185, 129, 0.2); /* Green button shadow */
+    --button-hover-shadow: 0 6px 15px rgba(16, 185, 129, 0.3); /* Green button hover shadow */
+}
+
+/* --- Base Body and Layout --- */
 body {
-  margin: 0;
-  font-family: 'Inter', sans-serif;
-  background: #f6f8fb;
-  color: #333;
+    font-family: 'Inter', sans-serif; /* Using Inter from Google Fonts */
+    background: var(--background-light);
+    margin: 0;
+    padding: 0;
+    color: var(--text-primary-dark);
+    line-height: 1.6;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh; /* Ensures footer stays at bottom */
+    -webkit-font-smoothing: antialiased; /* Smoother fonts for better legibility */
+    -moz-osx-font-smoothing: grayscale;
 }
 
-a {
-  text-decoration: none;
-  color: inherit;
+/* Universal box-sizing for consistent layouts */
+*, *::before, *::after {
+    box-sizing: border-box;
 }
 
-input[type="number"] {
-  padding: 0.4rem;
-  width: 100%;
-  max-width: 250px;
-  margin-top: 5px;
-  border-radius: 6px;
-  border: 1px solid #ccc;
+/* Container for max-width and centering content */
+.container {
+    max-width: 1200px;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 1rem;
+    padding-right: 1rem;
+    width: 100%; /* Ensures it fills parent width */
 }
 
-/* Navbar */
-.navbar {
-  background: #00264d;
-  color: white;
-  display: flex;
-  justify-content: space-between;
-  padding: 1rem 2rem;
-  align-items: center;
+/* Section padding for consistency */
+.section-padded {
+    padding: 4rem 0; /* Generous vertical padding for sections */
+}
+@media (max-width: 767px) {
+    .section-padded {
+        padding: 2.5rem 0;
+    }
 }
 
-.logo {
-  font-size: 1.4rem;
-  font-weight: bold;
+/* --- Header Styling --- */
+.main-header {
+    background: var(--dark-brand-blue);
+    color: var(--white);
+    padding: 1.5rem 0;
+    text-align: center;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.25);
+    position: sticky; /* Sticky header for better UX */
+    top: 0;
+    z-index: 1000; /* Ensure it stays on top */
 }
 
-.navbar nav ul {
-  list-style: none;
-  display: flex;
-  gap: 1.5rem;
+.site-title {
+    font-size: 2.8rem;
+    margin: 0 0 0.5rem 0;
+    font-weight: 700;
+    letter-spacing: -0.05rem;
 }
 
-.navbar nav a {
-  color: white;
-  font-weight: 500;
+.tagline {
+    font-size: 1.2rem;
+    opacity: 0.9;
+    font-weight: 300;
+    margin: 0;
 }
 
-.navbar nav a.active {
-  text-decoration: underline;
+/* --- Navigation Styling --- */
+.main-nav {
+    background: var(--medium-brand-blue);
+    padding: 0.75rem 0;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
-/* Hero Section */
-.hero {
-  background: #004080;
-  color: white;
-  padding: 4rem 2rem;
-  text-align: center;
+.nav-links {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.5rem; /* Reduced gap for tighter spacing */
 }
 
-.hero h1 {
-  font-size: 2rem;
+.nav-item {
+    color: var(--white);
+    text-decoration: none;
+    padding: 0.75rem 1.25rem;
+    font-weight: 600;
+    transition: background-color 0.3s ease, color 0.3s ease, transform 0.2s ease;
+    border-radius: 0.5rem;
+    display: inline-flex; /* For potential icons */
+    align-items: center;
 }
+
+.nav-item:hover,
+.nav-item.active {
+    background-color: var(--dark-brand-blue);
+    color: var(--accent-green);
+    transform: translateY(-2px); /* Subtle lift on hover/active */
+}
+
+/* --- Main Content Area for all pages --- */
+.main-content-area {
+    flex-grow: 1; /* Allows main content to fill available space */
+    padding: 2rem 0; /* Vertical padding around content */
+}
+
+/* Specific styling for sections within main content */
+.section-heading {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--dark-brand-blue);
+    text-align: center;
+    margin-bottom: 1.5rem;
+    line-height: 1.2;
+}
+.section-description {
+    font-size: 1.15rem;
+    color: var(--text-secondary-gray);
+    text-align: center;
+    margin-bottom: 3rem;
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* --- Homepage Specific Sections --- */
+.hero-section {
+    background: linear-gradient(135deg, var(--background-light) 0%, #e0e6f0 100%); /* Soft gradient */
+    padding: 5rem 0; /* More vertical padding for hero */
+    text-align: center;
+    overflow: hidden; /* Clear floats/margins */
+    position: relative;
+    z-index: 1; /* Ensure hero content is above any background elements if added */
+}
+
+.hero-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 3rem;
+    align-items: center;
+    justify-content: center;
+}
+@media (min-width: 768px) {
+    .hero-grid {
+        grid-template-columns: 1.2fr 0.8fr; /* Text wider than image */
+        text-align: left;
+    }
+}
+
+.hero-title {
+    font-size: 3.5rem;
+    color: var(--dark-brand-blue);
+    margin-bottom: 1rem;
+    line-height: 1.1;
+    font-weight: 700;
+    letter-spacing: -0.06rem;
+}
+@media (max-width: 767px) {
+    .hero-title {
+        font-size: 2.5rem;
+    }
+}
+
+.hero-description {
+    font-size: 1.3rem;
+    color: var(--text-primary-dark);
+    margin-bottom: 2rem;
+    max-width: 600px;
+}
+@media (min-width: 768px) {
+    .hero-description {
+        margin-left: 0; /* Override center alignment */
+        margin-right: auto;
+    }
+}
+
+.hero-graphic {
+    max-width: 100%;
+    height: auto;
+    border-radius: 1rem;
+    box-shadow: var(--main-shadow);
+    display: block; /* Remove extra space below image */
+    margin: 0 auto; /* Center on mobile */
+}
+@media (min-width: 768px) {
+    .hero-graphic {
+        margin: 0; /* Remove auto-margins on desktop */
+    }
+}
+
+/* Features Grid */
+.features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 2rem;
+    justify-content: center;
+    align-items: stretch; /* Make cards same height */
+    text-align: center;
+}
+
+.feature-card {
+    background-color: var(--white);
+    padding: 2.5rem;
+    border-radius: 1rem;
+    box-shadow: var(--main-shadow);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border: 1px solid rgba(0,0,0,0.05); /* Very light border */
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.feature-card:hover {
+    transform: translateY(-8px); /* More pronounced lift */
+    box-shadow: var(--hover-shadow);
+}
+
+.feature-icon {
+    font-size: 3.5rem;
+    color: var(--accent-green);
+    margin-bottom: 1.5rem;
+}
+
+.feature-title {
+    font-size: 1.6rem;
+    font-weight: 600;
+    color: var(--dark-brand-blue);
+    margin-bottom: 0.75rem;
+}
+
+.feature-description {
+    font-size: 1rem;
+    color: var(--text-secondary-gray);
+    margin-bottom: 0; /* Remove default paragraph margin */
+}
+
+/* CTA Section */
+.cta-section {
+    background: var(--dark-brand-blue); /* Solid dark blue background */
+    color: var(--white);
+    text-align: center;
+    padding: 4rem 0; /* Consistent padding */
+    border-radius: 1rem; /* Rounded corners for the section itself */
+    margin: 3rem auto; /* Center with margin */
+    max-width: 1000px;
+    box-shadow: var(--main-shadow);
+}
+
+.cta-heading {
+    font-size: 2.2rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    color: var(--white);
+}
+
+.cta-text {
+    font-size: 1.2rem;
+    opacity: 0.9;
+    margin-bottom: 2rem;
+    max-width: 700px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.cta-btn {
+    background-color: var(--accent-yellow); /* Eye-catching yellow button */
+    color: var(--dark-brand-blue);
+    font-weight: 700;
+    padding: 1rem 2.5rem;
+    font-size: 1.25rem;
+    border-radius: 0.75rem;
+    box-shadow: 0 4px 10px rgba(251, 191, 36, 0.3); /* Yellow shadow */
+}
+.cta-btn:hover {
+    background-color: #e0ac1a; /* Darker yellow on hover */
+    transform: translateY(-3px);
+    box-shadow: 0 6px 15px rgba(251, 191, 36, 0.4);
+}
+
+/* Placeholder Sections */
+.placeholder-section {
+    background-color: var(--light-gray-bg);
+    border-radius: 1rem;
+    border: 1px dashed var(--border-gray);
+    text-align: center;
+    padding: 3rem 2rem;
+    margin-bottom: 2rem; /* Add margin between placeholders */
+}
+
+/* --- Footer Styling --- */
+.main-footer {
+    background: var(--dark-brand-blue);
+    color: rgba(255, 255, 255, 0.7);
+    padding: 2rem 0;
+    text-align: center;
+    font-size: 0.95rem;
+    border-top: 5px solid var(--medium-brand-blue); /* Stronger separator */
+    margin-top: auto; /* Pushes footer to the bottom */
+}
+
+.main-footer .container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+}
+
+.social-links {
+    display: flex;
+    gap: 1.2rem;
+}
+
+.social-icon {
+    color: var(--white);
+    font-size: 1.4rem;
+    transition: color 0.3s ease, transform 0.2s ease;
+}
+
+.social-icon:hover {
+    color: var(--accent-green);
+    transform: translateY(-2px);
+}
+
+/* --- Calculator Page Specific Styles (`loan-vs-sip.html`) --- */
+.calculator-page {
+    background-color: var(--background-light); /* Ensure calculator page uses light background */
+    padding-top: 2rem;
+    padding-bottom: 4rem;
+}
+
+.calculator-heading, .calculator-description {
+    text-align: center;
+    max-width: 900px;
+    margin-left: auto;
+    margin-right: auto;
+}
+.calculator-heading {
+    font-size: 2.8rem;
+    margin-bottom: 1rem;
+}
+.calculator-description {
+    font-size: 1.2rem;
+    margin-bottom: 3rem;
+}
+
+.calculator-container {
+    background-color: var(--white);
+    border-radius: 1.25rem; /* More rounded container */
+    box-shadow: var(--main-shadow); /* Consistent shadow */
+    overflow: hidden; /* Ensures child elements don't break rounded corners */
+    max-width: 950px; /* Slightly wider for better content distribution */
+    width: 100%;
+    margin: 2rem auto;
+    min-height: 650px; /* Ensure a decent minimum height */
+    display: flex; /* Flexbox for sidebar and content */
+    flex-direction: column; /* Stacks vertically on small screens */
+    border: 1px solid rgba(0,0,0,0.05);
+}
+
+@media (min-width: 768px) {
+    .calculator-container {
+        flex-direction: row; /* Two columns on larger screens */
+    }
+}
+
+/* Left Section: Sidebar (Progress Tracker) */
+.calculator-sidebar {
+    width: 100%; /* Full width on mobile */
+    background-color: var(--dark-brand-blue);
+    color: var(--white);
+    padding: 1.5rem;
+    border-bottom: 1px solid rgba(255,255,255,0.15); /* Subtle separator */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    flex-shrink: 0; /* Prevent shrinking when content is tight */
+}
+
+@media (min-width: 768px) {
+    .calculator-sidebar {
+        width: 35%; /* Wider sidebar for better readability */
+        border-right: 1px solid rgba(255,255,255,0.15); /* Vertical separator */
+        border-bottom: none;
+        padding: 2.5rem 1.5rem;
+    }
+}
+
+.calculator-sidebar h3 {
+    font-size: 1.8rem;
+    font-weight: 700;
+    margin-bottom: 2rem;
+    color: var(--white);
+}
+
+.calculator-sidebar ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    width: 100%;
+}
+
+.calculator-sidebar li {
+    font-size: 1.1rem;
+    color: rgba(255,255,255,0.6); /* Lighter text for inactive steps */
+    padding: 1rem 0.75rem;
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center; /* Center items on mobile */
+    gap: 1rem; /* Space between icon and text */
+    transition: color 0.3s ease, background-color 0.3s ease;
+    border-radius: 0.75rem; /* Rounded list items */
+    cursor: default; /* Not clickable directly, only for progress display */
+}
+.calculator-sidebar li:last-child {
+    margin-bottom: 0;
+}
+
+@media (min-width: 768px) {
+    .calculator-sidebar li {
+        justify-content: flex-start; /* Align to start on desktop */
+        padding-left: 1.5rem;
+        padding-right: 1.5rem;
+    }
+}
+
+.calculator-sidebar li.active {
+    font-weight: 600;
+    color: var(--accent-green); /* Accent green for active step text */
+    background-color: rgba(255,255,255,0.1); /* Subtle highlight for active step background */
+    box-shadow: inset 0 0 0 1px rgba(16, 185, 129, 0.5); /* Inner border highlight */
+}
+
+.calculator-sidebar li.active .nav-icon {
+    color: var(--accent-green); /* Accent green for active icon */
+}
+
+.nav-icon {
+    font-size: 1.3rem;
+    color: rgba(255,255,255,0.4); /* Subtle color for inactive icons */
+}
+
+/* Right Section: Main Calculator Content */
+.calculator-content {
+    width: 100%; /* Full width on mobile */
+    padding: 2.5rem;
+    flex-grow: 1; /* Allows content to take available space in flex container */
+    display: block; /* Important: this needs to be block for step-sections to toggle correctly */
+    position: relative; /* For absolutely positioned buttons */
+    padding-bottom: 80px; /* Space for fixed buttons at bottom */
+}
+@media (min-width: 768px) {
+    .calculator-content {
+        width: 65%; /* ~2/3 width on desktop */
+        padding: 3.5rem;
+    }
+}
+
+.step-title {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--dark-brand-blue);
+    margin-top: 0;
+    margin-bottom: 1.8rem;
+    border-bottom: 2px solid var(--border-gray); /* Subtle separator */
+    padding-bottom: 1rem;
+}
+
+.subsection-title {
+    font-size: 1.6rem;
+    font-weight: 600;
+    color: var(--medium-brand-blue);
+    margin-top: 2rem;
+    margin-bottom: 1.5rem;
+}
+
+/* Step Sections */
+.step-section {
+    display: none; /* Hidden by default, shown by JS */
+    min-height: 400px; /* Ensures content area has consistent height */
+    display: flex; /* Use flex inside step for column layout of elements */
+    flex-direction: column;
+    height: 100%; /* Important for pushing buttons to bottom */
+}
+
+.step-section.active {
+    display: flex; /* Show as flex when active */
+}
+
+/* Form Elements Styling */
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-label {
+    display: block;
+    font-size: 1.05rem;
+    font-weight: 500;
+    color: var(--dark-gray-text);
+    margin-bottom: 0.8rem;
+}
+
+.form-input {
+    width: 100%;
+    padding: 0.9rem 1.2rem;
+    border: 1px solid var(--border-gray);
+    border-radius: 0.6rem; /* Slightly more rounded inputs */
+    font-size: 1.1rem;
+    color: var(--text-primary-dark);
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    box-sizing: border-box;
+    -webkit-appearance: none; /* Remove default styling for better consistency */
+    -moz-appearance: none;
+    appearance: none;
+}
+
+.form-input::placeholder {
+    color: rgba(107, 114, 128, 0.7); /* Lighter placeholder text */
+}
+
+.form-input:focus {
+    outline: none;
+    border-color: var(--light-brand-blue);
+    box-shadow: 0 0 0 3px var(--input-focus-shadow);
+}
+
+/* Radio Button Group Styling (Option Group for better semantic meaning) */
+.radio-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem; /* Space between radio options */
+}
+
+.radio-group label {
+    display: flex;
+    align-items: center;
+    background-color: var(--light-gray-bg);
+    padding: 0.9rem 1.4rem;
+    border-radius: 0.75rem; /* More rounded pill-like shape */
+    cursor: pointer;
+    transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
+    border: 1px solid var(--border-gray);
+    font-size: 1rem;
+    font-weight: normal;
+    color: var(--text-primary-dark);
+    user-select: none; /* Prevent text selection on click */
+}
+
+.radio-group label:hover {
+    background-color: #e8eaec; /* Slightly darker background on hover */
+}
+
+.radio-group label:has(input:checked) {
+    background-color: #E0F2F1; /* Light green for checked background */
+    border-color: var(--accent-green);
+    font-weight: 600;
+    color: var(--success-green);
+    box-shadow: 0 2px 10px rgba(16, 185, 129, 0.15); /* Enhanced shadow for checked item */
+}
+
+.radio-group input[type="radio"] {
+    /* Hide default radio button and create custom one */
+    appearance: none;
+    -webkit-appearance: none;
+    width: 1.4rem; /* Custom radio button size */
+    height: 1.4rem;
+    border: 2px solid var(--border-gray);
+    border-radius: 50%;
+    margin-right: 0.8rem;
+    position: relative;
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: border-color 0.3s ease;
+}
+
+.radio-group input[type="radio"]:checked {
+    border-color: var(--accent-green);
+}
+
+.radio-group input[type="radio"]:checked::before {
+    content: '';
+    display: block;
+    width: 0.8rem;
+    height: 0.8rem;
+    background-color: var(--accent-green);
+    border-radius: 50%;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+/* Button Styling */
+.navigation-buttons {
+    display: flex;
+    justify-content: space-between;
+    margin-top: auto; /* Pushes buttons to the bottom of the step-section */
+    padding-top: 2rem;
+    border-top: 1px solid var(--border-gray);
+    gap: 1.5rem; /* More space between buttons */
+    flex-wrap: wrap; /* Allow buttons to wrap on small screens */
+
+    /* Make buttons stick to bottom of calculator-content */
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding-left: 2.5rem; /* Match calculator-content padding */
+    padding-right: 2.5rem; /* Match calculator-content padding */
+    background-color: var(--white); /* Ensure background to cover content scroll */
+    box-shadow: 0 -5px 15px rgba(0,0,0,0.05); /* Subtle shadow above buttons */
+    border-bottom-left-radius: 1.25rem; /* Match parent container radius */
+    border-bottom-right-radius: 1.25rem;
+}
+@media (min-width: 768px) {
+    .navigation-buttons {
+        padding-left: 3.5rem; /* Match calculator-content padding */
+        padding-right: 3.5rem; /* Match calculator-content padding */
+    }
+}
+
+
+.btn {
+    padding: 1rem 2.25rem; /* Generous padding */
+    border: none;
+    border-radius: 0.75rem; /* More rounded buttons */
+    font-size: 1.15rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+    text-decoration: none; /* For anchor tags acting as buttons */
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-grow: 1; /* Allows buttons to grow to fill space */
+    max-width: 250px; /* Max width for individual buttons */
+}
+@media (max-width: 480px) { /* Stack buttons on very small screens */
+    .btn {
+        flex-grow: 1;
+        max-width: 100%;
+    }
+    .navigation-buttons {
+        flex-direction: column;
+        align-items: center;
+    }
+}
+
 
 .btn-primary {
-  background-color: #00b894;
-  color: white;
-  border: none;
-  padding: 0.7rem 1.2rem;
-  margin-top: 1rem;
-  border-radius: 6px;
-  cursor: pointer;
-  font-weight: 600;
+    background-color: var(--accent-green);
+    color: var(--white);
+    box-shadow: var(--button-shadow);
+}
+
+.btn-primary:hover {
+    background-color: var(--success-green); /* Slightly darker green on hover */
+    transform: translateY(-2px);
+    box-shadow: var(--button-hover-shadow);
 }
 
 .btn-secondary {
-  background-color: #ccc;
-  color: #333;
-  border: none;
-  padding: 0.7rem 1.2rem;
-  margin-right: 1rem;
-  border-radius: 6px;
-  cursor: pointer;
+    background-color: var(--light-gray-bg);
+    color: var(--dark-gray-text);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
 }
 
-/* Feature Section */
-.features {
-  padding: 2rem;
-  text-align: center;
-  background: white;
+.btn-secondary:hover {
+    background-color: #DDE1E6; /* Slightly darker gray on hover */
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
 }
 
-.feature-cards {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 1.5rem;
-  margin-top: 1rem;
+/* Result Box Styling */
+.result-box {
+    background-color: #e6f7f5; /* Light green background for result boxes */
+    padding: 2rem;
+    border-radius: 0.8rem; /* More rounded */
+    margin-bottom: 1.5rem;
+    border: 1px solid var(--accent-green); /* Green border for clear distinction */
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
 }
 
-.card {
-  background: #f1f5f9;
-  padding: 1rem;
-  width: 250px;
-  border-radius: 10px;
-  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1);
+.result-box p {
+    font-size: 1.1rem;
+    margin-bottom: 0.6rem;
+    color: var(--dark-gray-text);
 }
 
-.card i {
-  font-size: 2rem;
-  color: #00b894;
-  margin-bottom: 0.5rem;
+.result-box p:last-child {
+    margin-bottom: 0;
 }
 
-/* Calculator Layout */
-.calculator-container {
-  display: flex;
-  padding: 2rem;
-  gap: 2rem;
-  background: #ffffff;
+.highlight-value {
+    font-weight: bold;
+    color: var(--dark-brand-blue); /* Highlight with a strong brand blue */
 }
 
-.steps-sidebar {
-  min-width: 180px;
-  border-right: 1px solid #ccc;
+/* Chart Container */
+.chart-container {
+    width: 100%;
+    max-width: 500px; /* Increased max width for charts */
+    margin: 1.5rem auto 2.5rem auto; /* More margin at bottom */
+    background-color: var(--white);
+    padding: 1.5rem;
+    border-radius: 0.75rem;
+    box-shadow: var(--main-shadow); /* Consistent shadow for charts */
+    border: 1px solid var(--border-gray);
 }
 
-.steps-sidebar ul {
-  list-style: none;
-  padding: 0;
+/* Budgeting Grid for Inputs */
+.budget-input-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); /* Responsive columns */
+    gap: 1.5rem;
+    margin-top: 1.5rem;
 }
 
-.step-indicator {
-  padding: 1rem;
-  cursor: pointer;
-  border-left: 4px solid transparent;
+.budget-input-grid .input-group .budget-allocation {
+    font-size: 0.95rem;
+    color: var(--text-secondary-gray);
+    margin-top: 0.5rem;
+    font-weight: 500;
 }
 
-.step-indicator.active {
-  font-weight: bold;
-  background: #f0f0f0;
-  border-left: 4px solid #00b894;
+.budget-input-grid .form-input.text-center {
+    text-align: center; /* Center percentage input text */
 }
 
-.calculator-content {
-  flex: 1;
+/* Warning Message Styling */
+.warning-message {
+    color: var(--warning-red);
+    font-size: 0.95rem;
+    margin-top: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem;
+    background-color: rgba(220, 38, 38, 0.08); /* Very light red background */
+    border-left: 4px solid var(--warning-red);
+    border-radius: 0.5rem;
+    font-weight: 500;
+}
+.warning-message i {
+    font-size: 1.1rem;
 }
 
-.step {
-  display: none;
+.validation-error-message {
+    color: var(--warning-red);
+    font-size: 0.85rem;
+    margin-top: 0.4rem;
+    display: block;
+    font-weight: 500;
 }
 
-.step.active,
-.step:not(.hidden) {
-  display: block;
+
+/* --- Utility Classes (Tailwind-like) --- */
+.hidden {
+    display: none !important; /* Force hide with !important to ensure it works */
 }
 
-.navigation {
-  margin-top: 1.5rem;
-}
-
-.warning {
-  color: red;
-  font-size: 0.9rem;
-}
-
-/* Results Section */
-.result-section {
-  background: #e8f8f5;
-  padding: 1.5rem;
-  border-radius: 10px;
-  margin-top: 1rem;
-}
-
-canvas {
-  max-width: 600px;
-  margin-top: 1rem;
-}
-
-/* Placeholder sections */
-.placeholder {
-  background: #f1f1f1;
-  text-align: center;
-  padding: 2rem;
-}
-
-footer {
-  background: #00264d;
-  color: white;
-  text-align: center;
-  padding: 1rem;
-  margin-top: 2rem;
-}
-
-/* Responsive */
-@media screen and (max-width: 768px) {
-  .calculator-container {
-    flex-direction: column;
-  }
-  .steps-sidebar {
-    border-right: none;
-    border-bottom: 1px solid #ccc;
-  }
-}
+.mt-2 { margin-top: 0.5rem; }
+.mt-4 { margin-top: 1rem; }
+.mb-1 { margin-bottom: 0.25rem; }
+.mb-2 { margin-bottom: 0.5rem; }
+.mb-4 { margin-bottom: 1rem; }
+.mr-2 { margin-right: 0.5rem; }
+.ml-2 { margin-left: 0.5rem; }
+.space-y-4 > *:not(:last-child) { margin-bottom: 1rem; }
+.font-bold { font-weight: bold; }
+.font-semibold { font-weight: 600; }
+.text-lg { font-size: 1.125rem; }
+.text-sm { font-size: 0.875rem; }
+.text-secondary-gray { color: var(--text-secondary-gray); }
+.text-center { text-align: center; }
+.img-fluid { max-width: 100%; height: auto; } /* For responsive images */
