@@ -314,9 +314,9 @@ nav {
 .calculator-content {
     width: 100%; /* Full width on mobile */
     padding: 2rem;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between; /* Pushes buttons to bottom */
+    display: block; /* CHANGED TO BLOCK */
+    flex-direction: column; /* This line is now redundant with display: block, but harmless */
+    justify-content: space-between; /* This line is now redundant with display: block, but harmless */
 }
 
 @media (min-width: 768px) {
@@ -348,8 +348,8 @@ nav {
 }
 
 .step-section.active {
-    display: flex; /* Use flex for step content for better layout control */
-    flex-direction: column; /* Stack elements inside step vertically */
+    display: block; /* CHANGED TO BLOCK */
+    flex-direction: column; /* This line is now redundant with display: block, but harmless */
 }
 
 /* Form Group Styling */
