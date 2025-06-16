@@ -348,8 +348,8 @@ nav {
 }
 
 .step-section.active {
-    display: flex;
-    flex-direction: column;
+    display: flex; /* Use flex for step content for better layout control */
+    flex-direction: column; /* Stack elements inside step vertically */
 }
 
 /* Form Group Styling */
@@ -564,8 +564,10 @@ nav {
 }
 
 /* Helper Classes */
+/* The 'hidden' class should set display: none to hide elements.
+   When JS removes this class, the default display property (e.g., block, flex) will take over. */
 .hidden {
-    display: none !important;
+    display: none; /* Corrected: Removed !important */
 }
 
 /* Margin Utilities (to replace some Tailwind-like spacing) */
