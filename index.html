@@ -1,84 +1,72 @@
+<!-- index.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>RajyaFunds - Smarter Financial Planning</title>
-    <!-- Link to your consolidated CSS file for consistent styling -->
-    <link rel="stylesheet" href="style.css">
-    <!-- Font Awesome for icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>RajyaFunds - Financial Goal Planner</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
-    <header>
-        <div class="header-content">
-            <h1>RajyaFunds</h1>
-            <p>India’s Smartest Financial Planning Platform for Youth & Salaried</p>
-        </div>
-    </header>
+  <header>
+    <div class="container nav">
+      <h1 class="logo">RajyaFunds</h1>
+      <nav>
+        <ul>
+          <li><a href="index.html" class="active">Home</a></li>
+          <li><a href="loan-vs-sip.html">Calculators</a></li>
+          <li><a href="#">Articles</a></li>
+          <li><a href="#">Contact</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
 
-    <nav>
-        <div class="nav-links">
-            <a href="index.html" class="nav-item">Home</a>
-            <a href="loan-vs-sip.html" class="nav-item">Calculators</a>
-            <a href="#articles" class="nav-item">Articles</a>
-            <a href="#contact" class="nav-item">Contact</a>
-        </div>
-    </nav>
+  <section class="hero">
+    <div class="container">
+      <h2>Your Dreams, Our Planning</h2>
+      <p>Plan your financial journey with confidence. Smart tools for modern Indians.</p>
+      <a href="loan-vs-sip.html" class="cta-button">Explore Our Financial Tools</a>
+    </div>
+  </section>
 
-    <main class="main-content">
-        <section class="hero-section">
-            <div class="hero-text">
-                <h2>Empower Your Financial Future with RajyaFunds</h2>
-                <p>Our mission is to simplify financial planning for every Indian — be it a student,
-                    a job aspirant, or a salaried employee. Whether you're saving for your dream home,
-                    planning to take a loan, or investing your first ₹1000 — we’re here to guide you with smart, intuitive tools.</p>
-                <a href="loan-vs-sip.html" class="btn btn-primary hero-btn">
-                    <i class="fas fa-calculator mr-2"></i> Explore Our Financial Tools
-                </a>
-            </div>
-            <div class="hero-image">
-                <!-- Placeholder for an eye-catching image related to finance/growth -->
-                <img src="https://placehold.co/500x300/003366/ffffff?text=Financial+Growth" alt="Financial Growth Illustration" class="rounded-lg shadow-lg">
-            </div>
-        </section>
+  <section class="features container">
+    <h3>Why Choose RajyaFunds?</h3>
+    <div class="feature-grid">
+      <div class="feature">
+        <i class="fas fa-calculator fa-2x"></i>
+        <h4>Smart Calculators</h4>
+        <p>Advanced logic tailored for Indian scenarios.</p>
+      </div>
+      <div class="feature">
+        <i class="fas fa-lightbulb fa-2x"></i>
+        <h4>Simple UX</h4>
+        <p>Clear steps, no confusion. Designed for everyone.</p>
+      </div>
+      <div class="feature">
+        <i class="fas fa-rupee-sign fa-2x"></i>
+        <h4>Desi Context</h4>
+        <p>We think in Lakhs and Crores — and so do our tools.</p>
+      </div>
+    </div>
+  </section>
 
-        <section class="features-section">
-            <h3>Why Choose RajyaFunds?</h3>
-            <div class="features-grid">
-                <div class="feature-card">
-                    <i class="fas fa-chart-line feature-icon"></i>
-                    <h4>Smart Calculators</h4>
-                    <p>Powerful tools to plan loans, SIPs, savings, and retirement with ease.</p>
-                </div>
-                <div class="feature-card">
-                    <i class="fas fa-hand-holding-usd feature-icon"></i>
-                    <h4>Personalized Insights</h4>
-                    <p>Tailored guidance to help you make informed financial decisions.</p>
-                </div>
-                <div class="feature-card">
-                    <i class="fas fa-shield-alt feature-icon"></i>
-                    <h4>Secure & Reliable</h4>
-                    <p>Your data is protected with industry-standard security measures.</p>
-                </div>
-            </div>
-        </section>
+  <section class="articles container">
+    <h3>Articles (Coming Soon)</h3>
+    <p>We're working on helpful guides, tips, and insights to help you invest smarter.</p>
+  </section>
 
-        <!-- Placeholder for Articles and Contact sections, if you add them later -->
-        <section id="articles" class="placeholder-section">
-            <h3>Latest Articles & Insights</h3>
-            <p>Coming Soon: Expert advice, market trends, and financial tips to help you grow your wealth.</p>
-        </section>
+  <section class="contact container">
+    <h3>Contact Us</h3>
+    <p>Need help or feedback? Reach out at <strong>support@rajyafunds.in</strong></p>
+  </section>
 
-        <section id="contact" class="placeholder-section">
-            <h3>Get in Touch</h3>
-            <p>Have questions? We're here to help. Contact us for personalized support.</p>
-            <a href="#" class="btn btn-secondary">Contact Us</a>
-        </section>
-    </main>
-
-    <footer>
-        <p>&copy; 2025 RajyaFunds. Built with passion and purpose.</p>
-    </footer>
+  <footer>
+    <div class="container">
+      <p>&copy; 2025 RajyaFunds. All rights reserved.</p>
+    </div>
+  </footer>
 </body>
 </html>
