@@ -1,215 +1,230 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Financial Goal Calculator</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>RajyaFunds - Financial Calculator</title>
+    <!-- Link to your consolidated CSS file for consistent styling -->
     <link rel="stylesheet" href="style.css">
-    </head>
+    <!-- Chart.js CDN for charts -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
 <body>
     <header>
-        <h1>Financial Goal Calculator</h1>
+        <div class="header-content">
+            <h1>RajyaFunds</h1>
+            <p>Your Smart Financial Planning Companion</p>
+        </div>
     </header>
 
-    <main class="calculator-container">
-        <nav class="calculator-nav">
-            <ul class="steps">
-                <li id="nav-step1" class="step active">Step 1: Goal & ROI</li>
-                <li id="nav-step2" class="step">Step 2: Financials</li>
-                <li id="nav-step3" class="step">Step 3: Planning</li>
-                <li id="nav-step4" class="step">Step 4: Results</li>
-            </ul>
-        </nav>
+    <nav>
+        <div class="nav-links">
+            <a href="index.html" class="nav-item">Home</a>
+            <a href="loan-vs-sip.html" class="nav-item active">Calculators</a>
+            <a href="#articles" class="nav-item">Articles</a>
+            <a href="#contact" class="nav-item">Contact</a>
+        </div>
+    </nav>
 
-        <section id="step1" class="calculator-step">
-            <h2>Step 1: Define Your Goal & Expected ROI</h2>
-            <div class="form-group">
-                <label>What is your primary financial goal?</label>
-                <div class="radio-group">
-                    <input type="radio" id="goal-buy-home" name="goalType" value="buy_home" checked>
-                    <label for="goal-buy-home">Buy a Home</label>
+    <main class="main-calculator-content">
+        <h2 class="section-title">Personalized Financial Goal Planner</h2>
+        <p class="section-description">Navigate through the steps below to plan your financial goals and explore different scenarios.</p>
 
-                    <input type="radio" id="goal-take-loan" name="goalType" value="take_loan">
-                    <label for="goal-take-loan">Take an Immediate Loan</label>
-                </div>
+        <section class="calculator-container">
+            <!-- Left Section: Navigation/Progress Tracker -->
+            <div class="calculator-sidebar">
+                <h3>Your Journey</h3>
+                <ul>
+                    <li id="nav-step1" class="active"><i class="fas fa-bullseye"></i> Goal & Loan Type</li>
+                    <li id="nav-step2"><i class="fas fa-wallet"></i> Your Financials</li>
+                    <li id="nav-step3"><i class="fas fa-chart-line"></i> Planning & Scenarios</li>
+                    <li id="nav-step4"><i class="fas fa-receipt"></i> Results</li>
+                </ul>
             </div>
 
-            <div id="loanTypeSection" class="form-group hidden">
-                <label>What type of loan are you considering?</label>
-                <div class="radio-group">
-                    <input type="radio" id="loan-home" name="loanType" value="home_loan" checked>
-                    <label for="loan-home">Home Loan</label>
+            <!-- Right Section: Main Calculator Content -->
+            <div class="calculator-content">
 
-                    <input type="radio" id="loan-personal" name="loanType" value="personal_loan">
-                    <label for="loan-personal">Personal Loan</label>
-
-                    <input type="radio" id="loan-business" name="loanType" value="business_loan">
-                    <label for="loan-business">Business Loan</label>
-
-                    <input type="radio" id="loan-education" name="loanType" value="education_loan">
-                    <label for="loan-education">Education Loan</label>
-                </div>
-            </div>
-
-            <div class="form-group">
-                <label for="roi">Expected Annual ROI on Your Investments (%)</label>
-                <input type="number" id="roi" value="8.5" step="0.1" min="0">
-            </div>
-
-            <div class="navigation-buttons">
-                <button onclick="nextStep()" class="btn btn-primary">Next</button>
-            </div>
-        </section>
-
-        <section id="step2" class="calculator-step hidden">
-            <h2>Step 2: Your Current Financial Situation</h2>
-            <div id="homeLoanDetails" class="hidden">
-                <div class="form-group">
-                    <label for="targetYear">Target Year to Buy Home</label>
-                    <input type="number" id="targetYear" value="2030" min="2025">
-                </div>
-                <div class="form-group">
-                    <label for="targetAmount">Target Home Value (in Lakhs)</label>
-                    <input type="number" id="targetAmount" value="50" min="1">
-                </div>
-            </div>
-
-            <div class="form-group">
-                <label for="currentSavings">Current Savings / Investment (in Lakhs)</label>
-                <input type="number" id="currentSavings" value="5" min="0">
-            </div>
-
-            <div class="form-group">
-                <label>Do you want to use all your current savings for the goal/down payment?</label>
-                <div class="radio-group">
-                    <input type="radio" id="useAllSavingsYes" name="useAllSavings" value="yes" checked>
-                    <label for="useAllSavingsYes">Yes, use all of it</label>
-
-                    <input type="radio" id="useAllSavingsNo" name="useAllSavings" value="no">
-                    <label for="useAllSavingsNo">No, specify amount/percentage</label>
-                </div>
-            </div>
-
-            <div id="specificSavingsInput" class="form-group hidden">
-                <label>How much of your savings do you want to use?</label>
-                <div class="radio-group mb-1">
-                    <input type="radio" id="savingsAbsolute" name="savingsInputType" value="absolute" checked>
-                    <label for="savingsAbsolute">Absolute Amount (Lakhs)</label>
-
-                    <input type="radio" id="savingsPercentage" name="savingsInputType" value="percentage">
-                    <label for="savingsPercentage">Percentage (%)</label>
-                </div>
-                <input type="number" id="specificSavingsAmount" placeholder="Enter amount or percentage">
-            </div>
-
-            <div class="form-group">
-                <label for="monthlyIncome">Your Current Monthly Income (in INR)</label>
-                <input type="number" id="monthlyIncome" value="75000" min="0">
-            </div>
-
-            <div class="navigation-buttons">
-                <button onclick="prevStep()" class="btn btn-secondary">Previous</button>
-                <button onclick="nextStep()" class="btn btn-primary">Next</button>
-            </div>
-        </section>
-
-        <section id="step3" class="calculator-step hidden">
-            <h2>Step 3: Your Financial Planning</h2>
-
-            <div id="budgetingSection">
-                <h3>Monthly Budget Allocation (Rule of 50/30/20 or custom)</h3>
-                <p class="text-secondary-gray">Your current monthly income: <span id="displayMonthlyIncome"></span></p>
-                <div class="budget-input-grid">
+                <!-- Step 1: Goal & Loan Type -->
+                <div id="step1" class="step-section active">
+                    <h2>1. What is your financial goal?</h2>
                     <div class="form-group">
-                        <label for="budgetNeeds">Needs (%)</label>
-                        <input type="number" id="budgetNeeds" value="50" min="0" max="100">
-                        <p>Approx: <span id="displayNeeds">₹0</span></p>
+                        <div class="option-group">
+                            <label><input type="radio" name="goalType" value="buy_home" checked> I'm planning to buy a home</label>
+                            <label><input type="radio" name="goalType" value="take_loan"> I need a loan (Personal, Business, Education, etc.)</label>
+                        </div>
                     </div>
-                    <div class="form-group">
-                        <label for="budgetWants">Wants (%)</label>
-                        <input type="number" id="budgetWants" value="30" min="0" max="100">
-                        <p>Approx: <span id="displayWants">₹0</span></p>
+
+                    <div id="loanTypeSection" class="form-group hidden mt-4">
+                        <h3>What type of loan are you seeking?</h3>
+                        <div class="option-group">
+                            <label><input type="radio" name="loanType" value="home_loan" checked> Home Loan</label>
+                            <label><input type="radio" name="loanType" value="personal_loan"> Personal Loan</label>
+                            <label><input type="radio" name="loanType" value="business_loan"> Business Loan</label>
+                            <label><input type="radio" name="loanType" value="education_loan"> Education Loan</label>
+                        </div>
+                        <div class="input-group">
+                            <label for="roi">Expected Annual ROI (%):</label>
+                            <input type="number" id="roi" value="8.5" step="0.1" min="0">
+                        </div>
                     </div>
-                    <div class="form-group">
-                        <label for="budgetSavings">Savings/Investment (%)</label>
-                        <input type="number" id="budgetSavings" value="20" min="0" max="100">
-                        <p>Approx: <span id="displaySavings">₹0</span></p>
+
+                    <div class="navigation-buttons">
+                        <button class="btn btn-primary" onclick="nextStep()">Next</button>
                     </div>
                 </div>
-                <p id="budgetSumWarning" class="warning-message hidden">
-                    <i class="fas fa-exclamation-triangle"></i> Budget percentages must add up to 100%! Current sum: <span id="currentBudgetSum"></span>%
-                </p>
-            </div>
 
-            <div id="immediateLoanScenario" class="hidden">
-                <h3>Immediate Loan Scenario</h3>
-                <div class="form-group">
-                    <label for="desiredEmi">Desired Monthly EMI (in INR)</label>
-                    <input type="number" id="desiredEmi" value="25000" min="0">
+                <!-- Step 2: Your Financials -->
+                <div id="step2" class="step-section hidden">
+                    <h2>2. Tell us about your finances</h2>
+
+                    <div id="homeLoanDetails" class="space-y-4">
+                        <h3>Home Loan Specifics</h3>
+                        <div class="input-group">
+                            <label for="targetYear">In which year are you planning to buy a home?</label>
+                            <input type="number" id="targetYear" value="2030" min="2024">
+                        </div>
+                        <div class="input-group">
+                            <label for="targetAmount">What's your target home value (in Lakhs)?</label>
+                            <input type="number" id="targetAmount" value="50" min="1" step="0.5">
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="currentSavings">How much do you have in savings right now (in Lakhs)?</label>
+                        <input type="number" id="currentSavings" value="7" min="0" step="0.1">
+                    </div>
+
+                    <div class="input-group">
+                        <label for="monthlyIncome">What's your current monthly income (in INR)?</label>
+                        <input type="number" id="monthlyIncome" value="60000" min="0" step="1000">
+                    </div>
+
+                    <div class="input-group">
+                        <label>Do you want to use all of your savings for the down payment?</label>
+                        <div class="option-group">
+                            <label><input type="radio" name="useAllSavings" value="yes" checked> Yes, use all savings</label>
+                            <label><input type="radio" name="useAllSavings" value="no"> No, I'll use a specific amount</label>
+                        </div>
+                    </div>
+
+                    <div id="specificSavingsInput" class="hidden mt-4">
+                        <label>How much savings are you willing to use?</label>
+                        <div class="option-group">
+                            <label><input type="radio" name="savingsInputType" value="absolute" checked> Absolute Figure (Lakhs)</label>
+                            <label><input type="radio" name="savingsInputType" value="percentage"> Percentage (%)</label>
+                        </div>
+                        <div class="input-group mt-2">
+                            <input type="number" id="specificSavingsAmount" value="5" min="0" step="0.1">
+                        </div>
+                    </div>
+
+                    <div class="navigation-buttons">
+                        <button class="btn btn-secondary" onclick="prevStep()">Back</button>
+                        <button class="btn btn-primary" onclick="nextStep()">Next</button>
+                    </div>
                 </div>
-            </div>
 
-            <div class="navigation-buttons">
-                <button onclick="prevStep()" class="btn btn-secondary">Previous</button>
-                <button onclick="nextStep()" class="btn btn-primary">Next</button>
-            </div>
-        </section>
+                <!-- Step 3: Planning & Scenarios -->
+                <div id="step3" class="step-section hidden">
+                    <h2>3. Planning & Scenarios</h2>
 
-        <section id="step4" class="calculator-step hidden">
-            <h2>Step 4: Your Personalized Plan</h2>
+                    <div id="budgetingSection" class="hidden">
+                        <h3>Your Monthly Budget (Based on 50/30/20 Rule)</h3>
+                        <p class="text-sm text-secondary-gray mb-2">Adjust these percentages based on your actual spending habits.</p>
+                        <p class="text-sm text-secondary-gray">Your current monthly income: <strong id="displayMonthlyIncome"></strong></p>
+                        <div class="budget-input-grid">
+                            <div class="input-group">
+                                <label for="budgetNeeds">Needs (e.g., Rent, Bills, Food) %:</label>
+                                <input type="number" id="budgetNeeds" value="50" min="0" max="100" step="1">
+                                <p class="budget-allocation">Approx: <span id="displayNeeds"></span></p>
+                            </div>
+                            <div class="input-group">
+                                <label for="budgetWants">Wants (e.g., Entertainment, Dining) %:</label>
+                                <input type="number" id="budgetWants" value="30" min="0" max="100" step="1">
+                                <p class="budget-allocation">Approx: <span id="displayWants"></span></p>
+                            </div>
+                            <div class="input-group">
+                                <label for="budgetSavings">Savings & Debt Repayment %:</label>
+                                <input type="number" id="budgetSavings" value="20" min="0" max="100" step="1">
+                                <p class="budget-allocation">Approx: <span id="displaySavings"></span></p>
+                            </div>
+                        </div>
+                        <p id="budgetSumWarning" class="warning-message hidden"><i class="fas fa-exclamation-triangle"></i> Percentages must add up to 100%! Current Sum: <span id="currentBudgetSum"></span>%</p>
+                    </div>
 
-            <div id="futureHomeResults" class="result-section hidden">
-                <h3>Future Home Purchase Plan</h3>
-                <div class="result-box">
-                    <p><strong>Your Target Home Value:</strong> ₹<span id="resTargetAmount"></span> Lakhs</p>
-                    <p><strong>Years Until Purchase:</strong> <span id="resYearsToBuy"></span> years (by <span id="resTargetYear"></span>)</p>
-                    <p><strong>Estimated Amount to Accumulate (inflation adjusted):</strong> <span id="resAccumulateAmount"></span></p>
-                    <p><strong>Potential Monthly Savings from Income:</strong> <span id="resMonthlySavingPotential"></span></p>
-                    <p><strong>Additional Monthly SIP Required (at <span id="resSIPRoi"></span>% ROI):</strong> <span id="resRequiredSIP"></span></p>
+                    <div id="immediateLoanScenario" class="hidden">
+                        <h3>Immediate Loan Scenario</h3>
+                        <p class="text-lg text-secondary-gray mb-4">Let's analyze your loan options for immediate purchase.</p>
+                        <div class="input-group">
+                            <label for="desiredEmi">Desired Monthly EMI (in INR):</label>
+                            <input type="number" id="desiredEmi" value="40000" min="1000" step="1000">
+                        </div>
+                        <p class="text-sm text-secondary-gray">We'll show you various options based on your savings and loan amount.</p>
+                    </div>
+
+                    <div class="navigation-buttons">
+                        <button class="btn btn-secondary" onclick="prevStep()">Back</button>
+                        <button class="btn btn-primary" onclick="nextStep()">Calculate Results</button>
+                    </div>
                 </div>
-                <div class="chart-container">
-                    <canvas id="budgetChart"></canvas>
-                </div>
-            </div>
 
-            <div id="immediateLoanResults" class="result-section hidden">
-                <h3>Immediate Loan Scenarios</h3>
-                <h4>Scenario 1: Maximize Down Payment (Use all current savings for DP)</h4>
-                <div class="result-box">
-                    <p><strong>Down Payment:</strong> <span id="scenario1DownPayment"></span></p>
-                    <p><strong>Loan Amount:</strong> <span id="scenario1LoanAmount"></span></p>
-                    <p><strong>Monthly EMI:</strong> <span id="scenario1Emi"></span></p>
-                    <p><strong>Approx. Tenure:</strong> <span id="scenario1Tenure"></span></p>
-                    <p><strong>Total Interest Paid:</strong> <span id="scenario1TotalInterest"></span></p>
+                <!-- Step 4: Results -->
+                <div id="step4" class="step-section hidden">
+                    <h2>4. Your Personalized Results</h2>
+
+                    <div id="futureHomeResults" class="hidden space-y-4">
+                        <h3>Future Home Purchase Plan</h3>
+                        <div class="result-box">
+                            <p>To buy a home worth <span class="highlight-value" id="resTargetAmount"></span> Lakhs in <span class="highlight-value" id="resYearsToBuy"></span> years (by <span class="highlight-value" id="resTargetYear"></span>), you need to accumulate <span class="highlight-value" id="resAccumulateAmount"></span>.</p>
+                            <p>Given your current income, you can potentially save <span class="highlight-value" id="resMonthlySavingPotential"></span> INR per month from your budget.</p>
+                            <p class="font-bold text-lg mt-2">You will need to invest an additional SIP of <span class="highlight-value" id="resRequiredSIP"></span> INR per month to reach your goal (this factors in your existing savings growth).</p>
+                            <p class="text-sm text-secondary-gray mt-1">This assumes an average annual return of <span id="resSIPRoi"></span>% on your investments and 5% property inflation.</p>
+                        </div>
+                        <div class="chart-container">
+                            <canvas id="budgetChart"></canvas>
+                        </div>
+                    </div>
+
+                    <div id="immediateLoanResults" class="hidden space-y-4">
+                        <h3>Immediate Loan Scenarios</h3>
+                        <div class="result-box">
+                            <h4 class="font-semibold mb-2">Scenario 1: Max Down Payment</h4>
+                            <p>Using <span class="highlight-value" id="scenario1DownPayment"></span> (all current savings) as down payment results in a loan of <span class="highlight-value" id="scenario1LoanAmount"></span>.</p>
+                            <p>Your EMI will be <span class="highlight-value" id="scenario1Emi"></span> for <span class="highlight-value" id="scenario1Tenure"></span>.</p>
+                            <p class="text-sm">Total interest paid: <span class="highlight-value" id="scenario1TotalInterest"></span>.</p>
+                        </div>
+                         <div class="result-box mt-4">
+                            <h4 class="font-semibold mb-2">Scenario 2: Optimized Down Payment & SIP</h4>
+                            <p>Using <span class="highlight-value" id="scenario2DownPayment"></span> as down payment for a loan of <span class="highlight-value" id="scenario2LoanAmount"></span>.</p>
+                            <p>Your EMI will be <span class="highlight-value" id="scenario2Emi"></span> for <span class="highlight-value" id="scenario2Tenure"></span>.</p>
+                            <p class="text-sm">Total interest paid: <span class="highlight-value" id="scenario2TotalInterest"></span>.</p>
+                            <p class="mt-2 font-bold text-lg">By investing the remaining <span class="highlight-value" id="scenario2InvestedAmount"></span> in SIP/lumpsum, you could potentially have <span class="highlight-value" id="scenario2InvestmentReturn"></span> at the end of your loan tenure (at 12% average ROI).</p>
+                        </div>
+                        <div class="chart-container">
+                            <canvas id="loanCompareChart"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="navigation-buttons">
+                        <button class="btn btn-secondary" onclick="prevStep()">Back to Planning</button>
+                        <a href="index.html" class="btn btn-primary">Start New Calculation</a>
+                    </div>
                 </div>
 
-                <h4>Scenario 2: Optimized Down Payment & Investment (E.g., 30% savings as DP, rest invested)</h4>
-                <div class="result-box">
-                    <p><strong>Down Payment:</strong> <span id="scenario2DownPayment"></span></p>
-                    <p><strong>Loan Amount:</strong> <span id="scenario2LoanAmount"></span></p>
-                    <p><strong>Monthly EMI:</strong> <span id="scenario2Emi"></span></p>
-                    <p><strong>Approx. Tenure:</strong> <span id="scenario2Tenure"></span></p>
-                    <p><strong>Total Interest Paid:</strong> <span id="scenario2TotalInterest"></span></p>
-                    <p><strong>Amount Invested from Savings:</strong> <span id="scenario2InvestedAmount"></span></p>
-                    <p><strong>Estimated Investment Return by Loan End (at 12% ROI):</strong> <span id="scenario2InvestmentReturn"></span></p>
-                </div>
-                <div class="chart-container">
-                    <canvas id="loanCompareChart"></canvas>
-                </div>
-            </div>
-
-            <div class="navigation-buttons">
-                <button onclick="prevStep()" class="btn btn-secondary">Previous</button>
-                <a href="index.html" class="btn btn-primary">Start Over</a>
             </div>
         </section>
     </main>
 
     <footer>
-        <p>&copy; 2025 Financial Goal Calculator</p>
+        <p>&copy; 2025 RajyaFunds. Built with passion and purpose.</p>
     </footer>
 
+    <!-- Chart.js library -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Your custom script for calculator logic -->
     <script src="script.js"></script>
 </body>
 </html>
