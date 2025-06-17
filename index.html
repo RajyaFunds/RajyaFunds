@@ -1,235 +1,73 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RajyaFunds - Your Financial Planning Partner</title>
-    <!-- Google Fonts: Inter for a modern, professional look -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <!-- Font Awesome for sleek icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <!-- Link to your consolidated stylesheet -->
-    <link rel="stylesheet" href="style.css">
-
-    <!-- Google Analytics - Place in head for immediate tracking -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXX"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-      gtag('config', 'G-XXXXXXX'); // REPLACE WITH YOUR ACTUAL GOOGLE ANALYTICS MEASUREMENT ID
-    </script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>RajyaFunds - Smart Financial Tools</title>
+  <link rel="stylesheet" href="style.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
-<body>
-    <header class="main-header">
-        <div class="container header-content">
-            <div class="site-title-group">
-                <h1 class="site-title">RajyaFunds</h1>
-                <p class="tagline-header">Empowering Your Financial Journey</p>
-            </div>
-            <p class="header-phrase">Your Path to Financial Clarity</p>
-        </div>
-    </header>
+<body class="bg-gray-50 font-sans text-gray-800">
+  <!-- Header -->
+  <header class="bg-white shadow sticky top-0 z-10">
+    <div class="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
+      <h1 class="text-2xl font-bold text-blue-700">RajyaFunds</h1>
+      <nav class="space-x-4">
+        <a href="#calculators" class="text-gray-600 hover:text-blue-600">Calculators</a>
+        <a href="#articles" class="text-gray-600 hover:text-blue-600">Articles</a>
+        <a href="#contact" class="text-gray-600 hover:text-blue-600">Contact</a>
+      </nav>
+    </div>
+  </header>
 
-    <nav class="main-nav">
-        <div class="container nav-links">
-            <a href="index.html" class="nav-item active">Home</a>
-            <!-- Corrected link to the calculator file name -->
-            <a href="loan-vs-sip-calculator.html" class="nav-item">Calculators</a>
-            <a href="#articles" class="nav-item">Articles</a>
-            <a href="#contact" class="nav-item">Contact</a>
-        </div>
-    </nav>
+  <!-- Hero Section -->
+  <section class="bg-blue-100 py-12 text-center">
+    <h2 class="text-3xl font-bold mb-4">Plan Smarter. Invest Better. Live Freely.</h2>
+    <p class="text-gray-700 text-lg mb-6">Start with our calculators and build your future, step by step.</p>
+    <a href="#calculators" class="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700">Explore Tools</a>
+  </section>
 
-    <main class="main-content-area">
-        <!-- Hero Section: Dynamic, engaging, and action-oriented -->
-        <section class="hero-section section-padding">
-            <div class="container hero-grid">
-                <div class="hero-text">
-                    <h2 class="hero-title">Your Financial Future, Simplified.</h2>
-                    <p class="hero-description">RajyaFunds provides intelligent tools and insights tailored for Indian youth and professionals. Achieve your financial milestones with clarity and confidence.</p>
-                    <!-- Corrected link to the calculator file name -->
-                    <a href="loan-vs-sip-calculator.html" class="btn btn-primary hero-cta">
-                        Start Planning Now <i class="fas fa-arrow-right ml-2"></i>
-                    </a>
-                </div>
-                <div class="hero-image">
-                    <!-- High-quality placeholder image for visual appeal -->
-                    <img src="https://placehold.co/600x400/2A629A/ffffff?text=Smart+Finance" alt="Financial Planning Illustration" class="img-fluid hero-graphic">
-                </div>
-            </div>
-        </section>
+  <!-- Calculator Section -->
+  <section id="calculators" class="max-w-5xl mx-auto py-12 px-4">
+    <h3 class="text-2xl font-semibold mb-6">Featured Calculator</h3>
+    <div class="bg-white shadow rounded-lg p-6">
+      <h4 class="text-xl font-bold mb-2">Loan vs SIP Decision Planner</h4>
+      <p class="text-gray-600 mb-4">Find out whether you should take a loan or invest and wait to buy your dream property.</p>
+      <a href="loan-vs-sip-calculator.html" class="inline-block bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">Use Calculator</a>
+    </div>
 
-        <!-- Value Proposition Section 1: Left/Right Layout -->
-        <section class="value-prop-section section-padding">
-            <div class="container value-prop-grid">
-                <div class="value-prop-text">
-                    <h3 class="section-heading text-align-left">Effortless Financial Planning</h3>
-                    <p class="section-description text-align-left">Navigate complex financial decisions with ease. Our intuitive platform helps you understand your options and plan confidently.</p>
-                    <ul class="value-prop-list">
-                        <li><i class="fas fa-check-circle"></i> Precision-engineered calculators for every goal.</li>
-                        <li><i class="fas fa-check-circle"></i> User-friendly interface, designed for simplicity.</li>
-                        <li><i class="fas fa-check-circle"></i> Data-driven insights tailored to the Indian market.</li>
-                    </ul>
-                </div>
-                <div class="value-prop-image">
-                    <img src="https://placehold.co/500x350/63A6E9/ffffff?text=Intuitive+Tools" alt="Intuitive Tools Illustration" class="img-fluid">
-                </div>
-            </div>
-        </section>
+    <h3 class="text-2xl font-semibold mt-12 mb-6">Coming Soon</h3>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div class="bg-white shadow rounded-lg p-4">
+        <h4 class="font-semibold text-lg mb-2">State-Wise Property Affordability Tool</h4>
+        <p class="text-gray-600">Compare home buying costs across 29 Indian capitals with inflation-adjusted insights.</p>
+      </div>
+      <div class="bg-white shadow rounded-lg p-4">
+        <h4 class="font-semibold text-lg mb-2">Education Goal & Student Planner</h4>
+        <p class="text-gray-600">Plan your monthly college expenses and calculate skill investment returns over time.</p>
+      </div>
+    </div>
+  </section>
 
-        <!-- Value Proposition Section 2: Alternating Left/Right Layout -->
-        <section class="value-prop-section section-padding bg-light-gray-section">
-            <div class="container value-prop-grid">
-                 <div class="value-prop-image">
-                    <img src="https://placehold.co/500x350/1A233A/ffffff?text=Secure+Data" alt="Secure Data Illustration" class="img-fluid">
-                </div>
-                <div class="value-prop-text">
-                    <h3 class="section-heading text-align-left">Your Data, Your Privacy</h3>
-                    <p class="section-description text-align-left">We prioritize the security and confidentiality of your financial information. Plan with peace of mind.</p>
-                    <ul class="value-prop-list">
-                        <li><i class="fas fa-check-circle"></i> Secure and private environment for your planning.</li>
-                        <li><i class="fas fa-check-circle"></i> No personal data storage without your explicit consent.</li>
-                        <li><i class="fas fa-check-circle"></i> Transparent data usage policies.</li>
-                    </ul>
-                </div>
-            </div>
-        </section>
+  <!-- Articles Placeholder -->
+  <section id="articles" class="bg-white py-12">
+    <div class="max-w-5xl mx-auto px-4">
+      <h3 class="text-2xl font-semibold mb-6">Learn the Basics</h3>
+      <ul class="list-disc pl-5 text-gray-700">
+        <li>Emergency Fund Planning</li>
+        <li>Goal-Based Investing</li>
+        <li>Power of Compounding</li>
+        <li>Managing Debt Wisely</li>
+      </ul>
+    </div>
+  </section>
 
-
-        <!-- Calculators Overview Section: Prominent and expandable for future tools -->
-        <section id="calculators" class="calculators-overview-section section-padding">
-            <div class="container">
-                <h3 class="section-heading">Our Powerful Financial Calculators</h3>
-                <p class="section-description">From planning your dream home to optimizing your investments, our tools provide clear pathways to your financial objectives.</p>
-
-                <div class="calculator-cards-grid">
-                    <!-- Current Calculator: Most Important, highly visible -->
-                    <!-- Corrected link and title/description for the calculator -->
-                    <a href="loan-vs-sip-calculator.html" class="calculator-card highlight-card">
-                        <i class="fas fa-house-damage icon"></i>
-                        <h4>Smart Buy Planner: Loan vs SIP Decision Assistant</h4>
-                        <p>Decide if it’s better to borrow today or grow your money and buy later.</p>
-                        <span class="btn btn-primary">Open Calculator <i class="fas fa-arrow-right ml-2"></i></span>
-                    </a>
-
-                    <!-- Placeholder for upcoming calculators (7 more to add) -->
-                    <div class="calculator-card coming-soon-card">
-                        <i class="fas fa-calculator icon"></i>
-                        <h4>SIP Calculator</h4>
-                        <p>Plan your Systematic Investment Plans to achieve long-term wealth.</p>
-                        <span class="btn disabled-btn">Coming Soon</span>
-                    </div>
-                    <div class="calculator-card coming-soon-card">
-                        <i class="fas fa-hand-holding-usd icon"></i>
-                        <h4>Personal Loan Calculator</h4>
-                        <p>Estimate EMIs and total costs for your personal financing needs.</p>
-                        <span class="btn disabled-btn">Coming Soon</span>
-                    </div>
-                     <div class="calculator-card coming-soon-card">
-                        <i class="fas fa-car icon"></i>
-                        <h4>Vehicle Loan Calculator</h4>
-                        <p>Calculate your car or bike loan EMIs and plan your repayment.</p>
-                        <span class="btn disabled-btn">Coming Soon</span>
-                    </div>
-                     <div class="calculator-card coming-soon-card">
-                        <i class="fas fa-piggy-bank icon"></i>
-                        <h4>Retirement Planner</h4>
-                        <p>Secure your golden years with a comprehensive retirement savings plan.</p>
-                        <span class="btn disabled-btn">Coming Soon</span>
-                    </div>
-                     <div class="calculator-card coming-soon-card">
-                        <i class="fas fa-graduation-cap icon"></i>
-                        <h4>Education Loan Calculator</h4>
-                        <p>Plan for your higher education expenses with ease.</p>
-                        <span class="btn disabled-btn">Coming Soon</span>
-                    </div>
-                     <div class="calculator-card coming-soon-card">
-                        <i class="fas fa-briefcase icon"></i>
-                        <h4>Business Loan Calculator</h4>
-                        <p>Understand the financial implications of a loan for your business.</p>
-                        <span class="btn disabled-btn">Coming Soon</span>
-                    </div>
-                     <div class="calculator-card coming-soon-card">
-                        <i class="fas fa-wallet icon"></i>
-                        <h4>Net Worth Calculator</h4>
-                        <p>Track your financial health by calculating your current net worth.</p>
-                        <span class="btn disabled-btn">Coming Soon</span>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Placeholder for articles/insights -->
-        <section id="articles" class="value-prop-section section-padding">
-            <div class="container value-prop-grid">
-                <div class="value-prop-text">
-                    <h3 class="section-heading text-align-left">Knowledge at Your Fingertips</h3>
-                    <p class="section-description text-align-left">Explore our growing library of articles, guides, and expert insights to deepen your financial understanding.</p>
-                    <ul class="value-prop-list">
-                        <li><i class="fas fa-chart-line"></i> Market Trends and Analysis</li>
-                        <li><i class="fas fa-piggy-bank"></i> Savings and Investment Strategies</li>
-                        <li><i class="fas fa-file-invoice"></i> Loan Management Tips</li>
-                    </ul>
-                     <a href="#" class="btn btn-secondary mt-4">Read Our Articles <i class="fas fa-arrow-right ml-2"></i></a>
-                </div>
-                <div class="value-prop-image">
-                    <img src="https://placehold.co/500x350/2A629A/ffffff?text=Financial+Insights" alt="Financial Insights Illustration" class="img-fluid">
-                </div>
-            </div>
-        </section>
-
-
-        <!-- Testimonials / Trust Section -->
-        <section class="testimonials-section section-padding">
-            <div class="container">
-                <h3 class="section-heading text-light">What Our Users Say</h3>
-                <div class="testimonial-card">
-                    <p>"RajyaFunds transformed how I approach my finances. The clear insights from the calculator helped me make smarter decisions for my home loan!"</p>
-                    <p class="author">- Ankit Sharma, Salaried Professional</p>
-                </div>
-            </div>
-        </section>
-
-        <!-- Disclaimer Section -->
-        <section class="disclaimer-section section-padding">
-            <div class="container">
-                <p>
-                    <i class="fas fa-info-circle mr-2"></i>
-                    **Disclaimer:** RajyaFunds is an educational platform. All results are estimates based on the inputs you provide and publicly known return assumptions. Please consult a registered financial advisor before making investment decisions.
-                </p>
-            </div>
-        </section>
-    </main>
-
-    <footer class="main-footer">
-        <div class="container footer-grid">
-            <div class="footer-column">
-                <h4>RajyaFunds</h4>
-                <p class="tagline-header">Empowering Your Financial Journey</p>
-                <div class="social-links">
-                    <a href="#" class="social-icon"><i class="fab fa-facebook-f"></i></a>
-                    <a href="#" class="social-icon"><i class="fab fa-twitter"></i></a>
-                    <a href="#" class="social-icon"><i class="fab fa-linkedin-in"></i></a>
-                </div>
-            </div>
-            <div class="footer-column">
-                <h4>Quick Links</h4>
-                <ul>
-                    <li><a href="index.html">Home</a></li>
-                    <li><a href="loan-vs-sip-calculator.html">Calculators</a></li>
-                    <li><a href="#articles">Articles</a></li>
-                    <li><a href="#contact">Contact</a></li>
-                </ul>
-            </div>
-            <div class="footer-column" id="contact">
-                <h4>Contact Us</h4>
-                <p class="contact-info-footer"><i class="fas fa-envelope mr-2"></i> rajyafunds.in@gmail.com</p>
-            </div>
-        </div>
-        <div class="container footer-bottom-text">
-            <p>&copy; 2025 RajyaFunds. All rights reserved. Designed with precision and passion.</p>
-        </div>
-    </footer>
+  <!-- Footer -->
+  <footer class="bg-gray-800 text-white py-6">
+    <div class="max-w-5xl mx-auto px-4 text-sm flex flex-col md:flex-row justify-between">
+      <p>&copy; 2025 RajyaFunds. All rights reserved.</p>
+      <p id="contact">Disclaimer: Tools are for educational use only, not financial advice.</p>
+    </div>
+  </footer>
 </body>
 </html>
