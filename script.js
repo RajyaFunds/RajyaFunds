@@ -710,7 +710,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 datasets: [{
                     data: [needs, wants, savings],
                     backgroundColor: [
-                        '#0055a5', // brand-primary-medium (for Needs)
+                        '#2A629A', // brand-primary-medium (for Needs)
                         '#FBBF24', // brand-accent-yellow (for Wants)
                         '#10B981'  // brand-accent-green (for Savings)
                     ],
@@ -791,8 +791,8 @@ document.addEventListener('DOMContentLoaded', function() {
                     {
                         label: 'Total Loan Cost (Principal + Interest)',
                         data: [totalOutofPocketCost1, totalOutofPocketCost2],
-                        backgroundColor: '#2B5A8F', // Using --brand-primary-medium from CSS
-                        borderColor: '#2B5A8F',
+                        backgroundColor: '#2A629A', // Using --brand-primary-medium from CSS
+                        borderColor: '#2A629A',
                         borderWidth: 1,
                         stack: 'costs' // Stack costs and benefits
                     },
@@ -908,7 +908,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 'Please find attached your personalized financial plan summary from RajyaFunds. ' +
                 'This summary includes the details of your calculations and scenarios.\n\n' +
                 'Remember, this is for illustrative purposes only and does not constitute financial advice. ' +
-                'For detailed financial planning, please consult a qualified financial advisor.\n\n' +
+                'For detailed financial planning, please consult a qualified advisor.\n\n' +
                 'Thank you for using RajyaFunds!\n\n' +
                 'Best Regards,\n' +
                 'The RajyaFunds Team'
