@@ -1,84 +1,278 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Loan vs SIP Calculator - RajyaFunds</title>
-  <link rel="stylesheet" href="style.css" />
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Buy Planner | RajyaFunds</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js" integrity="sha512-GsLlZN/3F2ErC5ifS9MdeltxS+JfyWtBgIHpMmFNBmy53MlVhfRLjkvNSC0lJw8fbddfcicM9fZbeSVRVD1tKw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <style>
+        /* Custom CSS for smoother transitions and specific overrides if needed */
+        .calculator-step {
+            transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
+            opacity: 1;
+            transform: translateX(0);
+        }
+        .calculator-step.hidden {
+            opacity: 0;
+            transform: translateX(20px); /* Slightly move it off-screen when hidden */
+            position: absolute; /* To prevent layout shift when hidden */
+            width: 100%; /* Ensure it occupies full width when showing */
+            pointer-events: none; /* Disable interaction when hidden */
+        }
+        /* Ensure the header and footer style from index.html is consistent */
+        body {
+            font-family: 'Inter', sans-serif; /* Placeholder for Inter font */
+            line-height: 1.6;
+        }
+    </style>
 </head>
-<body class="bg-gray-50 font-sans text-gray-800">
-  <header class="bg-white shadow py-4 px-6">
-    <a href="index.html" class="text-blue-600 font-semibold">&larr; Back to Home</a>
-    <h1 class="text-2xl font-bold text-center text-blue-700 mt-2">Loan vs SIP Decision Calculator</h1>
-  </header>
+<body class="bg-gray-50 text-gray-800">
 
-  <main class="max-w-3xl mx-auto p-6 bg-white shadow mt-6 rounded-lg">
-    <!-- STEP CONTAINER -->
-    <div id="calculator-steps">
-      <!-- Step 1: User Profile -->
-      <div id="step-1" class="step">
-        <h2 class="text-xl font-semibold mb-4">Step 1: Basic Inputs</h2>
-        <label class="block mb-3">
-          Monthly Income (₹):
-          <input type="number" id="income" class="input-box" placeholder="e.g., 50000" />
-        </label>
-        <label class="block mb-3">
-          Monthly Expenses (₹):
-          <input type="number" id="expenses" class="input-box" placeholder="e.g., 20000" />
-        </label>
-        <button onclick="nextStep(2)" class="btn-primary">Next</button>
-      </div>
-
-      <!-- Step 2: Goal Info -->
-      <div id="step-2" class="step hidden">
-        <h2 class="text-xl font-semibold mb-4">Step 2: Property & Goal Info</h2>
-        <label class="block mb-3">
-          Property Cost (₹):
-          <input type="number" id="propertyCost" class="input-box" placeholder="e.g., 3000000" />
-        </label>
-        <label class="block mb-3">
-          When do you want to buy it? (Years from now):
-          <input type="number" id="goalYears" class="input-box" placeholder="e.g., 5" />
-        </label>
-        <button onclick="prevStep(1)" class="btn-secondary">Back</button>
-        <button onclick="nextStep(3)" class="btn-primary">Next</button>
-      </div>
-
-      <!-- Step 3: Loan vs SIP Settings -->
-      <div id="step-3" class="step hidden">
-        <h2 class="text-xl font-semibold mb-4">Step 3: Loan & Investment Parameters</h2>
-        <label class="block mb-3">
-          Loan Interest Rate (% per annum):
-          <input type="number" id="loanRate" class="input-box" placeholder="e.g., 9" />
-        </label>
-        <label class="block mb-3">
-          SIP Expected Return (% per annum):
-          <input type="number" id="sipReturn" class="input-box" placeholder="e.g., 12" />
-        </label>
-        <button onclick="prevStep(2)" class="btn-secondary">Back</button>
-        <button onclick="nextStep(4)" class="btn-primary">Next</button>
-      </div>
-
-      <!-- Step 4: Results -->
-      <div id="step-4" class="step hidden">
-        <h2 class="text-xl font-semibold mb-4">Step 4: Results</h2>
-        <div id="result-summary" class="bg-green-100 p-4 rounded text-sm text-gray-800 mb-4">
-          <!-- Dynamic results will be injected here -->
+    <header class="bg-blue-900 text-white p-4 shadow-md">
+        <div class="container mx-auto flex justify-between items-center">
+            <div>
+                <h1 class="text-3xl font-bold">
+                    <span class="text-green-400">RajyaFunds</span>
+                </h1>
+                <p class="text-sm">Empowering Your Financial Journey</p>
+            </div>
+            <p class="text-lg font-medium hidden md:block">Your Path to Financial Clarity</p>
         </div>
-        <canvas id="comparisonChart" class="w-full h-64"></canvas>
-        <div class="mt-6">
-          <button onclick="prevStep(3)" class="btn-secondary">Back</button>
-          <button onclick="resetCalculator()" class="btn-primary">Start Again</button>
+    </header>
+
+    <nav class="bg-blue-800 text-white py-3 shadow-md">
+        <ul class="container mx-auto flex justify-around">
+            <li><a href="index.html" class="hover:text-blue-200 transition-colors duration-300">Home</a></li>
+            <li><a href="loan-vs-sip-calculator.html" class="hover:text-blue-200 transition-colors duration-300">Calculators</a></li>
+            <li><a href="#articles" class="hover:text-blue-200 transition-colors duration-300">Articles</a></li>
+            <li><a href="#contact" class="hover:text-blue-200 transition-colors duration-300">Contact</a></li>
+        </ul>
+    </nav>
+
+    <main class="container mx-auto p-6 mt-8 relative"> <section id="smart-buy-planner-section" class="bg-eef2f7 rounded-xl shadow-2xl p-6 md:p-10 mb-12 border border-gray-200">
+            <h3 class="text-3xl font-extrabold text-blue-900 mb-8 text-center">Smart Buy Planner: Loan vs SIP Decision Assistant</h3>
+
+            <div class="flex flex-col sm:flex-row justify-end items-center gap-4 mb-8 p-4 bg-white rounded-lg shadow-inner">
+                <div class="flex items-center space-x-2">
+                    <label for="currencyToggle" class="text-gray-700 font-semibold text-sm">Currency:</label>
+                    <select id="currencyToggle" class="form-select border border-gray-300 rounded-md py-1 px-3 bg-white text-gray-800 shadow-sm focus:ring-blue-500 focus:border-blue-500">
+                        <option value="INR">₹ Rupees</option>
+                        <option value="USD">$ US Dollars</option>
+                    </select>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <label for="unitToggle" class="text-gray-700 font-semibold text-sm">Large Values Unit:</label>
+                    <select id="unitToggle" class="form-select border border-gray-300 rounded-md py-1 px-3 bg-white text-gray-800 shadow-sm focus:ring-blue-500 focus:border-blue-500">
+                        <option value="Lakhs">Lakhs</option>
+                        <option value="Millions">Millions</option>
+                        <option value="Crores">Crores</option>
+                    </select>
+                </div>
+            </div>
+
+            <form id="smartBuyForm" class="bg-white rounded-xl p-6 md:p-8 shadow-inner border border-gray-200">
+                <div id="step-1" class="calculator-step">
+                    <h4 class="text-2xl font-bold text-blue-800 mb-6 border-b pb-3 border-gray-200">Step 1: Choose Your Goal</h4>
+
+                    <div class="mb-6">
+                        <label class="block text-gray-700 text-sm font-semibold mb-3">Primary Objective:</label>
+                        <div class="flex flex-col space-y-3">
+                            <label class="inline-flex items-center cursor-pointer">
+                                <input type="radio" name="primaryObjective" id="homeGoalRadio" value="buyHome" class="form-radio h-5 w-5 text-blue-600 focus:ring-blue-500" checked>
+                                <span class="ml-3 text-lg text-gray-800">I want to buy a home (compare loan vs SIP).</span>
+                            </label>
+                            <label class="inline-flex items-center cursor-pointer">
+                                <input type="radio" name="primaryObjective" id="otherLoanRadio" value="otherLoan" class="form-radio h-5 w-5 text-blue-600 focus:ring-blue-500">
+                                <span class="ml-3 text-lg text-gray-800">I want to take another kind of loan (no SIP comparison).</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div id="homeGoalSpecific" class="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg shadow-sm">
+                        <label class="block text-blue-800 text-sm font-semibold mb-3">Home Buying Plan:</label>
+                        <div class="flex flex-col space-y-3">
+                            <label class="inline-flex items-center cursor-pointer">
+                                <input type="radio" name="homeBuyingPlan" id="buyNowRadio" value="buyNow" class="form-radio h-5 w-5 text-blue-600 focus:ring-blue-500" checked>
+                                <span class="ml-3 text-lg text-gray-800">Considering buying now (loan focused).</span>
+                            </label>
+                            <label class="inline-flex items-center cursor-pointer">
+                                <input type="radio" name="homeBuyingPlan" id="buyLaterRadio" value="buyLater" class="form-radio h-5 w-5 text-blue-600 focus:ring-blue-500">
+                                <span class="ml-3 text-lg text-gray-800">Planning to invest and buy later (SIP focused).</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="mb-6">
+                        <label for="expectedAnnualROI" class="block text-gray-700 text-sm font-semibold mb-2">Expected Annual ROI (%)</label>
+                        <input type="number" id="expectedAnnualROI" name="expectedAnnualROI" class="form-input w-full p-3 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 shadow-sm" placeholder="e.g., 8.5 for Home Loan, 10 for SIP" step="0.1">
+                        <p class="text-sm text-gray-500 mt-2">This is the prevalent industry rate for your selected loan type/investment. You can adjust it based on your offer.</p>
+                    </div>
+
+                    <div class="flex justify-end mt-8">
+                        <button type="button" id="nextBtn1" class="bg-blue-600 text-white py-3 px-8 rounded-full font-semibold hover:bg-blue-700 transition-colors duration-300 shadow-lg">Next</button>
+                    </div>
+                </div>
+
+                <div id="step-2" class="calculator-step hidden">
+                    <h4 class="text-2xl font-bold text-blue-800 mb-6 border-b pb-3 border-gray-200">Step 2: Your Money Snapshot</h4>
+
+                    <div id="homeGoalDetails" class="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg shadow-sm">
+                        <div class="mb-4">
+                            <label for="homeValue" class="block text-blue-800 text-sm font-semibold mb-2">Home Value</label>
+                            <input type="number" id="homeValue" name="homeValue" class="form-input w-full p-3 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 shadow-sm" placeholder="e.g., 50 (in selected unit)">
+                        </div>
+                        <div class="mb-4">
+                            <label for="targetYear" class="block text-blue-800 text-sm font-semibold mb-2">Year by which you want to buy (e.g., 5 years from now)</label>
+                            <input type="number" id="targetYear" name="targetYear" class="form-input w-full p-3 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 shadow-sm" min="1" placeholder="e.g., 5">
+                        </div>
+                        <div>
+                            <label for="homeInflationRate" class="block text-blue-800 text-sm font-semibold mb-2">Custom Home Price Inflation Rate (%)</label>
+                            <input type="number" id="homeInflationRate" name="homeInflationRate" class="form-input w-full p-3 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 shadow-sm" placeholder="e.g., 6.5" step="0.1">
+                            <p class="text-sm text-gray-500 mt-2">Default is 6-7% per year.</p>
+                        </div>
+                    </div>
+
+                    <div class="mb-6">
+                        <label for="currentSavings" class="block text-gray-700 text-sm font-semibold mb-2">Current Savings</label>
+                        <input type="number" id="currentSavings" name="currentSavings" class="form-input w-full p-3 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 shadow-sm" placeholder="e.g., 10 (in selected unit)">
+                    </div>
+
+                    <div class="mb-6">
+                        <label for="monthlyIncome" class="block text-gray-700 text-sm font-semibold mb-2">Monthly Income</label>
+                        <input type="number" id="monthlyIncome" name="monthlyIncome" class="form-input w-full p-3 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 shadow-sm" placeholder="e.g., 70000 (in selected unit)">
+                    </div>
+
+                    <div class="mb-6">
+                        <label for="savingsDownPaymentPreference" class="block text-gray-700 text-sm font-semibold mb-2">Savings Down Payment Preference</label>
+                        <select id="savingsDownPaymentPreference" name="savingsDownPaymentPreference" class="form-select w-full p-3 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 shadow-sm">
+                            <option value="full">Use Full Savings as Down Payment</option>
+                            <option value="percentage">Use a Percentage of Savings</option>
+                            <option value="amount">Use a Specific Amount of Savings</option>
+                        </select>
+                        <input type="number" id="downPaymentValue" name="downPaymentValue" class="form-input w-full p-3 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 shadow-sm mt-3 hidden" placeholder="Enter percentage (e.g., 40) or amount">
+                    </div>
+
+                    <div id="investmentReturnCategoryDiv" class="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg shadow-sm">
+                        <label for="investmentReturnCategory" class="block text-blue-800 text-sm font-semibold mb-2">Expected Investment Return Category (for SIP scenarios)</label>
+                        <select id="investmentReturnCategory" name="investmentReturnCategory" class="form-select w-full p-3 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 shadow-sm">
+                            <option value="largeCap">Large-cap (~10%/yr)</option>
+                            <option value="midCap">Mid-cap (~12%/yr)</option>
+                            <option value="smallCap">Small-cap (~14%/yr)</option>
+                            <option value="balanced">Balanced/Hybrid (~9%/yr)</option>
+                            <option value="conservative">Conservative/Debt (~6-7%/yr)</option>
+                        </select>
+                        <p class="text-sm text-gray-500 mt-2">
+                            <i class="fas fa-info-circle text-blue-500 mr-1"></i> <a href="#" class="text-blue-600 hover:underline" onclick="alert('This feature will show past 10-year CAGR data soon!')">Real Market Reference</a>
+                        </p>
+                    </div>
+
+                    <div class="flex justify-between mt-8">
+                        <button type="button" id="backBtn2" class="bg-gray-300 text-gray-800 py-3 px-8 rounded-full font-semibold hover:bg-gray-400 transition-colors duration-300 shadow-lg">Back</button>
+                        <button type="button" id="nextBtn2" class="bg-blue-600 text-white py-3 px-8 rounded-full font-semibold hover:bg-blue-700 transition-colors duration-300 shadow-lg">Next</button>
+                    </div>
+                </div>
+
+                <div id="step-3" class="calculator-step hidden">
+                    <h4 class="text-2xl font-bold text-blue-800 mb-6 border-b pb-3 border-gray-200">Step 3: Monthly Budget & Preferences</h4>
+
+                    <div id="monthlyBudgetSection" class="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg shadow-sm">
+                        <label class="block text-blue-800 text-sm font-semibold mb-3">Monthly Budget (based on 50/30/20 rule)</label>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div>
+                                <label for="needsBudgetPct" class="block text-gray-700 text-sm font-semibold mb-2">Needs (%)</label>
+                                <input type="number" id="needsBudgetPct" name="needsBudgetPct" class="form-input w-full p-3 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 shadow-sm" value="50" min="0" max="100">
+                                <p id="needsAmount" class="text-sm text-gray-600 mt-1">₹ 0</p>
+                            </div>
+                            <div>
+                                <label for="wantsBudgetPct" class="block text-gray-700 text-sm font-semibold mb-2">Wants (%)</label>
+                                <input type="number" id="wantsBudgetPct" name="wantsBudgetPct" class="form-input w-full p-3 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 shadow-sm" value="30" min="0" max="100">
+                                <p id="wantsAmount" class="text-sm text-gray-600 mt-1">₹ 0</p>
+                            </div>
+                            <div>
+                                <label for="savingsBudgetPct" class="block text-gray-700 text-sm font-semibold mb-2">Savings (%)</label>
+                                <input type="number" id="savingsBudgetPct" name="savingsBudgetPct" class="form-input w-full p-3 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 shadow-sm" value="20" min="0" max="100">
+                                <p id="savingsAmount" class="text-sm text-gray-600 mt-1">₹ 0</p>
+                            </div>
+                        </div>
+                        <p id="budgetSumWarning" class="text-red-600 text-sm mt-3 hidden">Percentages must sum to 100%!</p>
+                    </div>
+
+                    <div id="loanPreferenceSection" class="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg shadow-sm hidden">
+                        <label class="block text-blue-800 text-sm font-semibold mb-3">Loan Preferences:</label>
+                        <div class="mb-4">
+                            <label for="desiredMonthlyEMI" class="block text-gray-700 text-sm font-semibold mb-2">Desired Monthly EMI</label>
+                            <input type="number" id="desiredMonthlyEMI" name="desiredMonthlyEMI" class="form-input w-full p-3 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 shadow-sm" placeholder="e.g., 25000">
+                        </div>
+                        <div>
+                            <label for="customLoanTenure" class="block text-gray-700 text-sm font-semibold mb-2">Custom Loan Tenure (Years)</label>
+                            <input type="number" id="customLoanTenure" name="customLoanTenure" class="form-input w-full p-3 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 shadow-sm" placeholder="e.g., 15" min="1">
+                            <p class="text-sm text-gray-500 mt-2">Enter either EMI or Tenure. If both, EMI will take precedence.</p>
+                        </div>
+                    </div>
+
+                    <div class="flex justify-between mt-8">
+                        <button type="button" id="backBtn3" class="bg-gray-300 text-gray-800 py-3 px-8 rounded-full font-semibold hover:bg-gray-400 transition-colors duration-300 shadow-lg">Back</button>
+                        <button type="button" id="nextBtn3" class="bg-green-600 text-white py-3 px-8 rounded-full font-semibold hover:bg-green-700 transition-colors duration-300 shadow-lg">Calculate Results</button>
+                    </div>
+                </div>
+
+                <div id="step-4" class="calculator-step hidden">
+                    <h4 class="text-2xl font-bold text-blue-800 mb-6 border-b pb-3 border-gray-200">Step 4: Your Personalized Financial Strategy</h4>
+
+                    <div class="text-center p-8 bg-blue-50 rounded-lg shadow-md mb-8">
+                        <p class="text-xl text-blue-800 font-semibold">Calculations will appear here!</p>
+                        <p class="text-gray-600 mt-2">Once you fill out the previous steps and click 'Calculate Results', your personalized financial plan will be displayed here.</p>
+                    </div>
+
+                    <div id="comparisonCharts" class="mb-8 hidden">
+                        <div class="flex justify-center space-x-4 mb-6">
+                            <button type="button" class="tab-button bg-blue-600 text-white py-2 px-6 rounded-full font-semibold">Loan Now</button>
+                            <button type="button" class="tab-button bg-gray-200 text-gray-800 py-2 px-6 rounded-full font-semibold">Invest Now, Buy Later</button>
+                            <button type="button" class="tab-button bg-gray-200 text-gray-800 py-2 px-6 rounded-full font-semibold">Summary & Recommendation</button>
+                        </div>
+                        <div id="chartContainer" class="bg-white p-6 rounded-lg shadow-md">
+                            <canvas id="budgetChart" class="mb-6"></canvas>
+                            <canvas id="loanComparisonChart"></canvas>
+                        </div>
+                    </div>
+
+                    <div id="recommendationOutput" class="bg-green-50 border border-green-200 text-green-800 p-6 rounded-lg shadow-md mb-8 hidden">
+                        <h5 class="text-xl font-bold mb-3">Our Recommendation:</h5>
+                        <p id="finalRecommendation" class="text-lg"></p>
+                        <h5 class="text-xl font-bold mt-4 mb-2">Intelligent Suggestions:</h5>
+                        <ul id="intelligentSuggestions" class="list-disc pl-5">
+                            </ul>
+                    </div>
+
+                    <div id="smartPlanOutput" class="bg-blue-50 border border-blue-200 p-6 rounded-lg shadow-md mb-8 hidden">
+                        <h5 class="text-xl font-bold mb-3 text-blue-800">Your Smart Plan:</h5>
+                        <div id="consolidatedPlanDetails" class="text-gray-700">
+                            </div>
+                    </div>
+
+                    <div class="text-center mt-8">
+                        <button type="button" id="generatePdfBtn" class="bg-red-600 text-white py-3 px-8 rounded-full font-semibold hover:bg-red-700 transition-colors duration-300 shadow-lg">Generate PDF Summary</button>
+                    </div>
+
+                    <div class="flex justify-start mt-8">
+                        <button type="button" id="backBtn4" class="bg-gray-300 text-gray-800 py-3 px-8 rounded-full font-semibold hover:bg-gray-400 transition-colors duration-300 shadow-lg">Back</button>
+                    </div>
+                </div>
+            </form>
+        </section>
+
+    </main>
+
+    <footer class="bg-blue-900 text-white py-6 mt-12">
+        <div class="container mx-auto text-center text-sm">
+            &copy; 2025 RajyaFunds. All rights reserved. Your Path to Financial Clarity.
         </div>
-      </div>
-    </div>
-  </main>
+    </footer>
 
-  <footer class="text-center text-sm text-gray-500 py-4">
-    &copy; 2025 RajyaFunds. Results are educational, not financial advice.
-  </footer>
+    <script src="script.js"></script>
 
-  <script src="calculator-main.js"></script>
 </body>
 </html>
