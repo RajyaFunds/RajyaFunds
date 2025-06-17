@@ -25,8 +25,11 @@
 <body>
     <header class="main-header">
         <div class="container header-content">
-            <h1 class="site-title">RajyaFunds</h1>
-            <p class="tagline">Empowering Your Financial Journey</p>
+            <div class="site-title-group">
+                <h1 class="site-title">RajyaFunds</h1>
+                <p class="tagline-header">Empowering Your Financial Journey</p>
+            </div>
+            <p class="header-phrase">Your Path to Financial Clarity</p>
         </div>
     </header>
 
@@ -64,7 +67,7 @@
                     <div class="form-group">
                         <label class="form-label">Select your primary objective:</label>
                         <div class="radio-group">
-                            <label><input type="radio" name="goalType" value="buy_home" checked> I'm planning to buy a home (and might need a Home Loan)</label>
+                            <label><input type="radio" name="goalType" value="buy_home" checked> I'm planning to buy a home (Home Loan focused)</label>
                             <label><input type="radio" name="goalType" value="take_loan"> I need another type of loan</label>
                         </div>
                     </div>
@@ -72,11 +75,13 @@
                     <div id="loanTypeSection" class="form-group hidden mt-4">
                         <h3 class="subsection-title">What type of loan are you seeking?</h3>
                         <div class="radio-group">
+                            <!-- Home Loan is also a loan type, distinct from the 'goal' of buying a home -->
                             <label><input type="radio" name="loanType" value="home_loan" checked> Home Loan</label>
                             <label><input type="radio" name="loanType" value="personal_loan"> Personal Loan</label>
                             <label><input type="radio" name="loanType" value="business_loan"> Business Loan</label>
                             <label><input type="radio" name="loanType" value="education_loan"> Education Loan</label>
                             <label><input type="radio" name="loanType" value="vehicle_loan"> Vehicle Loan</label>
+                            <!-- Add more loan types as needed -->
                         </div>
                         <div class="input-group mt-4">
                             <label for="roi" class="form-label">Expected Annual ROI (%):</label>
@@ -217,13 +222,13 @@
                             <h4 class="font-semibold mb-2">Scenario 1: Max Down Payment</h4>
                             <p>Using <span class="highlight-value" id="scenario1DownPayment"></span> (all current savings) as down payment results in a loan of <span class="highlight-value" id="scenario1LoanAmount"></span>.</p>
                             <p>Your EMI will be <span class="highlight-value" id="scenario1Emi"></span> for <span class="highlight-value" id="scenario1Tenure"></span>.</p>
-                            <p class="text-sm">Total interest paid: <span class="highlight-value" id="scenario1TotalInterest"></span>. Total cost of property: <span class="highlight-value" id="scenario1TotalCost"></span>.</p>
+                            <p class="text-sm">Total interest paid: <span class="highlight-value" id="scenario1TotalInterest"></span>. Total Out-of-Pocket Cost: <span class="highlight-value" id="scenario1TotalCost"></span>.</p>
                         </div>
                          <div class="result-box mt-4">
                             <h4 class="font-semibold mb-2">Scenario 2: Optimized Down Payment & SIP</h4>
                             <p>Using <span class="highlight-value" id="scenario2DownPayment"></span> as down payment for a loan of <span class="highlight-value" id="scenario2LoanAmount"></span>.</p>
                             <p>Your EMI will be <span class="highlight-value" id="scenario2Emi"></span> for <span class="highlight-value" id="scenario2Tenure"></span>.</p>
-                            <p class="text-sm">Total interest paid: <span class="highlight-value" id="scenario2TotalInterest"></span>. Total cost of property: <span class="highlight-value" id="scenario2TotalCost"></span>.</p>
+                            <p class="text-sm">Total interest paid: <span class="highlight-value" id="scenario2TotalInterest"></span>. Total Out-of-Pocket Cost: <span class="highlight-value" id="scenario2TotalCost"></span>.</p>
                             <p class="mt-2 font-bold text-lg">By investing the remaining <span class="highlight-value" id="scenario2InvestedAmount"></span> in SIP/lumpsum, you could potentially gain <span class="highlight-value" id="scenario2InvestmentReturn"></span> (at <span class="highlight-value" id="scenario2SipRoi"></span>% annual ROI).</p>
                         </div>
                         <div class="chart-container">
@@ -239,7 +244,7 @@
                         <h3 class="subsection-title text-center">Share Your Results</h3>
                         <p class="text-center text-secondary-gray mb-4">Generate a personalized summary of your financial plan to save or share.</p>
                         <button class="btn btn-primary share-btn" onclick="generatePdfAndSuggestEmail()">
-                            Generate Summary &nbsp;<i class="fas fa-file-pdf"></i>
+                            Generate Summary <i class="fas fa-file-pdf ml-2"></i>
                         </button>
                     </div>
 
@@ -254,11 +259,21 @@
         </section>
     </main>
 
+    <!-- Disclaimer Section (Repeated for calculator page context) -->
+    <section class="disclaimer-section">
+        <div class="container">
+            <p>
+                <i class="fas fa-info-circle mr-2"></i>
+                **Disclaimer:** Financial calculations provided on this website are based on market averages, industry prevalent rates, and various assumptions. They are for illustrative and educational purposes only and do not constitute financial, investment, or legal advice. Investment in securities market is subject to market risks. Users are advised to consult a qualified financial advisor before making any investment decisions.
+            </p>
+        </div>
+    </section>
+
     <footer class="main-footer">
         <div class="container footer-grid">
             <div class="footer-column">
                 <h4>RajyaFunds</h4>
-                <p class="tagline">Empowering Your Financial Journey</p>
+                <p class="tagline-header">Empowering Your Financial Journey</p>
                 <div class="social-links">
                     <a href="#" class="social-icon"><i class="fab fa-facebook-f"></i></a>
                     <a href="#" class="social-icon"><i class="fab fa-twitter"></i></a>
