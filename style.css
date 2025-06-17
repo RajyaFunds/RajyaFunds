@@ -1,27 +1,27 @@
 /* --- Global Variables for consistent branding --- */
 :root {
-    /* Brand Primary Colors - Lighter & More Inviting */
-    --brand-primary-dark: #2C5F9B; /* A pleasant, professional dark blue */
-    --brand-primary-medium: #4A83C0; /* A distinct medium blue */
-    --brand-primary-light: #7CB0E6; /* For lighter accents, hover states */
+    /* Brand Primary Colors - Professional & Clean (Inspired by Zerodha's clarity) */
+    --brand-primary-dark: #1A233A; /* A very dark, rich blue-gray, almost charcoal - for main headings, footers, deep elements */
+    --brand-primary-medium: #2A629A; /* A professional, mid-tone blue - for navigation, secondary buttons */
+    --brand-primary-light: #63A6E9; /* A brighter, clear blue - for links, active states, highlights */
 
     /* Brand Accent Colors - Vibrant & Engaging */
     --brand-accent-green: #10B981; /* Vibrant green for primary actions, success, highlights */
-    --brand-accent-yellow: #FBBF24; /* Secondary accent for highlights, warnings */
+    --brand-accent-yellow: #FBBF24; /* Warm yellow for complementary highlights, warnings */
 
     /* Neutral Colors - Clean & Readable */
-    --text-dark: #222222; /* Strong black-like for primary text */
-    --text-medium: #666666; /* Softer gray for descriptions */
+    --text-dark: #222222; /* Strong almost-black for primary text */
+    --text-medium: #555555; /* Softer gray for descriptions, subtext */
     --text-light: #F0F0F0; /* Light text on dark backgrounds */
     --white: #ffffff; /* Pure white */
 
     /* Backgrounds - Fresh & Clean */
     --bg-page: #F8F8F8; /* Soft off-white for overall page background */
     --bg-card: #FFFFFF; /* Pure white for cards, sections, calculator body */
-    --bg-light-gray: #F3F4F6; /* Subtle light gray for dividers, muted backgrounds */
+    --bg-light-gray: #F3F4F6; /* Subtle light gray for alternating sections, muted backgrounds */
 
     /* Borders & Shadows - Subtle & Premium */
-    --border-color: #D1D5DB; /* Light borders for structure */
+    --border-color: #D1D5DB; /* Standard light gray for borders */
     --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.04);
     --shadow-md: 0 5px 15px rgba(0, 0, 0, 0.08);
     --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.12);
@@ -30,8 +30,8 @@
     --shadow-button-primary-hover: 0 6px 18px rgba(16, 185, 129, 0.35);
 
     /* Functional Colors */
-    --color-success: #047857; /* Darker green for success states */
-    --color-warning: #DC2626; /* Red for errors/warnings */
+    --color-success: #047857; /* Darker green for strong success indicators */
+    --color-warning: #DC2626; /* Alert red for errors and warnings */
 
     /* Border Radius */
     --radius-sm: 0.5rem;
@@ -41,7 +41,7 @@
 
 /* --- Base Body and Layout --- */
 html {
-    scroll-behavior: smooth;
+    scroll-behavior: smooth; /* Smooth scrolling for anchor links */
 }
 
 body {
@@ -53,8 +53,8 @@ body {
     padding: 0;
     display: flex;
     flex-direction: column;
-    min-height: 100vh;
-    -webkit-font-smoothing: antialiased;
+    min-height: 100vh; /* Ensures footer sticks to the bottom */
+    -webkit-font-smoothing: antialiased; /* Smoother fonts */
     -moz-osx-font-smoothing: grayscale;
 }
 
@@ -86,7 +86,7 @@ a:hover {
 .container {
     max-width: 1200px;
     margin: 0 auto;
-    padding: 0 1.5rem;
+    padding: 0 1.5rem; /* Increased horizontal padding for spacious feel */
 }
 @media (max-width: 767px) {
     .container {
@@ -95,7 +95,7 @@ a:hover {
 }
 
 .section-padding {
-    padding: 5rem 0;
+    padding: 5rem 0; /* Generous vertical padding for sections */
 }
 @media (max-width: 767px) {
     .section-padding {
@@ -105,7 +105,7 @@ a:hover {
 
 /* --- Header & Navigation --- */
 .main-header {
-    background-color: var(--brand-primary-dark); /* Using the professional dark blue */
+    background-color: var(--brand-primary-dark); /* Using the new, less harsh dark blue */
     color: var(--text-light);
     padding: 1.2rem 0;
     box-shadow: var(--shadow-md);
@@ -118,13 +118,13 @@ a:hover {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    flex-wrap: wrap;
+    flex-wrap: wrap; /* Allows content to wrap on small screens */
 }
 
 .site-title-group {
     display: flex;
-    flex-direction: column;
-    align-items: flex-start;
+    flex-direction: column; /* Stacks title and tagline */
+    align-items: flex-start; /* Aligns content to the left */
 }
 
 .site-title {
@@ -136,10 +136,10 @@ a:hover {
 
 .tagline-header {
     font-size: 1rem;
-    opacity: 0.8;
+    opacity: 0.9; /* Slightly more opaque for better visibility */
     margin: 0;
-    color: var(--text-light);
-    font-weight: 300;
+    color: var(--text-light); /* Ensures tagline is visible */
+    font-weight: 400; /* Slightly heavier font for readability */
 }
 
 .header-phrase {
@@ -147,11 +147,11 @@ a:hover {
     color: var(--white);
     font-weight: 500;
     text-align: right;
-    margin-left: auto;
+    margin-left: auto; /* Pushes phrase to the right */
 }
 @media (max-width: 767px) {
     .header-phrase {
-        display: none;
+        display: none; /* Hide on small screens for cleaner header */
     }
     .site-title-group {
         width: 100%;
@@ -169,7 +169,7 @@ a:hover {
 .nav-links {
     display: flex;
     justify-content: center;
-    gap: 1.5rem;
+    gap: 1.5rem; /* More space between links */
     flex-wrap: wrap;
 }
 
@@ -183,7 +183,7 @@ a:hover {
 }
 
 .nav-item:hover {
-    background-color: rgba(255, 255, 255, 0.15);
+    background-color: rgba(255, 255, 255, 0.15); /* Slightly more prominent hover */
     color: var(--white);
 }
 
@@ -211,7 +211,7 @@ a:hover {
 }
 
 .section-heading {
-    font-size: 2.8rem;
+    font-size: 2.8rem; /* Slightly larger heading for impact */
     text-align: center;
     margin-bottom: 1.5rem;
     color: var(--brand-primary-dark);
@@ -253,7 +253,7 @@ a:hover {
 }
 
 .btn-secondary {
-    background-color: var(--brand-primary-medium);
+    background-color: var(--brand-primary-medium); /* More branded secondary button */
     color: var(--white);
     box-shadow: var(--shadow-sm);
 }
@@ -610,7 +610,7 @@ a:hover {
     background-color: var(--bg-card);
     border-radius: var(--radius-lg);
     box-shadow: var(--shadow-lg);
-    overflow: hidden; /* Important for containing children when using position absolute */
+    overflow: hidden; /* Important for containing children and managing scroll on its own */
     max-width: 980px;
     width: 100%;
     margin: 2rem auto;
@@ -618,7 +618,7 @@ a:hover {
     display: flex; /* Flex container for sidebar and content */
     flex-direction: column;
     border: 1px solid var(--border-color);
-    position: relative; /* Context for absolute positioning of step-sections */
+    position: relative; /* Context for fixed navigation buttons */
 }
 
 @media (min-width: 768px) {
@@ -711,26 +711,21 @@ a:hover {
 /* Right Section: Main Calculator Content */
 .calculator-content {
     width: 100%;
-    /* Revert to padding for content, not absolute positioning */
-    padding: 3rem;
-    flex-grow: 1; /* Allow content to grow */
-    display: flex; /* Use flex to manage internal flow, especially for navigation buttons */
+    padding: 3rem; /* Standard padding for content */
+    padding-bottom: 100px; /* Space for fixed navigation buttons at the bottom */
+    flex-grow: 1; /* Allows it to take remaining space in flex container */
+    display: flex; /* Use flexbox to organize content vertically */
     flex-direction: column;
-    position: relative; /* Context for absolutely positioned navigation buttons */
-    padding-bottom: 100px; /* Space for fixed buttons */
-    overflow-y: auto; /* Enable scrolling for the entire right panel */
-    -webkit-overflow-scrolling: touch;
-    max-height: calc(100vh - 200px); /* Adjust max-height for scrolling if calculator-container has fixed height on desktop */
-    /* This max-height helps ensure the scrollbar appears within the content area if it grows large */
+    overflow-y: auto; /* Enable vertical scrolling if content overflows */
+    -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
+    position: relative; /* Needed for positioning .navigation-buttons absolutely within it */
 }
 
 @media (min-width: 768px) {
     .calculator-content {
-        width: calc(100% - 350px);
-        padding: 3.5rem;
+        width: calc(100% - 350px); /* Fill remaining width after sidebar */
+        padding: 3.5rem; /* Larger padding on desktop */
         padding-bottom: 100px;
-        /* For desktop, you might want to remove max-height if the container itself stretches */
-        max-height: none; /* Remove max-height on desktop if overall container size is dynamic */
     }
 }
 
@@ -752,19 +747,17 @@ a:hover {
     margin-bottom: 1.5rem;
 }
 
-/* Step Sections (Each step's content) - Simpler display logic for step transitions */
+/* Step Sections (Each step's content) */
 .step-section {
     display: none; /* Hidden by default */
-    flex-direction: column; /* Use flex for internal content flow within the step */
-    flex-grow: 1; /* Allow the content within step-section to push buttons to bottom */
-    /* Remove absolute positioning, height, width, padding from here */
-    /* Padding is now handled by .calculator-content */
-    /* The transition is handled by JavaScript directly changing display */
+    flex-direction: column; /* Organize content within step */
+    flex-grow: 1; /* Allow content to push elements towards bottom (e.g., buttons if not absolute) */
+    /* Remove all absolute positioning and related properties */
+    /* Padding is inherited from .calculator-content */
 }
 
 .step-section.active {
-    display: flex; /* Show active step as flex column */
-    /* No opacity transition needed here if display is changed directly */
+    display: flex; /* Show the active step */
 }
 
 
@@ -801,7 +794,7 @@ a:hover {
 .form-input:focus {
     outline: none;
     border-color: var(--brand-primary-light);
-    box-shadow: 0 0 0 4px rgba(91, 140, 207, 0.2);
+    box-shadow: 0 0 0 4px rgba(99, 166, 233, 0.2); /* Adjusted focus ring color with new brand light blue */
     background-color: var(--white);
 }
 
@@ -834,7 +827,7 @@ a:hover {
 }
 
 .radio-group label:has(input:checked) {
-    background-color: #E0F2F1;
+    background-color: #E0F2F1; /* Light green checked background */
     border-color: var(--brand-accent-green);
     font-weight: 600;
     color: var(--color-success);
@@ -879,11 +872,11 @@ a:hover {
     justify-content: space-between;
     gap: 1.5rem;
     flex-wrap: wrap;
-    position: absolute;
+    position: absolute; /* Position relative to .calculator-content */
     bottom: 0;
     left: 0;
     right: 0;
-    padding: 1.5rem 3rem; /* Original padding */
+    padding: 1.5rem 3rem; /* Padding matches .calculator-content */
     background-color: var(--bg-card);
     box-shadow: 0 -5px 15px rgba(0,0,0,0.05);
     border-top: 1px solid var(--border-color);
@@ -911,7 +904,7 @@ a:hover {
 
 /* Result Box Styling */
 .result-box {
-    background-color: #e6f7f5;
+    background-color: #e6f7f5; /* Light green background for result boxes */
     padding: 2rem;
     border-radius: var(--radius-md);
     margin-bottom: 1.5rem;
@@ -1141,6 +1134,7 @@ a:hover {
         background-color: #fff !important;
     }
     .calculator-content {
+        /* Ensure content prints correctly without being cut off */
         padding: 0 !important;
         margin: 0 !important;
         box-shadow: none !important;
@@ -1156,13 +1150,13 @@ a:hover {
         min-height: auto !important;
     }
     .step-section.active {
-        display: block !important;
-        position: static !important;
+        display: flex !important; /* Keep flex for internal layout */
+        position: static !important; /* Remove absolute positioning for print */
         opacity: 1 !important;
-        height: auto !important;
-        overflow-y: visible !important;
+        height: auto !important; /* Allow content to dictate height */
+        overflow-y: visible !important; /* Ensure all content is printed */
         z-index: auto !important;
-        padding: 0 !important;
+        padding: 0 !important; /* Remove padding for print */
         background-color: transparent !important;
     }
     .chart-container {
