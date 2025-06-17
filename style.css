@@ -711,21 +711,26 @@ a:hover {
 /* Right Section: Main Calculator Content */
 .calculator-content {
     width: 100%;
-    /* FIX: Changed from display:block back to flex. Height/Overflow strategy below */
-    display: flex;
+    /* Revert to padding for content, not absolute positioning */
+    padding: 3rem;
+    flex-grow: 1; /* Allow content to grow */
+    display: flex; /* Use flex to manage internal flow, especially for navigation buttons */
     flex-direction: column;
-    position: relative; /* For absolutely positioned children */
-    padding: 3rem; /* Standard padding for content */
+    position: relative; /* Context for absolutely positioned navigation buttons */
     padding-bottom: 100px; /* Space for fixed buttons */
-    overflow: hidden; /* Hide overflow of step sections */
-    flex-grow: 1; /* Allow content to grow in flex container */
+    overflow-y: auto; /* Enable scrolling for the entire right panel */
+    -webkit-overflow-scrolling: touch;
+    max-height: calc(100vh - 200px); /* Adjust max-height for scrolling if calculator-container has fixed height on desktop */
+    /* This max-height helps ensure the scrollbar appears within the content area if it grows large */
 }
 
 @media (min-width: 768px) {
     .calculator-content {
-        width: calc(100% - 350px); /* Adjust width for fixed sidebar */
-        padding: 3.5rem; /* Larger padding on desktop */
+        width: calc(100% - 350px);
+        padding: 3.5rem;
         padding-bottom: 100px;
+        /* For desktop, you might want to remove max-height if the container itself stretches */
+        max-height: none; /* Remove max-height on desktop if overall container size is dynamic */
     }
 }
 
@@ -747,33 +752,19 @@ a:hover {
     margin-bottom: 1.5rem;
 }
 
-/* Step Sections (Each step's content) - Position absolute to stack and allow scrolling within */
+/* Step Sections (Each step's content) - Simpler display logic for step transitions */
 .step-section {
-    position: absolute; /* Position steps absolutely within .calculator-content */
-    top: 0; /* Align to top of parent */
-    left: 0;
-    width: 100%;
-    height: 100%; /* Take full height of parent */
-    padding: 3rem; /* Re-apply padding removed by absolute positioning */
-    padding-bottom: 100px; /* Match parent's padding-bottom for buttons */
-    background-color: var(--bg-card); /* Ensure background is solid */
-    overflow-y: auto; /* Enable scrolling within each step section */
-    -webkit-overflow-scrolling: touch;
-    display: none; /* Hidden by default, controlled by JS */
-    opacity: 0; /* For smooth transitions */
-    transition: opacity 0.3s ease-in-out;
-}
-@media (min-width: 768px) {
-    .step-section {
-        padding: 3.5rem; /* Match desktop padding */
-        padding-bottom: 100px;
-    }
+    display: none; /* Hidden by default */
+    flex-direction: column; /* Use flex for internal content flow within the step */
+    flex-grow: 1; /* Allow the content within step-section to push buttons to bottom */
+    /* Remove absolute positioning, height, width, padding from here */
+    /* Padding is now handled by .calculator-content */
+    /* The transition is handled by JavaScript directly changing display */
 }
 
 .step-section.active {
-    display: block; /* Make it block to take up space and allow content flow */
-    opacity: 1; /* Fade in */
-    z-index: 10; /* Bring active step to front */
+    display: flex; /* Show active step as flex column */
+    /* No opacity transition needed here if display is changed directly */
 }
 
 
@@ -892,7 +883,7 @@ a:hover {
     bottom: 0;
     left: 0;
     right: 0;
-    padding: 1.5rem 3rem;
+    padding: 1.5rem 3rem; /* Original padding */
     background-color: var(--bg-card);
     box-shadow: 0 -5px 15px rgba(0,0,0,0.05);
     border-top: 1px solid var(--border-color);
@@ -900,11 +891,16 @@ a:hover {
     border-bottom-right-radius: var(--radius-lg);
     z-index: 50;
 }
+/* Adjust padding for navigation buttons on mobile to match calculator-content */
+@media (max-width: 767px) {
+    .navigation-buttons {
+        padding-left: 1.5rem;
+        padding-right: 1.5rem;
+    }
+}
 @media (max-width: 480px) {
     .navigation-buttons {
         flex-direction: column;
-        padding-left: 1.5rem;
-        padding-right: 1.5rem;
         gap: 1rem;
     }
     .btn {
@@ -1160,14 +1156,13 @@ a:hover {
         min-height: auto !important;
     }
     .step-section.active {
-        /* Ensure the active section's content is fully visible for printing */
         display: block !important;
-        position: static !important; /* Remove absolute positioning for print */
+        position: static !important;
         opacity: 1 !important;
-        height: auto !important; /* Allow content to dictate height */
-        overflow-y: visible !important; /* Ensure all content is printed */
+        height: auto !important;
+        overflow-y: visible !important;
         z-index: auto !important;
-        padding: 0 !important; /* Remove padding for print */
+        padding: 0 !important;
         background-color: transparent !important;
     }
     .chart-container {
