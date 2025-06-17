@@ -459,7 +459,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
         if (paramsApplied) {
             console.log("URL parameters applied. Data might have been updated from URL.");
-            // No need to call updateValuesForDisplay() here, initializeFormInputs() handles it.
             updateVisibilityBasedOnInputs(); // Ensure conditional UI based on URL params is applied
         }
     }
@@ -477,8 +476,6 @@ document.addEventListener('DOMContentLoaded', function() {
         params.set('loanType', formData.loanType);
         params.set('roi', formData.roi.toString());
 
-        // For URL parameters, we'll store the values as they appear in the input fields
-        // (which are the raw numbers, before internal base unit conversion for calculations).
         params.set('homeValue', targetAmountInput.value || '');
         params.set('targetYear', targetYearInput.value || '');
         params.set('inflation', inflationRateInput.value || '');
@@ -488,13 +485,13 @@ document.addEventListener('DOMContentLoaded', function() {
         params.set('useAllSavings', formData.useAllSavings);
         params.set('specificSavingsAmount', specificSavingsAmountInput.value || '');
         params.set('savingsInputType', formData.savingsInputType);
-        params.set('investmentCategory', formData.investmentCategory); // Store key, not value
+        params.set('investmentCategory', formData.investmentCategory);
 
         params.set('budgetNeeds', budgetNeedsInput.value || '');
         params.set('budgetWants', budgetWantsInput.value || '');
         params.set('budgetSavings', budgetSavingsInput.value || '');
         params.set('desiredEmi', desiredEmiInput.value || '');
-        if (fixedLoanTenureInput.value) { // Only add if it has a value
+        if (fixedLoanTenureInput.value) {
             params.set('fixedLoanTenure', fixedLoanTenureInput.value);
         }
         return params.toString();
@@ -515,7 +512,7 @@ document.addEventListener('DOMContentLoaded', function() {
     function calculateTenure(principal, annualRate, monthlyEMI) {
         if (principal <= 0 || annualRate <= 0 || monthlyEMI <= 0) return 0;
         const monthlyRate = (annualRate / 12) / 100;
-        if (monthlyEMI <= principal * monthlyRate) { return 360; } // Max tenure
+        if (monthlyEMI <= principal * monthlyRate) { return 360; }
         const numerator = Math.log(monthlyEMI / (monthlyEMI - principal * monthlyRate));
         const denominator = Math.log(1 + monthlyRate);
         const tenure = numerator / denominator;
@@ -582,7 +579,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function displayInvestLaterResults(results) {
-        resTargetAmount.textContent = formatToDisplayUnit(results.accumulateAmount, 'amount'); // Displays inflation-adjusted target
+        resTargetAmount.textContent = formatToDisplayUnit(results.accumulateAmount, 'amount');
         resYearsToBuy.textContent = results.yearsToBuy;
         resTargetYear.textContent = results.targetYear;
         resInflationRate.textContent = results.inflationRateDisplay;
@@ -619,7 +616,7 @@ document.addEventListener('DOMContentLoaded', function() {
             conclusionClass = 'text-primary';
         } else if (investLaterNetCost < loanNowNetCost) {
             const savings = loanNowNetCost - investLaterNetCost;
-            conclusionText = `Based on these calculations, **investing now and buying later** is projected to save you approximately ${formatToDisplayUnit(savings, 'amount')} in overall costs. This option might be better if you prioritize long-term wealth growth.`;
+            conclusionText = `Based on these calculations, **investing now and buying later** is projected to save you approximately ${formatToDisplayUnit(savings, 'amount')}. This option might be better if you prioritize long-term wealth growth.`;
             conclusionClass = 'text-success';
         } else {
             conclusionText = `Both scenarios yield a similar financial outcome. Consider other factors like liquidity, risk appetite, and market conditions. The total financial impact is approximately ${formatToDisplayUnit(loanNowNetCost, 'amount')}.`;
@@ -639,7 +636,6 @@ document.addEventListener('DOMContentLoaded', function() {
         const savings = parseFloat(budgetSavingsInput.value) || 0;
         const ctx = document.getElementById('budgetChart');
         if (!ctx) return;
-        budgetChartInstance = new Chart(ctx, { /* ... chart configuration ... */ });
         budgetChartInstance = new Chart(ctx, {
             type: 'pie',
             data: {
@@ -881,16 +877,21 @@ document.addEventListener('DOMContentLoaded', function() {
         updateCurrencyAndUnitDisplay(); // Update symbols and labels immediately
 
         // Step 1
-        document.querySelector(`input[name="goalType"][value="${formData.goalType}"]`).checked = true;
-        document.querySelector(`input[name="buyTiming"][value="${formData.buyTiming}"]`).checked = true;
-        document.querySelector(`input[name="loanType"][value="${formData.loanType}"]`).checked = true;
+        const goalRadio = document.querySelector(`input[name="goalType"][value="${formData.goalType}"]`);
+        if(goalRadio) goalRadio.checked = true;
+        const timingRadio = document.querySelector(`input[name="buyTiming"][value="${formData.buyTiming}"]`);
+        if(timingRadio) timingRadio.checked = true;
+        const loanTypeRadio = document.querySelector(`input[name="loanType"][value="${formData.loanType}"]`);
+        if(loanTypeRadio) loanTypeRadio.checked = true;
         roiInput.value = formData.roi;
 
         // Step 2
         targetYearInput.value = formData.homeLoanTargetYear;
         inflationRateInput.value = formData.inflationRate;
-        document.querySelector(`input[name="useAllSavings"][value="${formData.useAllSavings}"]`).checked = true;
-        document.querySelector(`input[name="savingsInputType"][value="${formData.savingsInputType}"]`).checked = true;
+        const useSavingsRadio = document.querySelector(`input[name="useAllSavings"][value="${formData.useAllSavings}"]`);
+        if(useSavingsRadio) useSavingsRadio.checked = true;
+        const savingsTypeRadio = document.querySelector(`input[name="savingsInputType"][value="${formData.savingsInputType}"]`);
+        if(savingsTypeRadio) savingsTypeRadio.checked = true;
         
         // Set investment category dropdown.
         const investmentOption = investmentCategorySelect.querySelector(`option[value="${formData.investmentRoi}"]`);
