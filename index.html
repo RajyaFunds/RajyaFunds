@@ -443,6 +443,451 @@
             <div class="text-center">
                 <h3 class="text-2xl font-bold text-green-400 mb-2">RajyaFunds</h3>
                 <p class="text-gray-400 mb-4">Empowering Your Financial Journey</p>
+                <p class="text-gray-500 text-sm">&copy; 2025 RajyaFunds. All<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RajyaFunds - Empowering Your Financial Journey</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <style>
+        :root {
+            --primary-blue: #1e3a8a;
+            --secondary-blue: #3b82f6;
+            --cta-green: #10b981;
+            --light-bg: #f9fafb;
+            --card-bg: #ffffff;
+            --text-primary: #111827;
+            --accent-blue: #38bdf8;
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            line-height: 1.6;
+        }
+        
+        .glassmorphism {
+            background: rgba(255, 255, 255, 0.25);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+        }
+        
+        .calculator-step {
+            display: none;
+        }
+        
+        .calculator-step.active {
+            display: block;
+        }
+        
+        .premium-card {
+            background: linear-gradient(135deg, #f4f8ff 0%, #e6f0ff 100%);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+        
+        .custom-modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+        
+        .modal-content {
+            background-color: white;
+            margin: 15% auto;
+            padding: 30px;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+        }
+        
+        .coming-soon-card {
+            opacity: 0.6;
+            position: relative;
+        }
+        
+        .coming-soon-overlay {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(16, 185, 129, 0.9);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Header -->
+    <header class="bg-gradient-to-r from-blue-900 to-blue-800 text-white shadow-lg">
+        <div class="container mx-auto px-4 py-4">
+            <div class="flex justify-between items-center">
+                <div>
+                    <h1 class="text-3xl font-bold text-green-400">RajyaFunds</h1>
+                    <p class="text-blue-200 text-sm">Empowering Your Financial Journey</p>
+                </div>
+                <div class="hidden md:block">
+                    <p class="text-xl font-semibold text-blue-100">Your Path to Financial Clarity</p>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Navigation -->
+    <nav class="bg-white shadow-md sticky top-0 z-50">
+        <div class="container mx-auto px-4">
+            <div class="flex space-x-8">
+                <a href="#home" class="nav-link py-4 px-2 text-blue-900 border-b-2 border-green-400 font-semibold">Home</a>
+                <a href="#calculators" class="nav-link py-4 px-2 text-gray-600 hover:text-blue-900 transition-all duration-200">Calculators</a>
+                <a href="#articles" class="nav-link py-4 px-2 text-gray-600 hover:text-blue-900 transition-all duration-200">Articles</a>
+                <a href="#contact" class="nav-link py-4 px-2 text-gray-600 hover:text-blue-900 transition-all duration-200">Contact</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="py-20 bg-gradient-to-br from-blue-50 to-green-50">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-16">
+                <h2 class="text-5xl font-bold text-gray-800 mb-6">Smart Financial Decisions Made Simple</h2>
+                <p class="text-xl text-gray-600 mb-8 max-w-3xl mx-auto">Empowering Indian youth and professionals with intelligent tools and insights for financial planning. Make informed "buy now or invest and buy later" decisions with confidence.</p>
+                <button onclick="scrollToCalculators()" class="bg-green-500 hover:bg-green-600 text-white px-8 py-4 rounded-lg text-lg font-semibold transition-all duration-200 transform hover:scale-105 shadow-lg">
+                    Start Your Financial Journey
+                </button>
+            </div>
+            
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="premium-card p-8 rounded-xl text-center">
+                    <div class="text-blue-600 text-4xl mb-4">📊</div>
+                    <h3 class="text-xl font-bold text-gray-800 mb-3">Smart Finance</h3>
+                    <p class="text-gray-600">Data-backed decisions for your financial goals</p>
+                </div>
+                <div class="premium-card p-8 rounded-xl text-center">
+                    <div class="text-green-600 text-4xl mb-4">🎯</div>
+                    <h3 class="text-xl font-bold text-gray-800 mb-3">Intuitive Tools</h3>
+                    <p class="text-gray-600">Simple calculators for complex financial planning</p>
+                </div>
+                <div class="premium-card p-8 rounded-xl text-center">
+                    <div class="text-blue-600 text-4xl mb-4">🔒</div>
+                    <h3 class="text-xl font-bold text-gray-800 mb-3">Secure Data</h3>
+                    <p class="text-gray-600">Your information stays private and secure</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Calculators Section -->
+    <section id="calculators" class="py-20 bg-white">
+        <div class="container mx-auto px-4">
+            <h2 class="text-4xl font-bold text-center text-gray-800 mb-16">Financial Calculators Hub</h2>
+            
+            <!-- Main Calculator -->
+            <div class="bg-white rounded-xl shadow-xl p-8 mb-12 border border-gray-100">
+                <div class="text-center mb-8">
+                    <h3 class="text-3xl font-bold text-blue-900 mb-4">Smart Buy Planner: Loan vs SIP Decision Assistant</h3>
+                    <p class="text-gray-600 text-lg">Get data-backed insights to decide whether to take a loan now or invest and buy later</p>
+                </div>
+
+                <!-- Global Currency Toggle -->
+                <div class="bg-gray-50 p-6 rounded-lg mb-8">
+                    <h4 class="font-semibold text-gray-800 mb-4">Global Settings</h4>
+                    <div class="grid md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Currency</label>
+                            <select id="currencyToggle" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                                <option value="INR">Indian Rupees (₹)</option>
+                                <option value="USD">US Dollars ($)</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Unit for Large Values</label>
+                            <select id="unitToggle" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                                <option value="lakhs">Lakhs</option>
+                                <option value="millions">Millions</option>
+                                <option value="crores">Crores</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Calculator Steps -->
+                <div id="calculatorContainer">
+                    <!-- Step 1: Choose Your Goal -->
+                    <div id="step1" class="calculator-step active">
+                        <h4 class="text-2xl font-bold text-gray-800 mb-6">Step 1: Choose Your Goal</h4>
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-3">Primary Objective</label>
+                                <div class="space-y-3">
+                                    <label class="flex items-center p-4 border border-gray-300 rounded-lg hover:bg-blue-50 cursor-pointer">
+                                        <input type="radio" name="goal" value="home" class="mr-3 text-blue-600">
+                                        <span class="font-medium">I want to buy a home (compare loan vs SIP)</span>
+                                    </label>
+                                    <label class="flex items-center p-4 border border-gray-300 rounded-lg hover:bg-blue-50 cursor-pointer">
+                                        <input type="radio" name="goal" value="loan" class="mr-3 text-blue-600">
+                                        <span class="font-medium">I want to take another kind of loan (no SIP comparison)</span>
+                                    </label>
+                                </div>
+                            </div>
+                            
+                            <div id="homeSpecificQuestions" style="display: none;">
+                                <label class="block text-sm font-medium text-gray-700 mb-3">When are you planning to buy?</label>
+                                <div class="space-y-3">
+                                    <label class="flex items-center p-4 border border-gray-300 rounded-lg hover:bg-blue-50 cursor-pointer">
+                                        <input type="radio" name="buyTiming" value="now" class="mr-3 text-blue-600">
+                                        <span class="font-medium">I want to buy now (loan focused)</span>
+                                    </label>
+                                    <label class="flex items-center p-4 border border-gray-300 rounded-lg hover:bg-blue-50 cursor-pointer">
+                                        <input type="radio" name="buyTiming" value="later" class="mr-3 text-blue-600">
+                                        <span class="font-medium">I want to accumulate money and buy later (SIP focused)</span>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Expected Annual ROI (%)</label>
+                                <input type="number" id="expectedROI" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" placeholder="e.g., 10">
+                                <p class="text-sm text-gray-500 mt-1">This is the prevalent industry rate for your selected loan type/investment. You can adjust it based on your offer.</p>
+                            </div>
+                        </div>
+                        <div class="mt-8 flex justify-end">
+                            <button onclick="nextStep()" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-medium transition-all duration-200">Next</button>
+                        </div>
+                    </div>
+
+                    <!-- Step 2: Money Snapshot -->
+                    <div id="step2" class="calculator-step">
+                        <h4 class="text-2xl font-bold text-gray-800 mb-6">Step 2: Your Money Snapshot</h4>
+                        <div class="space-y-6">
+                            <div id="homeDetails" style="display: none;">
+                                <h5 class="text-lg font-semibold text-gray-800 mb-4">Home/Goal Details</h5>
+                                <div class="grid md:grid-cols-2 gap-4">
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">Home Value</label>
+                                        <input type="number" id="homeValue" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" placeholder="60">
+                                        <span class="currency-unit-display text-sm text-gray-500"></span>
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">Target Year to Buy</label>
+                                        <input type="number" id="targetYear" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" placeholder="5" min="1" max="30">
+                                        <span class="text-sm text-gray-500">Years from now</span>
+                                    </div>
+                                </div>
+                                <div class="mt-4">
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Home Price Inflation Rate (%/year)</label>
+                                    <input type="number" id="inflationRate" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" placeholder="6.5" step="0.1">
+                                </div>
+                            </div>
+
+                            <div>
+                                <h5 class="text-lg font-semibold text-gray-800 mb-4">Current Financials</h5>
+                                <div class="grid md:grid-cols-2 gap-4">
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">Current Savings</label>
+                                        <input type="number" id="currentSavings" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" placeholder="15">
+                                        <span class="currency-unit-display text-sm text-gray-500"></span>
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">Monthly Income</label>
+                                        <input type="number" id="monthlyIncome" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" placeholder="70000">
+                                        <span class="currency-unit-display text-sm text-gray-500"></span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Down Payment Preference</label>
+                                <select id="downPaymentType" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 mb-3">
+                                    <option value="percentage">Percentage of savings</option>
+                                    <option value="amount">Specific amount</option>
+                                </select>
+                                <input type="number" id="downPaymentValue" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" placeholder="80">
+                                <span id="downPaymentUnit" class="text-sm text-gray-500">% of current savings</span>
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Investment Return Category</label>
+                                <select id="investmentCategory" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                                    <option value="conservative">Conservative/Debt (~6-7%/yr)</option>
+                                    <option value="balanced">Balanced/Hybrid (~9%/yr)</option>
+                                    <option value="largecap">Large-cap (~10%/yr)</option>
+                                    <option value="midcap">Mid-cap (~12%/yr)</option>
+                                    <option value="smallcap">Small-cap (~14%/yr)</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="mt-8 flex justify-between">
+                            <button onclick="prevStep()" class="bg-gray-500 hover:bg-gray-600 text-white px-6 py-3 rounded-lg font-medium transition-all duration-200">Back</button>
+                            <button onclick="nextStep()" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-medium transition-all duration-200">Next</button>
+                        </div>
+                    </div>
+
+                    <!-- Step 3: Budget & Preferences -->
+                    <div id="step3" class="calculator-step">
+                        <h4 class="text-2xl font-bold text-gray-800 mb-6">Step 3: Monthly Budget & Preferences</h4>
+                        <div class="space-y-6">
+                            <div class="bg-blue-50 p-6 rounded-lg">
+                                <h5 class="text-lg font-semibold text-gray-800 mb-4">Suggested Budget (50/30/20 Rule)</h5>
+                                <div class="grid md:grid-cols-3 gap-4 mb-4">
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">Needs (%)</label>
+                                        <input type="number" id="needsPercent" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" value="50">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">Wants (%)</label>
+                                        <input type="number" id="wantsPercent" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" value="30">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">Savings (%)</label>
+                                        <input type="number" id="savingsPercent" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" value="20">
+                                    </div>
+                                </div>
+                                <div id="budgetBreakdown" class="text-sm text-gray-600"></div>
+                                <div id="budgetWarning" class="text-red-600 text-sm mt-2" style="display: none;"></div>
+                            </div>
+
+                            <div id="loanPreferences" style="display: none;">
+                                <h5 class="text-lg font-semibold text-gray-800 mb-4">Loan Preferences</h5>
+                                <div class="grid md:grid-cols-2 gap-4">
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">Desired Monthly EMI</label>
+                                        <input type="number" id="desiredEMI" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" placeholder="25000">
+                                        <span class="currency-unit-display text-sm text-gray-500"></span>
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">OR Fixed Loan Tenure (Years)</label>
+                                        <input type="number" id="fixedTenure" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" placeholder="15">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mt-8 flex justify-between">
+                            <button onclick="prevStep()" class="bg-gray-500 hover:bg-gray-600 text-white px-6 py-3 rounded-lg font-medium transition-all duration-200">Back</button>
+                            <button onclick="calculateResults()" class="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg font-medium transition-all duration-200">Calculate Results</button>
+                        </div>
+                    </div>
+
+                    <!-- Step 4: Results -->
+                    <div id="step4" class="calculator-step">
+                        <h4 class="text-2xl font-bold text-gray-800 mb-6">Step 4: Your Personalized Financial Strategy</h4>
+                        <div id="resultsContainer"></div>
+                        <div class="mt-8 flex justify-between">
+                            <button onclick="prevStep()" class="bg-gray-500 hover:bg-gray-600 text-white px-6 py-3 rounded-lg font-medium transition-all duration-200">Back</button>
+                            <button onclick="generatePDF()" class="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg font-medium transition-all duration-200">📄 Generate PDF Summary</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Other Calculators -->
+            <div class="grid md:grid-cols-3 lg:grid-cols-4 gap-6">
+                <div class="bg-white p-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 coming-soon-card">
+                    <div class="text-blue-600 text-3xl mb-4">📈</div>
+                    <h4 class="font-bold text-gray-800 mb-2">SIP Calculator</h4>
+                    <p class="text-gray-600 text-sm">Plan your systematic investments</p>
+                    <div class="coming-soon-overlay">Coming Soon</div>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 coming-soon-card">
+                    <div class="text-green-600 text-3xl mb-4">💳</div>
+                    <h4 class="font-bold text-gray-800 mb-2">Personal Loan</h4>
+                    <p class="text-gray-600 text-sm">Calculate loan EMIs</p>
+                    <div class="coming-soon-overlay">Coming Soon</div>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 coming-soon-card">
+                    <div class="text-blue-600 text-3xl mb-4">🚗</div>
+                    <h4 class="font-bold text-gray-800 mb-2">Vehicle Loan</h4>
+                    <p class="text-gray-600 text-sm">Auto loan planning</p>
+                    <div class="coming-soon-overlay">Coming Soon</div>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 coming-soon-card">
+                    <div class="text-purple-600 text-3xl mb-4">🎓</div>
+                    <h4 class="font-bold text-gray-800 mb-2">Education Loan</h4>
+                    <p class="text-gray-600 text-sm">Education financing</p>
+                    <div class="coming-soon-overlay">Coming Soon</div>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 coming-soon-card">
+                    <div class="text-red-600 text-3xl mb-4">🏖️</div>
+                    <h4 class="font-bold text-gray-800 mb-2">Retirement Planner</h4>
+                    <p class="text-gray-600 text-sm">Plan your golden years</p>
+                    <div class="coming-soon-overlay">Coming Soon</div>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 coming-soon-card">
+                    <div class="text-orange-600 text-3xl mb-4">💼</div>
+                    <h4 class="font-bold text-gray-800 mb-2">Business Loan</h4>
+                    <p class="text-gray-600 text-sm">Business financing</p>
+                    <div class="coming-soon-overlay">Coming Soon</div>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 coming-soon-card">
+                    <div class="text-teal-600 text-3xl mb-4">💰</div>
+                    <h4 class="font-bold text-gray-800 mb-2">Net Worth</h4>
+                    <p class="text-gray-600 text-sm">Track your wealth</p>
+                    <div class="coming-soon-overlay">Coming Soon</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Articles Section -->
+    <section id="articles" class="py-20 bg-gray-50">
+        <div class="container mx-auto px-4">
+            <h2 class="text-4xl font-bold text-center text-gray-800 mb-8">Financial Insights & Articles</h2>
+            <div class="text-center">
+                <div class="text-6xl mb-4">📚</div>
+                <h3 class="text-2xl font-bold text-gray-800 mb-4">Educational Content Coming Soon</h3>
+                <p class="text-gray-600 max-w-2xl mx-auto">We're preparing comprehensive guides, tips, and insights to help you make better financial decisions. Stay tuned for expert advice on investments, loans, and financial planning.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="py-20 bg-white">
+        <div class="container mx-auto px-4">
+            <h2 class="text-4xl font-bold text-center text-gray-800 mb-16">Get In Touch</h2>
+            <div class="max-w-4xl mx-auto">
+                <div class="grid md:grid-cols-2 gap-12">
+                    <div>
+                        <h3 class="text-2xl font-bold text-gray-800 mb-6">Contact Information</h3>
+                        <div class="space-y-4">
+                            <div class="flex items-center">
+                                <div class="text-blue-600 text-xl mr-4">📧</div>
+                                <span class="text-gray-600">info@rajyafunds.in</span>
+                            </div>
+                            <div class="flex items-center">
+                                <div class="text-blue-600 text-xl mr-4">🌐</div>
+                                <span class="text-gray-600">https://rajyafunds.in</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <h3 class="text-2xl font-bold text-gray-800 mb-6">Quick Message</h3>
+                        <form class="space-y-4">
+                            <input type="text" placeholder="Your Name" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                            <input type="email" placeholder="Your Email" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                            <textarea placeholder="Your Message" rows="4" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"></textarea>
+                            <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg font-medium transition-all duration-200">Send Message</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white py-12">
+        <div class="container mx-auto px-4">
+            <div class="text-center">
+                <h3 class="text-2xl font-bold text-green-400 mb-2">RajyaFunds</h3>
+                <p class="text-gray-400 mb-4">Empowering Your Financial Journey</p>
                 <p class="text-gray-500 text-sm">&copy; 2025 RajyaFunds. All rights reserved.</p>
             </div>
         </div>
