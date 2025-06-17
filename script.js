@@ -63,6 +63,11 @@ const investmentReturnCategoryDiv = document.getElementById('investmentReturnCat
 const investmentReturnCategory = document.getElementById('investmentReturnCategory');
 const monthlyBudgetSection = document.getElementById('monthlyBudgetSection');
 
+// New/Adjusted Step 2 elements for conditional display (moved from step 3 for 'buy now' scenarios)
+const desiredMonthlyEMIStep2 = document.getElementById('desiredMonthlyEMI'); // This existed in Step 3 but is needed here
+const customLoanTenureStep2 = document.getElementById('customLoanTenure'); // This existed in Step 3 but is needed here
+const loanPreferenceSectionStep2 = document.getElementById('loanPreferenceSection'); // The div containing these inputs
+
 // Step 3 Elements
 const needsBudgetPct = document.getElementById('needsBudgetPct');
 const wantsBudgetPct = document.getElementById('wantsBudgetPct');
@@ -71,9 +76,7 @@ const needsAmount = document.getElementById('needsAmount');
 const wantsAmount = document.getElementById('wantsAmount');
 const savingsAmount = document.getElementById('savingsAmount');
 const budgetSumWarning = document.getElementById('budgetSumWarning');
-const loanPreferenceSection = document.getElementById('loanPreferenceSection');
-const desiredMonthlyEMIInput = document.getElementById('desiredMonthlyEMI');
-const customLoanTenureInput = document.getElementById('customLoanTenure');
+
 
 // Step 4 Elements (Results)
 const consolidatedPlanDetails = document.getElementById('consolidatedPlanDetails');
@@ -83,6 +86,8 @@ const generatePdfBtn = document.getElementById('generatePdfBtn');
 const smartPlanOutput = document.getElementById('smartPlanOutput');
 const recommendationOutput = document.getElementById('recommendationOutput');
 const comparisonCharts = document.getElementById('comparisonCharts');
+const investLaterResultsSection = document.getElementById('investLaterResultsSection'); // New ID for Invest Later output
+const loanNowResultsSection = document.getElementById('loanNowResultsSection'); // New ID for Loan Now output
 
 // Global Settings Toggles
 const currencyToggle = document.getElementById('currencyToggle');
@@ -100,7 +105,9 @@ let currentUnit = 'Lakhs';   // Default unit
 // Utility Functions
 function formatNumber(num, decimalPlaces = 0) {
     if (isNaN(num) || num === null) return `${CURRENCY_SYMBOLS[currentCurrency]} 0`;
-    return `${CURRENCY_SYMBOLS[currentCurrency]} ${num.toFixed(decimalPlaces).replace(/\B(?=(\d{3})+(?!\d))/g, ',')} ${currentUnit}`;
+    // Corrected: Divide by the multiplier before formatting to avoid displaying "Lakhs Lakhs"
+    const displayNum = num / UNIT_MULTIPLIERS[currentUnit];
+    return `${CURRENCY_SYMBOLS[currentCurrency]} ${displayNum.toFixed(decimalPlaces).replace(/\B(?=(\d{3})+(?!\d))/g, ',')} ${currentUnit}`;
 }
 
 function convertToAbsoluteValue(value) {
@@ -116,13 +123,10 @@ function convertFromAbsoluteValue(value) {
 }
 
 function updateDisplayUnits() {
-    // This function can be expanded to re-render all displayed numbers
+    // Re-trigger budget amount display update
     updateBudgetAmounts();
-    // If on step 4, we need to re-run calculations or re-format displayed numbers
+    // If on step 4, re-calculate and re-display results with new units
     if (currentStep === 4) {
-        // A simple way is to re-calculate, but a more efficient way would be to
-        // store raw numbers and re-format just the display.
-        // For now, re-calculating is fine as it ensures all numbers are correct.
         calculateResults();
     }
 }
@@ -133,7 +137,7 @@ function showStep(stepNumber) {
         if (index + 1 === stepNumber) {
             step.classList.remove('hidden');
             // Ensure any conditional sections are updated when a step is shown
-            if (stepNumber === 2) {
+            if (stepNumber === 2 || stepNumber === 3) { // Update for both steps 2 and 3
                 updateConditionalDisplays();
             }
         } else {
@@ -145,16 +149,28 @@ function showStep(stepNumber) {
 }
 
 function updateConditionalDisplays() {
+    // Reset all conditional sections
+    homeGoalSpecific.classList.add('hidden');
+    homeGoalDetails.classList.add('hidden');
+    investmentReturnCategoryDiv.classList.add('hidden');
+    loanPreferenceSectionStep2.classList.add('hidden'); // This is the combined loan preference section
+
     if (homeGoalRadio.checked) {
         homeGoalSpecific.classList.remove('hidden');
         homeGoalDetails.classList.remove('hidden');
-        investmentReturnCategoryDiv.classList.remove('hidden');
-        loanPreferenceSection.classList.add('hidden'); // Hide loan preferences if home goal
-    } else { // otherLoanRadio.checked
-        homeGoalSpecific.classList.add('hidden');
-        homeGoalDetails.classList.add('hidden');
-        investmentReturnCategoryDiv.classList.add('hidden');
-        loanPreferenceSection.classList.remove('hidden');
+        monthlyBudgetSection.classList.remove('hidden'); // Budget is always shown
+
+        if (buyNowRadio.checked) {
+            loanPreferenceSectionStep2.classList.remove('hidden'); // Show loan options for "Buy Now"
+            investmentReturnCategoryDiv.classList.add('hidden'); // Hide investment category for "Buy Now"
+        } else if (buyLaterRadio.checked) {
+            investmentReturnCategoryDiv.classList.remove('hidden'); // Show investment category for "Buy Later"
+            loanPreferenceSectionStep2.classList.add('hidden'); // Hide loan options for "Buy Later"
+        }
+    } else if (otherLoanRadio.checked) {
+        // For Other Loan Goal, hide home specific and investment, show general loan
+        monthlyBudgetSection.classList.remove('hidden'); // Budget is always shown
+        loanPreferenceSectionStep2.classList.remove('hidden'); // Show general loan preferences (EMI/Tenure)
     }
 
     if (savingsDownPaymentPreference.value === 'full') {
@@ -231,6 +247,24 @@ function validateStep(stepNumber) {
                          isValid = false;
                     }
                 }
+
+                if (buyNowRadio.checked) { // If "Buy Now" selected for home goal
+                    const desiredEMI = parseFloat(desiredMonthlyEMIStep2.value);
+                    const loanTenure = parseFloat(customLoanTenureStep2.value);
+                    if ((isNaN(desiredEMI) || desiredEMI <= 0) && (isNaN(loanTenure) || loanTenure <= 0)) {
+                        errorMessage.push('For "Buy Now" home plan, please enter either a Desired Monthly EMI or a Custom Loan Tenure.');
+                        isValid = false;
+                    }
+                }
+
+            } else if (otherLoanRadio.checked) { // Other loan specific validations
+                const desiredEMI = parseFloat(desiredMonthlyEMIStep2.value);
+                const loanTenure = parseFloat(customLoanTenureStep2.value);
+
+                if ((isNaN(desiredEMI) || desiredEMI <= 0) && (isNaN(loanTenure) || loanTenure <= 0)) {
+                    errorMessage.push('For a general loan, please enter either a Desired Monthly EMI or a Custom Loan Tenure.');
+                    isValid = false;
+                }
             }
             break;
         case 3:
@@ -246,16 +280,6 @@ function validateStep(stepNumber) {
             if (totalPct !== 100) {
                 errorMessage.push('Budget percentages (Needs, Wants, Savings) must sum to 100%.');
                 isValid = false;
-            }
-
-            if (otherLoanRadio.checked) {
-                const desiredEMI = parseFloat(desiredMonthlyEMIInput.value);
-                const loanTenure = parseFloat(customLoanTenureInput.value);
-
-                if ((isNaN(desiredEMI) || desiredEMI <= 0) && (isNaN(loanTenure) || loanTenure <= 0)) {
-                    errorMessage.push('For a general loan, please enter either a Desired Monthly EMI or a Custom Loan Tenure.');
-                    isValid = false;
-                }
             }
             break;
     }
@@ -279,66 +303,134 @@ function calculateResults() {
     const savingsBudgetPctVal = parseFloat(savingsBudgetPct.value) / 100; // Savings % as decimal
     const investmentROI = DEFAULT_ROI[investmentReturnCategory.value]; // Get ROI based on selected category
 
-    // Determine down payment based on preference
+    // Determine down payment based on preference for home goal
     let downPaymentAmount = 0;
-    if (savingsDownPaymentPreference.value === 'full') {
-        downPaymentAmount = currentSavings;
-    } else if (savingsDownPaymentPreference.value === 'percentage') {
-        const dpPct = parseFloat(downPaymentValueInput.value) / 100;
-        downPaymentAmount = currentSavings * dpPct; // Use percentage of current savings
-    } else { // 'amount'
-        downPaymentAmount = convertToAbsoluteValue(downPaymentValueInput.value);
+    if (homeGoalRadio.checked && buyNowRadio.checked) { // Only calculate down payment if Home Goal and Buy Now
+        if (savingsDownPaymentPreference.value === 'full') {
+            downPaymentAmount = currentSavings;
+        } else if (savingsDownPaymentPreference.value === 'percentage') {
+            const dpPct = parseFloat(downPaymentValueInput.value) / 100;
+            downPaymentAmount = homePrice * dpPct; // Percentage of home value, not current savings
+        } else { // 'amount'
+            downPaymentAmount = convertToAbsoluteValue(downPaymentValueInput.value);
+        }
+        // Ensure down payment doesn't exceed home value or total savings (unless loan covers the rest)
+        // This logic needs to be careful: down payment is usually *part* of the initial cost
+        downPaymentAmount = Math.min(downPaymentAmount, currentSavings, homePrice);
     }
-    // Ensure down payment doesn't exceed home value or total savings
-    downPaymentAmount = Math.min(downPaymentAmount, currentSavings, homePrice);
 
 
-    // Scenario 1: Loan Now
-    const loanNowData = {
-        homePrice: homePrice,
-        downPayment: downPaymentAmount,
-        loanInterestRate: loanROI,
-        desiredEMI: parseFloat(desiredMonthlyEMIInput.value) || null, // in absolute value
-        customLoanTenure: parseInt(customLoanTenureInput.value) || null,
-        monthlyIncome: monthlyIncome, // Pass for EMI vs Income check
-        wantsBudgetPct: parseFloat(wantsBudgetPct.value) / 100 // For EMI affordability check
-    };
-    const loanResults = calculateLoanNow(loanNowData);
+    // Clear previous results
+    consolidatedPlanDetails.innerHTML = '';
+    investLaterResultsSection.classList.add('hidden'); // Hide by default
+    loanNowResultsSection.classList.add('hidden'); // Hide by default
 
-    // Scenario 2: Invest Now, Buy Later
-    const investLaterData = {
-        homeValue: homePrice,
-        targetYear: targetYears,
-        homeInflationRate: homeInflationRate,
-        investmentROI: investmentROI,
-        currentSavings: currentSavings,
-        monthlyIncome: monthlyIncome,
-        savingsBudgetPct: savingsBudgetPctVal
-    };
-    const sipResults = calculateInvestLater(investLaterData);
+    let loanResults = null;
+    let sipResults = null;
 
+    if (homeGoalRadio.checked) {
+        if (buyNowRadio.checked) {
+            // Scenario 1: Loan Now (for Home Goal - Buy Now)
+            const loanNowData = {
+                homePrice: homePrice,
+                downPayment: downPaymentAmount,
+                loanInterestRate: loanROI,
+                desiredEMI: convertToAbsoluteValue(desiredMonthlyEMIStep2.value) || null,
+                customLoanTenure: parseInt(customLoanTenureStep2.value) || null,
+                monthlyIncome: monthlyIncome,
+                wantsBudgetPct: parseFloat(wantsBudgetPct.value) / 100
+            };
+            loanResults = calculateLoanNow(loanNowData);
+            displayLoanNowResults(loanResults);
+            loanNowResultsSection.classList.remove('hidden');
 
-    // Display Results
-    consolidatedPlanDetails.innerHTML = ''; // Clear previous results
-    displayLoanNowResults(loanResults);
-    displayInvestLaterResults(sipResults);
-    displaySummaryAndRecommendation(loanResults, sipResults);
+        } else if (buyLaterRadio.checked) {
+            // Scenario 2: Invest Now, Buy Later (for Home Goal - Buy Later)
+            const investLaterData = {
+                homeValue: homePrice,
+                targetYear: targetYears,
+                homeInflationRate: homeInflationRate,
+                investmentROI: investmentROI,
+                currentSavings: currentSavings,
+                monthlyIncome: monthlyIncome,
+                savingsBudgetPct: savingsBudgetPctVal
+            };
+            sipResults = calculateInvestLater(investLaterData);
+            displayInvestLaterResults(sipResults);
+            investLaterResultsSection.classList.remove('hidden');
+        }
+    } else if (otherLoanRadio.checked) {
+        // Scenario 3: General Loan (if "Other Loan Goal" selected)
+        const loanNowData = { // Re-using structure, but specific for general loan
+            homePrice: 0, // Not applicable for general loan calculation
+            downPayment: 0, // Not applicable
+            loanAmount: convertToAbsoluteValue(monthlyIncomeInput.value) * 12 * 5, // A heuristic for general loan eligibility, e.g., 5x annual income
+            loanInterestRate: loanROI,
+            desiredEMI: convertToAbsoluteValue(desiredMonthlyEMIStep2.value) || null,
+            customLoanTenure: parseInt(customLoanTenureStep2.value) || null,
+            monthlyIncome: monthlyIncome,
+            wantsBudgetPct: parseFloat(wantsBudgetPct.value) / 100
+        };
+        loanResults = calculateLoanNow(loanNowData); // Use the same loan calculator
+        displayGeneralLoanResults(loanResults); // Custom display for general loan
+        loanNowResultsSection.classList.remove('hidden'); // Show this section for general loan output
+    }
+
+    // Display summary and recommendation based on selected goal
+    if (homeGoalRadio.checked) {
+        if (buyNowRadio.checked && loanResults) {
+            displaySummaryAndRecommendationForHomeBuyNow(loanResults);
+            // Hide SIP related chart if only loan is calculated
+            if (loanComparisonChartInstance) {
+                loanComparisonChartInstance.destroy();
+            }
+            comparisonCharts.classList.add('hidden'); // Hide chart if only one scenario
+        } else if (buyLaterRadio.checked && sipResults) {
+            displaySummaryAndRecommendationForHomeBuyLater(sipResults);
+            // Hide Loan related chart if only SIP is calculated
+            if (loanComparisonChartInstance) {
+                loanComparisonChartInstance.destroy();
+            }
+            comparisonCharts.classList.add('hidden'); // Hide chart if only one scenario
+        }
+        // If both were calculated (e.g., for full comparison), then show both recommendations
+        // But based on UX, it's better to show one primary recommendation per path
+    } else if (otherLoanRadio.checked && loanResults) {
+        displaySummaryAndRecommendationForOtherLoan(loanResults);
+        // Hide charts for other loan goal, unless specific comparison needed later
+        if (budgetChartInstance) budgetChartInstance.destroy();
+        if (loanComparisonChartInstance) loanComparisonChartInstance.destroy();
+        comparisonCharts.classList.add('hidden');
+    }
+
+    // Always update budget chart if monthly income is available
+    if (monthlyIncome > 0) {
+        updateBudgetChart(loanResults ? loanResults.monthlyEMI : 0);
+    } else {
+        if (budgetChartInstance) budgetChartInstance.destroy();
+    }
+
 
     // Show result sections
     smartPlanOutput.classList.remove('hidden');
     recommendationOutput.classList.remove('hidden');
-    comparisonCharts.classList.remove('hidden');
 }
 
 
 function calculateLoanNow(data) {
-    const homePrice = data.homePrice;
-    const downPayment = data.downPayment;
+    const homePrice = data.homePrice; // Used for home loan scenarios
+    const downPayment = data.downPayment; // Used for home loan scenarios
     const loanInterestRate = data.loanInterestRate; // Annual rate
     const desiredEMI = data.desiredEMI;
     const customLoanTenure = data.customLoanTenure;
+    const monthlyIncome = data.monthlyIncome; // For affordability checks
 
     let loanAmount = homePrice - downPayment;
+    if (homeGoalRadio.checked === false || buyNowRadio.checked === false) { // If it's a general loan
+        // For general loan, loanAmount is the data.loanAmount passed (heuristic)
+        loanAmount = data.loanAmount; // This will be the heuristic amount (e.g., 5x annual income)
+    }
+
     if (loanAmount < 0) loanAmount = 0; // Ensure loan amount is not negative
 
     const monthlyRate = loanInterestRate / 12;
@@ -349,53 +441,43 @@ function calculateLoanNow(data) {
     let totalRepayment = 0;
 
     if (loanAmount === 0) {
-        // No loan needed if home is fully paid by down payment
         calculatedEMI = 0;
         tenureMonths = 0;
         totalInterest = 0;
-        totalRepayment = homePrice;
+        totalRepayment = homePrice; // Or 0 for general loan
     } else if (desiredEMI && desiredEMI > 0) {
-        // Calculate tenure based on desired EMI
-        if (monthlyRate === 0) { // If interest rate is 0
+        if (monthlyRate === 0) {
             tenureMonths = loanAmount / desiredEMI;
             totalInterest = 0;
         } else {
-            // M = P * [ i(1 + i)^n ] / [ (1 + i)^n – 1]
-            // n = -log(1 - Pi/M) / log(1 + i)
             tenureMonths = -(Math.log(1 - (loanAmount * monthlyRate) / desiredEMI)) / Math.log(1 + monthlyRate);
         }
 
         if (isNaN(tenureMonths) || !isFinite(tenureMonths) || tenureMonths < 0) {
-            // Desired EMI is too low for the given loan amount and rate
-            calculatedEMI = (loanAmount * monthlyRate) / (1 - Math.pow(1 + monthlyRate, -360)); // Default to 30 years if EMI is too low
+            // Desired EMI is too low
+            calculatedEMI = (loanAmount * monthlyRate) / (1 - Math.pow(1 + monthlyRate, -360));
             tenureMonths = 360; // 30 years
             totalRepayment = calculatedEMI * tenureMonths;
             totalInterest = totalRepayment - loanAmount;
-            showCustomModal(`Your desired EMI (${formatNumber(desiredEMI)}) is too low for a loan of ${formatNumber(loanAmount)} at ${loanInterestRate * 100}%. We've calculated it for a standard 30-year tenure instead.`, 'Note: EMI Too Low');
-
+            showCustomModal(`Your desired EMI (${formatNumber(desiredEMI, 2)}) is too low for a loan of ${formatNumber(loanAmount, 2)} at ${(loanInterestRate * 100).toFixed(1)}%. We've calculated it for a standard 30-year tenure instead.`, 'Note: EMI Too Low');
         } else {
             tenureMonths = Math.ceil(tenureMonths);
             calculatedEMI = desiredEMI;
             totalRepayment = calculatedEMI * tenureMonths;
             totalInterest = totalRepayment - loanAmount;
         }
-
     } else if (customLoanTenure && customLoanTenure > 0) {
-        // Calculate EMI based on custom tenure
         tenureMonths = customLoanTenure * 12;
-        if (monthlyRate === 0) { // If interest rate is 0
+        if (monthlyRate === 0) {
             calculatedEMI = loanAmount / tenureMonths;
             totalInterest = 0;
         } else {
-            // M = P [ i(1 + i)^n ] / [ (1 + i)^n – 1]
             calculatedEMI = loanAmount * monthlyRate * (Math.pow(1 + monthlyRate, tenureMonths)) / (Math.pow(1 + monthlyRate, tenureMonths) - 1);
         }
-
         totalRepayment = calculatedEMI * tenureMonths;
         totalInterest = totalRepayment - loanAmount;
-
     } else {
-        // Default to a common tenure if neither EMI nor custom tenure is provided
+        // Default to 20 years if neither EMI nor tenure is provided for loan scenarios
         tenureMonths = 240; // Default to 20 years
         if (monthlyRate === 0) {
             calculatedEMI = loanAmount / tenureMonths;
@@ -411,8 +493,8 @@ function calculateLoanNow(data) {
     const tenureYears = Math.floor(tenureMonths / 12);
 
     return {
-        homePrice: homePrice,
-        downPayment: downPayment,
+        homePrice: homePrice, // Will be 0 for general loan
+        downPayment: downPayment, // Will be 0 for general loan
         loanAmount: loanAmount,
         monthlyEMI: calculatedEMI,
         tenureYears: tenureYears,
@@ -423,21 +505,17 @@ function calculateLoanNow(data) {
 }
 
 function calculateInvestLater(data) {
-    // Assume home buying is the goal
     const initialHomeValue = data.homeValue;
     const targetYears = data.targetYear;
     const inflationRate = data.homeInflationRate;
     const investmentROI = data.investmentROI;
     const initialSavings = data.currentSavings;
-    const monthlyDisposableIncome = data.monthlyIncome * data.savingsBudgetPct; // Use savings portion of income
+    const monthlyDisposableIncome = data.monthlyIncome * data.savingsBudgetPct;
 
-    // Calculate future home value
     const futureHomeValue = initialHomeValue * Math.pow(1 + inflationRate, targetYears);
 
-    // Calculate future value of initial savings
     const futureSavingsFromInitial = initialSavings * Math.pow(1 + investmentROI, targetYears);
 
-    // Calculate future value of monthly SIP
     let futureSavingsFromSIP = 0;
     if (monthlyDisposableIncome > 0 && investmentROI > 0) {
         const monthlyROI = investmentROI / 12;
@@ -447,10 +525,9 @@ function calculateInvestLater(data) {
         futureSavingsFromSIP = monthlyDisposableIncome * (targetYears * 12);
     }
 
-
     const totalFutureCorpus = futureSavingsFromInitial + futureSavingsFromSIP;
-    const potentialDownPayment = Math.min(totalFutureCorpus, futureHomeValue); // Down payment cannot exceed future home value
-    const remainingAmountNeeded = futureHomeValue - potentialDownPayment;
+    const potentialDownPayment = Math.min(totalFutureCorpus, futureHomeValue);
+    const remainingAmountNeeded = Math.max(0, futureHomeValue - potentialDownPayment); // Ensure it's not negative
     const isGoalAchieved = totalFutureCorpus >= futureHomeValue;
 
     return {
@@ -471,71 +548,113 @@ function calculateInvestLater(data) {
 
 function displayLoanNowResults(results) {
     let content = `
-        <h5 class="text-xl font-bold text-blue-700 mb-3">Option 1: Loan Now Strategy</h5>
-        <p class="mb-2"><strong>Home Value:</strong> ${formatNumber(results.homePrice)}</p>
-        <p class="mb-2"><strong>Down Payment:</strong> ${formatNumber(results.downPayment)}</p>
-        <p class="mb-2"><strong>Loan Amount:</strong> ${formatNumber(results.loanAmount)}</p>
-        <p class="mb-2"><strong>Estimated Monthly EMI:</strong> ${formatNumber(results.monthlyEMI)}</p>
+        <h5 class="text-xl font-bold text-blue-700 mb-3">Option 1: Loan Now Strategy (Home Buy)</h5>
+        <p class="mb-2"><strong>Home Value:</strong> ${formatNumber(results.homePrice, 2)}</p>
+        <p class="mb-2"><strong>Down Payment:</strong> ${formatNumber(results.downPayment, 2)}</p>
+        <p class="mb-2"><strong>Loan Amount:</strong> ${formatNumber(results.loanAmount, 2)}</p>
+        <p class="mb-2"><strong>Estimated Monthly EMI:</strong> ${formatNumber(results.monthlyEMI, 2)}</p>
         <p class="mb-2"><strong>Loan Tenure:</strong> ${results.tenureYears} years ${results.tenureMonths % 12} months</p>
-        <p class="mb-2"><strong>Total Interest Paid:</strong> ${formatNumber(results.totalInterest)}</p>
-        <p class="mb-2"><strong>Total Repayment:</strong> ${formatNumber(results.totalRepayment)}</p>
+        <p class="mb-2"><strong>Total Interest Paid:</strong> ${formatNumber(results.totalInterest, 2)}</p>
+        <p class="mb-2"><strong>Total Repayment:</strong> ${formatNumber(results.totalRepayment, 2)}</p>
     `;
-    document.getElementById('consolidatedPlanDetails').innerHTML = content; // Append to consolidated details
+    document.getElementById('loanNowResultsSection').innerHTML = content;
 }
 
 function displayInvestLaterResults(results) {
     let status = results.isGoalAchieved ?
         `<span class="text-green-600 font-bold">Goal Achieved!</span> You have sufficient corpus.` :
-        `<span class="text-red-600 font-bold">Goal Not Fully Achieved.</span> You need ${formatNumber(results.remainingAmountNeeded)} more.`;
+        `<span class="text-red-600 font-bold">Goal Not Fully Achieved.</span> You need ${formatNumber(results.remainingAmountNeeded, 2)} more.`;
 
     let content = `
-        <h5 class="text-xl font-bold text-blue-700 mb-3 mt-6">Option 2: Invest Now, Buy Later Strategy</h5>
-        <p class="mb-2"><strong>Target Home Value in ${results.targetYears} years:</strong> ${formatNumber(results.futureHomeValue)}</p>
-        <p class="mb-2"><strong>Your Monthly SIP (from savings budget):</strong> ${formatNumber(results.monthlySIP)} / month</p>
-        <p class="mb-2"><strong>Future Value of Initial Savings:</strong> ${formatNumber(results.futureSavingsFromInitial)}</p>
-        <p class="mb-2"><strong>Future Value from SIPs:</strong> ${formatNumber(results.futureSavingsFromSIP)}</p>
-        <p class="mb-2"><strong>Total Future Corpus:</strong> ${formatNumber(results.totalFutureCorpus)}</p>
-        <p class="mb-2"><strong>Potential Down Payment (from corpus):</strong> ${formatNumber(results.potentialDownPayment)}</p>
+        <h5 class="text-xl font-bold text-blue-700 mb-3 mt-6">Option 2: Invest Now, Buy Later Strategy (Home Buy)</h5>
+        <p class="mb-2"><strong>Target Home Value in ${results.targetYears} years:</strong> ${formatNumber(results.futureHomeValue, 2)}</p>
+        <p class="mb-2"><strong>Your Monthly SIP (from savings budget):</strong> ${formatNumber(results.monthlySIP, 2)} / month</p>
+        <p class="mb-2"><strong>Future Value of Initial Savings:</strong> ${formatNumber(results.futureSavingsFromInitial, 2)}</p>
+        <p class="mb-2"><strong>Future Value from SIPs:</strong> ${formatNumber(results.futureSavingsFromSIP, 2)}</p>
+        <p class="mb-2"><strong>Total Future Corpus:</strong> ${formatNumber(results.totalFutureCorpus, 2)}</p>
+        <p class="mb-2"><strong>Potential Down Payment (from corpus):</strong> ${formatNumber(results.potentialDownPayment, 2)}</p>
         <p class="mb-2"><strong>Status:</strong> ${status}</p>
     `;
-    document.getElementById('consolidatedPlanDetails').innerHTML += content; // Append to consolidated details
+    document.getElementById('investLaterResultsSection').innerHTML = content;
 }
 
-function displaySummaryAndRecommendation(loanResults, sipResults) {
+function displayGeneralLoanResults(results) {
+    let content = `
+        <h5 class="text-xl font-bold text-blue-700 mb-3">General Loan Scenario (Other Loan Goal)</h5>
+        <p class="mb-2"><strong>Estimated Loan Eligibility (Heuristic):</strong> ${formatNumber(results.loanAmount, 2)}</p>
+        <p class="mb-2"><strong>Estimated Monthly EMI:</strong> ${formatNumber(results.monthlyEMI, 2)}</p>
+        <p class="mb-2"><strong>Loan Tenure:</strong> ${results.tenureYears} years ${results.tenureMonths % 12} months</p>
+        <p class="mb-2"><strong>Total Interest Paid:</strong> ${formatNumber(results.totalInterest, 2)}</p>
+        <p class="mb-2"><strong>Total Repayment:</strong> ${formatNumber(results.totalRepayment, 2)}</p>
+    `;
+    document.getElementById('loanNowResultsSection').innerHTML = content;
+}
+
+function displaySummaryAndRecommendationForHomeBuyNow(loanResults) {
+    let recommendationText = '';
+    let suggestionsList = '';
+
+    const monthlyIncome = convertToAbsoluteValue(monthlyIncomeInput.value);
+    const wantsBudgetAmount = monthlyIncome * (parseFloat(wantsBudgetPct.value) / 100);
+    const savingsBudgetAmount = monthlyIncome * (parseFloat(savingsBudgetPct.value) / 100);
+
+    if (loanResults.monthlyEMI <= savingsBudgetAmount + wantsBudgetAmount) {
+        recommendationText = "Based on your income and budget, **taking a home loan now appears to be an achievable option.** Your estimated EMI fits within your disposable income.";
+        suggestionsList += `<li>Ensure your expected annual ROI matches the actual loan interest rates you find.</li>`;
+        suggestionsList += `<li>Consider prepayment options to reduce total interest paid.</li>`;
+    } else {
+        recommendationText = "The estimated monthly EMI for buying now is quite high relative to your budget. **It is recommended to re-evaluate your desired home value, consider a smaller loan, or increase your monthly income/savings.**";
+        suggestionsList += `<li>Adjust your home value expectations or look for properties requiring a lower loan amount.</li>`;
+        suggestionsList += `<li>Explore options to increase your monthly income or reduce other expenses to free up more funds for EMI.</li>`;
+        suggestionsList += `<li>Consider the 'Invest Now, Buy Later' strategy to build a larger down payment.</li>`;
+    }
+    finalRecommendation.innerHTML = recommendationText;
+    intelligentSuggestions.innerHTML = suggestionsList;
+}
+
+function displaySummaryAndRecommendationForHomeBuyLater(sipResults) {
     let recommendationText = '';
     let suggestionsList = '';
 
     if (sipResults.isGoalAchieved) {
-        if (sipResults.totalFutureCorpus >= loanResults.totalRepayment) { // If SIP corpus covers total loan cost
-            recommendationText = "Based on your goals and projections, **investing now and buying later appears to be the more financially advantageous path**, potentially saving you a significant amount in interest compared to taking a loan immediately.";
-            suggestionsList += `<li>Focus on consistent SIP investments to reach or exceed your target corpus.</li>`;
-            suggestionsList += `<li>Regularly review your investment performance and adjust your SIP amount if needed.</li>`;
-        } else {
-             recommendationText = "Your investment plan successfully builds the required corpus. **Proceeding with the 'Invest Now, Buy Later' strategy is recommended** as it aligns with achieving your home buying goal without immediate loan commitments.";
-             suggestionsList += `<li>Consider increasing your SIP if possible to create an even larger buffer.</li>`;
-        }
-
+        recommendationText = "Congratulations! Your 'Invest Now, Buy Later' strategy is **well on track to achieve your home buying goal**. Continuing with your planned SIP will build the necessary corpus.";
+        suggestionsList += `<li>Maintain consistent SIP investments to reach or exceed your target corpus.</li>`;
+        suggestionsList += `<li>Regularly review your investment performance and adjust your SIP amount if needed, especially if inflation or ROI changes.</li>`;
     } else {
-        // SIP goal not achieved, recommend loan or adjustment
-        // Check if EMI from Loan Now is affordable based on 'wants' budget
-        const affordableEMIThreshold = (convertToAbsoluteValue(monthlyIncomeInput.value) * (parseFloat(wantsBudgetPct.value) / 100)); // Use wants budget for affordability
-        if (loanResults.monthlyEMI <= affordableEMIThreshold) {
-             recommendationText = "Your 'Invest Now, Buy Later' strategy needs more time or higher investments to reach your home goal. **Taking a loan now might be a more immediate and feasible option** given your current financial snapshot and budgeting, as the EMI appears affordable.";
-             suggestionsList += `<li>Explore different loan tenures or interest rates to optimize your EMI.</li>`;
-             suggestionsList += `<li>Consider a smaller initial home value if the current EMI is too high.</li>`;
-        } else {
-             recommendationText = "Neither immediately taking a loan (due to high EMI) nor investing to buy later (due to short timeline/insufficient savings) seems ideal. **It is recommended to re-evaluate your home value, target years, or increase your monthly savings/income.**";
-             suggestionsList += `<li>Adjust your home value expectations or extend your target buying year.</li>`;
-             suggestionsList += `<li>Look for opportunities to increase your monthly income or reduce wants to boost savings.</li>`;
-        }
+        recommendationText = "Your 'Invest Now, Buy Later' strategy currently **falls short of achieving your home goal** within the target timeframe. Adjustments are needed to bridge the gap.";
+        suggestionsList += `<li>Consider increasing your monthly SIP amount significantly to reach the target corpus faster.</li>`;
+        suggestionsList += `<li>Extend your target buying year to allow more time for your investments to grow.</li>`;
+        suggestionsList += `<li>Explore investment categories with potentially higher (but riskier) returns, if aligned with your risk tolerance.</li>`;
+        suggestionsList += `<li>Re-evaluate your target home value to align it with a more realistic future corpus.</li>`;
     }
     finalRecommendation.innerHTML = recommendationText;
     intelligentSuggestions.innerHTML = suggestionsList;
-
-    // Initialize/update Chart.js for budget distribution
-    updateBudgetChart(loanResults.monthlyEMI);
-    updateLoanComparisonChart(loanResults.totalRepayment, sipResults.totalFutureCorpus);
 }
+
+function displaySummaryAndRecommendationForOtherLoan(loanResults) {
+    let recommendationText = '';
+    let suggestionsList = '';
+
+    const monthlyIncome = convertToAbsoluteValue(monthlyIncomeInput.value);
+    const wantsBudgetAmount = monthlyIncome * (parseFloat(wantsBudgetPct.value) / 100);
+    const savingsBudgetAmount = monthlyIncome * (parseFloat(savingsBudgetPct.value) / 100);
+
+    // General affordability check for any loan EMI
+    if (loanResults.monthlyEMI <= savingsBudgetAmount + wantsBudgetAmount) { // Assuming wants+savings are disposable for loan
+        recommendationText = "Based on your income and budget, **the estimated EMI for your desired loan appears manageable.**";
+        suggestionsList += `<li>Shop around for the best interest rates from various lenders.</li>`;
+        suggestionsList += `<li>Consider the overall impact of this loan on your financial goals.</li>`;
+        suggestionsList += `<li>Ensure the loan tenure aligns with your repayment capacity.</li>`;
+    } else {
+        recommendationText = "The estimated monthly EMI for your desired loan is **quite high relative to your current budget.** This could strain your finances.";
+        suggestionsList += `<li>Re-evaluate the loan amount or consider a longer tenure if feasible.</li>`;
+        suggestionsList += `<li>Look for ways to increase your income or reduce other expenses to comfortably afford the EMI.</li>`;
+        suggestionsList += `<li>Prioritize this loan if it's for an essential need, or reconsider if it's a 'want' that can be deferred.</li>`;
+    }
+    finalRecommendation.innerHTML = recommendationText;
+    intelligentSuggestions.innerHTML = suggestionsList;
+}
+
 
 function updateBudgetChart(loanEMI = 0) {
     if (budgetChartInstance) {
@@ -543,18 +662,55 @@ function updateBudgetChart(loanEMI = 0) {
     }
 
     const totalMonthlyIncome = convertToAbsoluteValue(monthlyIncomeInput.value);
+    if (isNaN(totalMonthlyIncome) || totalMonthlyIncome <= 0) {
+        // If no income, hide chart or show empty state
+        document.getElementById('budgetChart').classList.add('hidden');
+        return;
+    }
+    document.getElementById('budgetChart').classList.remove('hidden');
+
+
     const needsAmountVal = totalMonthlyIncome * (parseFloat(needsBudgetPct.value) / 100);
     const wantsAmountVal = totalMonthlyIncome * (parseFloat(wantsBudgetPct.value) / 100);
     const savingsAmountVal = totalMonthlyIncome * (parseFloat(savingsBudgetPct.value) / 100);
+
+    // Adjust categories if EMI is present
+    let labels = ['Needs', 'Wants', 'Savings/Investment'];
+    let data = [needsAmountVal, wantsAmountVal, savingsAmountVal];
+    let backgroundColors = ['#4299e1', '#63b3ed', '#90cdf4'];
+
+    if (loanEMI > 0) {
+        // If an EMI is calculated, it comes out of the 'Wants' and then 'Savings' budget
+        // This is a simplified allocation logic
+        if (loanEMI <= wantsAmountVal) {
+            data[1] -= loanEMI; // Subtract from wants
+            labels.push('Estimated EMI');
+            data.push(loanEMI);
+            backgroundColors.push('#3182ce');
+        } else if (loanEMI <= (wantsAmountVal + savingsAmountVal)) {
+            const remainingEMI = loanEMI - wantsAmountVal;
+            data[1] = 0; // Wants become 0
+            data[2] -= remainingEMI; // Subtract rest from savings
+            labels.push('Estimated EMI');
+            data.push(loanEMI);
+            backgroundColors.push('#3182ce');
+        } else {
+            // EMI exceeds wants + savings, show as an additional slice
+            labels.push('Estimated EMI (Exceeds Budget)');
+            data.push(loanEMI);
+            backgroundColors.push('#e53e3e'); // Red for high EMI
+        }
+    }
+
 
     const ctx = document.getElementById('budgetChart').getContext('2d');
     budgetChartInstance = new Chart(ctx, {
         type: 'pie',
         data: {
-            labels: ['Needs', 'Wants', 'Savings/Investment', 'Estimated EMI (if applicable)'],
+            labels: labels,
             datasets: [{
-                data: [needsAmountVal, wantsAmountVal, savingsAmountVal, loanEMI],
-                backgroundColor: ['#4299e1', '#63b3ed', '#90cdf4', '#3182ce'],
+                data: data,
+                backgroundColor: backgroundColors,
                 hoverOffset: 4
             }]
         },
@@ -573,7 +729,7 @@ function updateBudgetChart(loanEMI = 0) {
                             if (label) {
                                 label += ': ';
                             }
-                            label += formatNumber(context.raw);
+                            label += formatNumber(context.raw, 2); // Format with 2 decimal places
                             return label;
                         }
                     }
@@ -587,6 +743,14 @@ function updateLoanComparisonChart(totalLoanRepayment, totalFutureCorpus) {
     if (loanComparisonChartInstance) {
         loanComparisonChartInstance.destroy();
     }
+
+    // Only show comparison chart if it's a home goal and both scenarios are relevant
+    if (!homeGoalRadio.checked || buyNowRadio.checked || buyLaterRadio.checked === false) { // i.e., not (homeGoal and buyLater)
+        comparisonCharts.classList.add('hidden');
+        return;
+    }
+    comparisonCharts.classList.remove('hidden');
+
 
     const ctx = document.getElementById('loanComparisonChart').getContext('2d');
     loanComparisonChartInstance = new Chart(ctx, {
@@ -612,7 +776,7 @@ function updateLoanComparisonChart(totalLoanRepayment, totalFutureCorpus) {
                     },
                     ticks: {
                         callback: function(value) {
-                            return formatNumber(value); // Format directly as numbers in chart data are already in absolute
+                            return formatNumber(value, 2); // Format directly as numbers in chart data are already in absolute
                         }
                     }
                 }
@@ -630,7 +794,7 @@ function updateLoanComparisonChart(totalLoanRepayment, totalFutureCorpus) {
                             if (label) {
                                 label += ': ';
                             }
-                            label += formatNumber(context.raw);
+                            label += formatNumber(context.raw, 2);
                             return label;
                         }
                     }
@@ -658,6 +822,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Update budget amounts on initial load
     updateBudgetAmounts();
+    updateConditionalDisplays(); // Ensure initial display is correct based on loaded state
 });
 
 currencyToggle.addEventListener('change', (e) => {
@@ -694,38 +859,10 @@ backButtons[4].addEventListener('click', () => showStep(3));
 
 
 // Conditional display logic for inputs
-homeGoalRadio.addEventListener('change', () => {
-    if (homeGoalRadio.checked) {
-        homeGoalSpecific.classList.remove('hidden');
-        homeGoalDetails.classList.remove('hidden');
-        investmentReturnCategoryDiv.classList.remove('hidden');
-        monthlyBudgetSection.classList.remove('hidden');
-        loanPreferenceSection.classList.add('hidden'); // Hide loan preferences if home goal
-    }
-    updateConditionalDisplays(); // Re-evaluate displays immediately
-});
-
-otherLoanRadio.addEventListener('change', () => {
-    if (otherLoanRadio.checked) {
-        homeGoalSpecific.classList.add('hidden');
-        homeGoalDetails.classList.add('hidden');
-        investmentReturnCategoryDiv.classList.add('hidden'); // No SIP for general loan
-        monthlyBudgetSection.classList.remove('hidden'); // Still need budget for income
-        loanPreferenceSection.classList.remove('hidden'); // Show loan preferences
-    }
-    updateConditionalDisplays(); // Re-evaluate displays immediately
-});
-
-// Update conditional display on step 2 load (using mutation observer for robustness)
-const observer = new MutationObserver((mutations) => {
-    mutations.forEach((mutation) => {
-        if (mutation.attributeName === 'class' && steps[1].classList.contains('hidden') === false) {
-            // If step 2 becomes visible
-            updateConditionalDisplays();
-        }
-    });
-});
-observer.observe(steps[1], { attributes: true }); // Observe class attribute of step 2
+homeGoalRadio.addEventListener('change', updateConditionalDisplays);
+otherLoanRadio.addEventListener('change', updateConditionalDisplays);
+buyNowRadio.addEventListener('change', updateConditionalDisplays);
+buyLaterRadio.addEventListener('change', updateConditionalDisplays);
 
 
 // Budget percentage inputs
@@ -735,44 +872,8 @@ observer.observe(steps[1], { attributes: true }); // Observe class attribute of 
 
 monthlyIncomeInput.addEventListener('input', updateBudgetAmounts);
 
-function updateBudgetAmounts() {
-    const totalMonthlyIncome = convertToAbsoluteValue(monthlyIncomeInput.value);
-    if (isNaN(totalMonthlyIncome) || totalMonthlyIncome <= 0) {
-        needsAmount.textContent = `${CURRENCY_SYMBOLS[currentCurrency]} 0`;
-        wantsAmount.textContent = `${CURRENCY_SYMBOLS[currentCurrency]} 0`;
-        savingsAmount.textContent = `${CURRENCY_SYMBOLS[currentCurrency]} 0`;
-        return;
-    }
+savingsDownPaymentPreference.addEventListener('change', updateConditionalDisplays);
 
-    const needsPct = parseFloat(needsBudgetPct.value);
-    const wantsPct = parseFloat(wantsBudgetPct.value);
-    const savingsPct = parseFloat(savingsBudgetPct.value);
-
-    needsAmount.textContent = formatNumber(totalMonthlyIncome * (needsPct / 100));
-    wantsAmount.textContent = formatNumber(totalMonthlyIncome * (wantsPct / 100));
-    savingsAmount.textContent = formatNumber(totalMonthlyIncome * (savingsPct / 100));
-
-    const totalPct = needsPct + wantsPct + savingsPct;
-    if (totalPct !== 100) {
-        budgetSumWarning.classList.remove('hidden');
-    } else {
-        budgetSumWarning.classList.add('hidden');
-    }
-}
-
-savingsDownPaymentPreference.addEventListener('change', (e) => {
-    if (e.target.value === 'full') {
-        downPaymentValueInput.classList.add('hidden');
-        downPaymentValueInput.value = ''; // Clear value if not used
-    } else {
-        downPaymentValueInput.classList.remove('hidden');
-        if (e.target.value === 'percentage') {
-            downPaymentValueInput.placeholder = 'Enter percentage (e.g., 40)';
-        } else { // 'amount'
-            downPaymentValueInput.placeholder = `Enter amount (in ${currentUnit})`;
-        }
-    }
-});
 
 investmentReturnCategory.addEventListener('change', (e) => {
     // Update expectedAnnualROIInput with default for selected category
@@ -786,7 +887,7 @@ investmentReturnCategory.addEventListener('change', (e) => {
 generatePdfBtn.addEventListener('click', () => {
     const element = document.getElementById('smart-buy-planner-section'); // Target the entire calculator section for PDF
     const opt = {
-        margin: 1,
+        margin: 0.5, // Reduced margin
         filename: 'RajyaFunds_SmartBuyPlan.pdf',
         image: { type: 'jpeg', quality: 0.98 },
         html2canvas: { scale: 2 },
@@ -829,12 +930,9 @@ function showCustomModal(message, title = 'Notification') {
 function saveFormState() {
     const formData = {};
     form.querySelectorAll('input, select').forEach(input => {
-        if (input.type === 'radio') {
+        if (input.type === 'radio' || input.type === 'checkbox') {
             formData[input.id] = input.checked;
-        } else if (input.type === 'checkbox') {
-            formData[input.id] = input.checked;
-        }
-        else {
+        } else {
             formData[input.id] = input.value;
         }
     });
@@ -842,7 +940,7 @@ function saveFormState() {
     formData.currentUnit = currentUnit;
     formData.currentStep = currentStep; // Save current step
     localStorage.setItem('smartBuyFormState', JSON.stringify(formData));
-    console.log("Form state saved.", formData);
+    // console.log("Form state saved.", formData); // Uncomment for debugging
 }
 
 function loadFormState() {
@@ -851,12 +949,9 @@ function loadFormState() {
         const formData = JSON.parse(savedState);
         form.querySelectorAll('input, select').forEach(input => {
             if (input.id in formData) {
-                if (input.type === 'radio') {
+                if (input.type === 'radio' || input.type === 'checkbox') {
                     input.checked = formData[input.id];
-                } else if (input.type === 'checkbox') {
-                    input.checked = formData[input.id];
-                }
-                else {
+                } else {
                     input.value = formData[input.id];
                 }
             }
@@ -867,18 +962,18 @@ function loadFormState() {
         currencyToggle.value = currentCurrency;
         unitToggle.value = currentUnit;
 
-        // Re-evaluate conditional displays based on loaded state
-        updateConditionalDisplays(); // Call this BEFORE showing step to ensure elements are correct
+        // Re-evaluate conditional displays based on loaded state BEFORE showing step
+        updateConditionalDisplays();
 
         // Navigate to the saved step
         showStep(formData.currentStep || 1);
         updateDisplayUnits(); // Update display based on loaded units AFTER elements are visible
 
-        console.log("Form state loaded.", formData);
+        // console.log("Form state loaded.", formData); // Uncomment for debugging
     }
 }
 
-// Save state on form changes (debounce to prevent excessive saves)
+// Save state on form changes (Debounce to prevent excessive saves)
 let saveTimeout;
 form.addEventListener('input', () => {
     clearTimeout(saveTimeout);
