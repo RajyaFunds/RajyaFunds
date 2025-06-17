@@ -1,157 +1,248 @@
 /* --- Global Variables for consistent branding --- */
 :root {
-    --dark-brand-blue: #003366; /* Deep, authoritative blue */
-    --medium-brand-blue: #0055a5; /* Mid-tone blue for secondary elements */
-    --light-brand-blue: #007bff; /* Standard bootstrap blue, good for strong accents/focus */
-    --accent-green: #10B981; /* Vibrant green for primary actions, success, highlights */
-    --accent-yellow: #FBBF24; /* Warm yellow for complementary highlights, charts */
-    --text-primary-dark: #1F2937; /* Very dark gray for main text, highly readable */
-    --text-secondary-gray: #6B7280; /* Lighter gray for descriptions, subtext */
-    --background-light: #f7f9fc; /* Off-white, soft background for overall page */
-    --white: #ffffff; /* Pure white for cards, sections */
-    --light-gray-bg: #F3F4F6; /* Subtle light gray for form elements, subtle backgrounds */
-    --border-gray: #D1D5DB; /* Standard light gray for borders */
-    --dark-gray-text: #374151; /* Slightly softer dark text */
-    --success-green: #047857; /* Darker green for strong success indicators */
-    --warning-red: #DC2626; /* Alert red for errors and warnings */
-    --input-focus-shadow: rgba(0, 123, 255, 0.25); /* Subtle blue shadow on input focus */
-    --main-shadow: 0 8px 30px rgba(0,0,0,0.08); /* General card/section shadow */
-    --hover-shadow: 0 12px 35px rgba(0,0,0,0.12); /* Enhanced shadow on hover */
-    --button-shadow: 0 4px 10px rgba(16, 185, 129, 0.2); /* Green button shadow */
-    --button-hover-shadow: 0 6px 15px rgba(16, 185, 129, 0.3); /* Green button hover shadow */
+    /* Brand Primary Colors - Deep & Professional */
+    --brand-dark-blue: #0A192F; /* Very dark blue, almost black, for deep backgrounds/text */
+    --brand-medium-blue: #003366; /* Your existing dark blue, now for accents/secondary elements */
+    --brand-accent-blue: #0055A5; /* Your existing medium blue, prominent accents */
+    --brand-light-blue: #007BFF; /* A brighter blue for links/interactive elements */
+
+    /* Brand Accent Colors - Vibrant & Engaging */
+    --brand-green: #10B981; /* Primary accent for success, CTAs */
+    --brand-yellow: #FBBF24; /* Secondary accent for highlights, warnings */
+
+    /* Neutral Colors - Clean & Readable */
+    --text-primary: #333333; /* Strong black-like for primary text */
+    --text-secondary: #555555; /* Softer gray for descriptions */
+    --text-light: #F0F0F0; /* Light text on dark backgrounds */
+    --bg-light: #F8F8F8; /* Soft off-white background */
+    --bg-medium: #EEEEEE; /* Slightly darker light background */
+    --border-light: #E0E0E0; /* Light borders */
+    --border-medium: #CCCCCC; /* Medium borders */
+
+    /* Functional Colors */
+    --color-success: #047857; /* Darker green for success states */
+    --color-warning: #DC2626; /* Red for errors/warnings */
+
+    /* Shadows for depth and premium feel */
+    --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.05);
+    --shadow-md: 0 5px 15px rgba(0, 0, 0, 0.08);
+    --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.1);
+    --shadow-hover: 0 15px 35px rgba(0, 0, 0, 0.15);
+    --shadow-button: 0 4px 12px rgba(16, 185, 129, 0.2);
+    --shadow-button-hover: 0 6px 18px rgba(16, 185, 129, 0.3);
+
+    /* Border Radius for consistent rounded aesthetics */
+    --radius-sm: 0.5rem;
+    --radius-md: 0.75rem;
+    --radius-lg: 1rem;
+    --radius-full: 9999px; /* For pills, circles */
 }
 
-/* --- Base Body and Layout --- */
+/* --- Base Typography & Global Resets --- */
+html {
+    scroll-behavior: smooth; /* Smooth scrolling for anchor links */
+}
+
 body {
-    font-family: 'Inter', sans-serif; /* Using Inter from Google Fonts */
-    background: var(--background-light);
+    font-family: 'Inter', sans-serif;
+    line-height: 1.6;
+    color: var(--text-primary);
+    background-color: var(--bg-light);
     margin: 0;
     padding: 0;
-    color: var(--text-primary-dark);
-    line-height: 1.6;
     display: flex;
     flex-direction: column;
-    min-height: 100vh; /* Ensures footer stays at bottom */
-    -webkit-font-smoothing: antialiased; /* Smoother fonts for better legibility */
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
 }
 
-/* Universal box-sizing for consistent layouts */
 *, *::before, *::after {
     box-sizing: border-box;
 }
 
-/* Container for max-width and centering content */
-.container {
-    max-width: 1200px;
-    margin-left: auto;
-    margin-right: auto;
-    padding-left: 1rem;
-    padding-right: 1rem;
-    width: 100%; /* Ensures it fills parent width */
+h1, h2, h3, h4, h5, h6 {
+    font-weight: 700;
+    line-height: 1.2;
+    color: var(--brand-dark-blue);
+    margin-top: 0;
 }
 
-/* Section padding for consistency */
-.section-padded {
-    padding: 4rem 0; /* Generous vertical padding for sections */
+p {
+    margin-bottom: 1rem;
+}
+
+a {
+    color: var(--brand-accent-blue);
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+a:hover {
+    color: var(--brand-light-blue);
+}
+
+/* --- Layout Containers --- */
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1.5rem; /* Increased horizontal padding */
 }
 @media (max-width: 767px) {
-    .section-padded {
-        padding: 2.5rem 0;
+    .container {
+        padding: 0 1rem;
     }
 }
 
-/* --- Header Styling --- */
+.section-padding {
+    padding: 5rem 0;
+}
+@media (max-width: 767px) {
+    .section-padding {
+        padding: 3rem 0;
+    }
+}
+
+/* --- Header & Navigation --- */
 .main-header {
-    background: var(--dark-brand-blue);
-    color: var(--white);
-    padding: 1.5rem 0;
-    text-align: center;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.25);
-    position: sticky; /* Sticky header for better UX */
+    background-color: var(--brand-dark-blue);
+    color: var(--text-light);
+    padding: 1.2rem 0;
+    box-shadow: var(--shadow-md);
+    position: sticky;
     top: 0;
-    z-index: 1000; /* Ensure it stays on top */
+    z-index: 1000;
+}
+
+.header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap; /* Allow wrapping on small screens */
 }
 
 .site-title {
-    font-size: 2.8rem;
-    margin: 0 0 0.5rem 0;
-    font-weight: 700;
-    letter-spacing: -0.05rem;
+    font-size: 2.2rem;
+    color: var(--brand-green); /* Changed to accent green for prominence */
+    margin: 0;
+    letter-spacing: -0.05em;
 }
 
 .tagline {
-    font-size: 1.2rem;
-    opacity: 0.9;
-    font-weight: 300;
+    font-size: 1rem;
+    opacity: 0.8;
     margin: 0;
+    color: var(--text-light);
 }
 
-/* --- Navigation Styling --- */
 .main-nav {
-    background: var(--medium-brand-blue);
+    background-color: var(--brand-medium-blue); /* Slightly lighter than header */
     padding: 0.75rem 0;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    box-shadow: var(--shadow-sm);
 }
 
 .nav-links {
     display: flex;
-    flex-wrap: wrap;
     justify-content: center;
-    gap: 0.5rem; /* Reduced gap for tighter spacing */
+    gap: 1.5rem; /* More space between links */
+    flex-wrap: wrap;
 }
 
 .nav-item {
+    color: var(--text-light);
+    font-weight: 500;
+    padding: 0.75rem 1.2rem;
+    border-radius: var(--radius-sm);
+    transition: all 0.3s ease;
+    position: relative; /* For active indicator */
+}
+
+.nav-item:hover {
+    background-color: rgba(255, 255, 255, 0.1); /* Subtle hover effect */
     color: var(--white);
-    text-decoration: none;
-    padding: 0.75rem 1.25rem;
-    font-weight: 600;
-    transition: background-color 0.3s ease, color 0.3s ease, transform 0.2s ease;
-    border-radius: 0.5rem;
-    display: inline-flex; /* For potential icons */
-    align-items: center;
 }
 
-.nav-item:hover,
 .nav-item.active {
-    background-color: var(--dark-brand-blue);
-    color: var(--accent-green);
-    transform: translateY(-2px); /* Subtle lift on hover/active */
+    background-color: var(--brand-accent-blue); /* Solid color for active */
+    color: var(--white);
+    font-weight: 600;
+}
+.nav-item.active::after {
+    content: '';
+    position: absolute;
+    bottom: -8px; /* Position below the link */
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60%;
+    height: 3px;
+    background-color: var(--brand-green); /* Green underline */
+    border-radius: 2px;
 }
 
-/* --- Main Content Area for all pages --- */
+/* --- Main Content Area --- */
 .main-content-area {
-    flex-grow: 1; /* Allows main content to fill available space */
-    padding: 2rem 0; /* Vertical padding around content */
+    flex-grow: 1;
+    background-color: var(--bg-light);
 }
 
-/* Specific styling for sections within main content */
 .section-heading {
-    font-size: 2.5rem;
-    font-weight: 700;
-    color: var(--dark-brand-blue);
+    font-size: 2.8rem;
     text-align: center;
     margin-bottom: 1.5rem;
-    line-height: 1.2;
+    color: var(--brand-dark-blue);
+    font-weight: 700;
 }
-.section-description {
-    font-size: 1.15rem;
-    color: var(--text-secondary-gray);
+.section-subheading {
+    font-size: 1.2rem;
     text-align: center;
-    margin-bottom: 3rem;
+    color: var(--text-secondary);
     max-width: 800px;
-    margin-left: auto;
-    margin-right: auto;
+    margin: 0 auto 3rem auto;
+}
+
+/* --- Buttons --- */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem 2.2rem;
+    font-size: 1.1rem;
+    font-weight: 600;
+    border: none;
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    white-space: nowrap; /* Prevent text wrapping */
+}
+
+.btn-primary {
+    background-color: var(--brand-green);
+    color: var(--white);
+    box-shadow: var(--shadow-button);
+}
+.btn-primary:hover {
+    background-color: var(--color-success);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-button-hover);
+}
+
+.btn-secondary {
+    background-color: var(--brand-medium-blue);
+    color: var(--white);
+    box-shadow: var(--shadow-sm);
+}
+.btn-secondary:hover {
+    background-color: var(--brand-accent-blue);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
 }
 
 /* --- Homepage Specific Sections --- */
 .hero-section {
-    background: linear-gradient(135deg, var(--background-light) 0%, #e0e6f0 100%); /* Soft gradient */
-    padding: 5rem 0; /* More vertical padding for hero */
+    background: linear-gradient(135deg, var(--brand-dark-blue) 0%, var(--brand-medium-blue) 100%);
+    color: var(--text-light);
+    padding: 6rem 0;
     text-align: center;
-    overflow: hidden; /* Clear floats/margins */
-    position: relative;
-    z-index: 1; /* Ensure hero content is above any background elements if added */
 }
 
 .hero-grid {
@@ -159,195 +250,281 @@ body {
     grid-template-columns: 1fr;
     gap: 3rem;
     align-items: center;
-    justify-content: center;
+    max-width: 1000px;
+    margin: 0 auto;
 }
 @media (min-width: 768px) {
     .hero-grid {
-        grid-template-columns: 1.2fr 0.8fr; /* Text wider than image */
+        grid-template-columns: 1.2fr 0.8fr;
         text-align: left;
+    }
+    .hero-grid .hero-text {
+        padding-right: 2rem;
+    }
+    .hero-grid .hero-image {
+        display: flex;
+        justify-content: flex-end;
     }
 }
 
 .hero-title {
-    font-size: 3.5rem;
-    color: var(--dark-brand-blue);
+    font-size: 3.8rem;
+    color: var(--white);
     margin-bottom: 1rem;
-    line-height: 1.1;
-    font-weight: 700;
-    letter-spacing: -0.06rem;
+    letter-spacing: -0.06em;
 }
 @media (max-width: 767px) {
     .hero-title {
-        font-size: 2.5rem;
+        font-size: 2.8rem;
     }
 }
 
 .hero-description {
-    font-size: 1.3rem;
-    color: var(--text-primary-dark);
-    margin-bottom: 2rem;
-    max-width: 600px;
-}
-@media (min-width: 768px) {
-    .hero-description {
-        margin-left: 0; /* Override center alignment */
-        margin-right: auto;
-    }
+    font-size: 1.4rem;
+    color: var(--text-light);
+    opacity: 0.9;
+    margin-bottom: 2.5rem;
+    line-height: 1.5;
 }
 
 .hero-graphic {
     max-width: 100%;
     height: auto;
-    border-radius: 1rem;
-    box-shadow: var(--main-shadow);
-    display: block; /* Remove extra space below image */
-    margin: 0 auto; /* Center on mobile */
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-lg);
+    display: block;
+}
+
+/* Features/Value Proposition Section */
+.value-prop-section {
+    padding: 5rem 0;
+    background-color: var(--white);
+}
+.value-prop-grid {
+    display: grid;
+    grid-template-columns: 1fr; /* Stack on mobile */
+    gap: 4rem;
+    align-items: center;
 }
 @media (min-width: 768px) {
-    .hero-graphic {
-        margin: 0; /* Remove auto-margins on desktop */
+    .value-prop-grid {
+        grid-template-columns: 1fr 1fr; /* Two columns on desktop */
     }
 }
 
-/* Features Grid */
-.features-grid {
+.value-prop-text h3 {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+}
+.value-prop-text p {
+    font-size: 1.1rem;
+    color: var(--text-secondary);
+    margin-bottom: 1.5rem;
+}
+.value-prop-list {
+    list-style: none;
+    padding: 0;
+    margin-top: 2rem;
+}
+.value-prop-list li {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    margin-bottom: 1.2rem;
+    font-size: 1.1rem;
+    color: var(--text-primary);
+    font-weight: 500;
+}
+.value-prop-list i {
+    color: var(--brand-green);
+    font-size: 1.5rem;
+    flex-shrink: 0;
+    margin-top: 0.1rem;
+}
+
+.value-prop-image {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.value-prop-image img {
+    max-width: 100%;
+    height: auto;
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-lg);
+}
+
+
+/* Calculators Overview Section */
+.calculators-overview-section {
+    background-color: var(--bg-medium);
+    padding: 5rem 0;
+}
+.calculator-cards-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
     gap: 2rem;
-    justify-content: center;
-    align-items: stretch; /* Make cards same height */
-    text-align: center;
+    margin-top: 3rem;
 }
-
-.feature-card {
+.calculator-card {
     background-color: var(--white);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-md);
     padding: 2.5rem;
-    border-radius: 1rem;
-    box-shadow: var(--main-shadow);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-    border: 1px solid rgba(0,0,0,0.05); /* Very light border */
+    text-align: center;
+    transition: all 0.3s ease;
+    border: 1px solid var(--border-light);
     display: flex;
     flex-direction: column;
-    justify-content: flex-start;
-    align-items: center;
+    justify-content: space-between;
+    min-height: 250px; /* Ensure cards have consistent height */
 }
-
-.feature-card:hover {
-    transform: translateY(-8px); /* More pronounced lift */
-    box-shadow: var(--hover-shadow);
+.calculator-card:hover {
+    transform: translateY(-8px);
+    box-shadow: var(--shadow-hover);
+    border-color: var(--brand-accent-blue);
 }
-
-.feature-icon {
+.calculator-card .icon {
     font-size: 3.5rem;
-    color: var(--accent-green);
+    color: var(--brand-accent-blue);
     margin-bottom: 1.5rem;
 }
-
-.feature-title {
-    font-size: 1.6rem;
-    font-weight: 600;
-    color: var(--dark-brand-blue);
+.calculator-card h4 {
+    font-size: 1.5rem;
     margin-bottom: 0.75rem;
+    color: var(--brand-dark-blue);
 }
-
-.feature-description {
+.calculator-card p {
     font-size: 1rem;
-    color: var(--text-secondary-gray);
-    margin-bottom: 0; /* Remove default paragraph margin */
+    color: var(--text-secondary);
+    flex-grow: 1; /* Pushes button to bottom */
+    margin-bottom: 1.5rem;
+}
+.calculator-card .btn {
+    width: 100%; /* Make button full width of card */
+    padding: 0.8rem 1.5rem;
+    font-size: 1rem;
+    border-radius: var(--radius-sm);
 }
 
-/* CTA Section */
-.cta-section {
-    background: var(--dark-brand-blue); /* Solid dark blue background */
-    color: var(--white);
+/* Testimonials / Trust Section */
+.testimonials-section {
+    background-color: var(--brand-dark-blue);
+    color: var(--text-light);
+    padding: 5rem 0;
     text-align: center;
-    padding: 4rem 0; /* Consistent padding */
-    border-radius: 1rem; /* Rounded corners for the section itself */
-    margin: 3rem auto; /* Center with margin */
-    max-width: 1000px;
-    box-shadow: var(--main-shadow);
 }
-
-.cta-heading {
-    font-size: 2.2rem;
-    font-weight: 700;
-    margin-bottom: 1rem;
-    color: var(--white);
+.testimonial-card {
+    background-color: var(--brand-medium-blue);
+    border-radius: var(--radius-lg);
+    padding: 3rem;
+    max-width: 800px;
+    margin: 0 auto;
+    box-shadow: var(--shadow-lg);
 }
-
-.cta-text {
+.testimonial-card p {
     font-size: 1.2rem;
-    opacity: 0.9;
-    margin-bottom: 2rem;
-    max-width: 700px;
-    margin-left: auto;
-    margin-right: auto;
+    line-height: 1.8;
+    margin-bottom: 1.5rem;
+    font-style: italic;
+    color: var(--text-light);
+}
+.testimonial-card .author {
+    font-weight: 600;
+    font-size: 1.1rem;
+    color: var(--brand-green);
 }
 
-.cta-btn {
-    background-color: var(--accent-yellow); /* Eye-catching yellow button */
-    color: var(--dark-brand-blue);
-    font-weight: 700;
-    padding: 1rem 2.5rem;
-    font-size: 1.25rem;
-    border-radius: 0.75rem;
-    box-shadow: 0 4px 10px rgba(251, 191, 36, 0.3); /* Yellow shadow */
-}
-.cta-btn:hover {
-    background-color: #e0ac1a; /* Darker yellow on hover */
-    transform: translateY(-3px);
-    box-shadow: 0 6px 15px rgba(251, 191, 36, 0.4);
-}
-
-/* Placeholder Sections */
-.placeholder-section {
-    background-color: var(--light-gray-bg);
-    border-radius: 1rem;
-    border: 1px dashed var(--border-gray);
-    text-align: center;
-    padding: 3rem 2rem;
-    margin-bottom: 2rem; /* Add margin between placeholders */
-}
-
-/* --- Footer Styling --- */
-.main-footer {
-    background: var(--dark-brand-blue);
-    color: rgba(255, 255, 255, 0.7);
+/* Disclaimer Section */
+.disclaimer-section {
+    background-color: var(--bg-medium);
     padding: 2rem 0;
+    font-size: 0.85rem;
+    color: var(--text-secondary);
     text-align: center;
-    font-size: 0.95rem;
-    border-top: 5px solid var(--medium-brand-blue); /* Stronger separator */
-    margin-top: auto; /* Pushes footer to the bottom */
+    border-top: 1px solid var(--border-light);
 }
 
-.main-footer .container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 1rem;
+/* --- Footer --- */
+.main-footer {
+    background-color: var(--brand-dark-blue);
+    color: rgba(255, 255, 255, 0.6);
+    padding: 3rem 0;
+    font-size: 0.9rem;
+    border-top: 5px solid var(--brand-medium-blue);
+    margin-top: auto;
+}
+.footer-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2rem;
+    text-align: center;
+}
+@media (min-width: 768px) {
+    .footer-grid {
+        grid-template-columns: 1fr 1fr 1fr; /* Three columns on desktop */
+        text-align: left;
+    }
+}
+
+.footer-column h4 {
+    color: var(--white);
+    font-size: 1.2rem;
+    margin-bottom: 1rem;
+}
+.footer-column ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+.footer-column ul li {
+    margin-bottom: 0.5rem;
+}
+.footer-column ul li a {
+    color: rgba(255, 255, 255, 0.6);
+    transition: color 0.3s ease;
+}
+.footer-column ul li a:hover {
+    color: var(--brand-green);
+}
+.footer-bottom-text {
+    text-align: center;
+    margin-top: 2rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .social-links {
     display: flex;
-    gap: 1.2rem;
+    justify-content: center;
+    gap: 1rem;
+    margin-top: 1rem;
 }
-
+@media (min-width: 768px) {
+    .social-links {
+        justify-content: flex-start;
+    }
+}
 .social-icon {
     color: var(--white);
-    font-size: 1.4rem;
+    font-size: 1.5rem;
     transition: color 0.3s ease, transform 0.2s ease;
 }
-
 .social-icon:hover {
-    color: var(--accent-green);
-    transform: translateY(-2px);
+    color: var(--brand-green);
+    transform: translateY(-3px);
+}
+.contact-info-footer {
+    color: rgba(255, 255, 255, 0.8);
+    font-weight: 500;
 }
 
+
 /* --- Calculator Page Specific Styles (`loan-vs-sip.html`) --- */
-.calculator-page {
-    background-color: var(--background-light); /* Ensure calculator page uses light background */
-    padding-top: 2rem;
-    padding-bottom: 4rem;
+.calculator-page-main {
+    background-color: var(--bg-light);
+    padding-top: 3rem;
+    padding-bottom: 6rem; /* Extra space for footer/disclaimer */
 }
 
 .calculator-heading, .calculator-description {
@@ -367,53 +544,53 @@ body {
 
 .calculator-container {
     background-color: var(--white);
-    border-radius: 1.25rem; /* More rounded container */
-    box-shadow: var(--main-shadow); /* Consistent shadow */
-    overflow: hidden; /* Ensures child elements don't break rounded corners */
-    max-width: 950px; /* Slightly wider for better content distribution */
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-lg);
+    overflow: hidden;
+    max-width: 980px; /* Slightly wider for a grander feel */
     width: 100%;
     margin: 2rem auto;
-    min-height: 650px; /* Ensure a decent minimum height */
-    display: flex; /* Flexbox for sidebar and content */
-    flex-direction: column; /* Stacks vertically on small screens */
-    border: 1px solid rgba(0,0,0,0.05);
+    min-height: 700px; /* Increased min-height */
+    display: flex;
+    flex-direction: column;
+    border: 1px solid var(--border-light);
 }
 
 @media (min-width: 768px) {
     .calculator-container {
-        flex-direction: row; /* Two columns on larger screens */
+        flex-direction: row;
+        min-height: 750px; /* More height on desktop */
     }
 }
 
 /* Left Section: Sidebar (Progress Tracker) */
 .calculator-sidebar {
-    width: 100%; /* Full width on mobile */
-    background-color: var(--dark-brand-blue);
-    color: var(--white);
-    padding: 1.5rem;
-    border-bottom: 1px solid rgba(255,255,255,0.15); /* Subtle separator */
+    width: 100%;
+    background-color: var(--brand-dark-blue);
+    color: var(--text-light);
+    padding: 2rem 1.5rem;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
-    text-align: center;
-    flex-shrink: 0; /* Prevent shrinking when content is tight */
+    justify-content: flex-start; /* Align items to top */
+    flex-shrink: 0;
 }
 
 @media (min-width: 768px) {
     .calculator-sidebar {
-        width: 35%; /* Wider sidebar for better readability */
-        border-right: 1px solid rgba(255,255,255,0.15); /* Vertical separator */
+        width: 350px; /* Fixed width for sidebar on desktop */
+        border-right: 1px solid rgba(255,255,255,0.1);
         border-bottom: none;
-        padding: 2.5rem 1.5rem;
+        padding: 3rem 2rem;
     }
 }
 
 .calculator-sidebar h3 {
     font-size: 1.8rem;
     font-weight: 700;
-    margin-bottom: 2rem;
-    color: var(--white);
+    margin-bottom: 2.5rem;
+    color: var(--brand-green); /* Highlight journey title */
 }
 
 .calculator-sidebar ul {
@@ -424,17 +601,18 @@ body {
 }
 
 .calculator-sidebar li {
-    font-size: 1.1rem;
-    color: rgba(255,255,255,0.6); /* Lighter text for inactive steps */
-    padding: 1rem 0.75rem;
-    margin-bottom: 0.5rem;
+    font-size: 1.15rem;
+    color: rgba(255,255,255,0.65);
+    padding: 1.1rem 1rem; /* More vertical padding */
+    margin-bottom: 0.6rem;
     display: flex;
     align-items: center;
-    justify-content: center; /* Center items on mobile */
-    gap: 1rem; /* Space between icon and text */
-    transition: color 0.3s ease, background-color 0.3s ease;
-    border-radius: 0.75rem; /* Rounded list items */
-    cursor: default; /* Not clickable directly, only for progress display */
+    justify-content: center; /* Center on mobile */
+    gap: 1.2rem;
+    transition: all 0.3s ease;
+    border-radius: var(--radius-md);
+    cursor: default;
+    border: 1px solid transparent; /* Placeholder for active border */
 }
 .calculator-sidebar li:last-child {
     margin-bottom: 0;
@@ -442,171 +620,177 @@ body {
 
 @media (min-width: 768px) {
     .calculator-sidebar li {
-        justify-content: flex-start; /* Align to start on desktop */
+        justify-content: flex-start;
         padding-left: 1.5rem;
-        padding-right: 1.5rem;
     }
 }
 
 .calculator-sidebar li.active {
     font-weight: 600;
-    color: var(--accent-green); /* Accent green for active step text */
-    background-color: rgba(255,255,255,0.1); /* Subtle highlight for active step background */
-    box-shadow: inset 0 0 0 1px rgba(16, 185, 129, 0.5); /* Inner border highlight */
+    color: var(--white); /* White text for active step */
+    background-color: var(--brand-accent-blue); /* Solid blue for active background */
+    border-color: var(--brand-green); /* Green border around active step */
+    box-shadow: var(--shadow-sm);
 }
 
 .calculator-sidebar li.active .nav-icon {
-    color: var(--accent-green); /* Accent green for active icon */
+    color: var(--brand-green);
 }
 
 .nav-icon {
-    font-size: 1.3rem;
-    color: rgba(255,255,255,0.4); /* Subtle color for inactive icons */
+    font-size: 1.4rem; /* Larger icons */
+    color: rgba(255,255,255,0.4);
+    transition: color 0.3s ease;
 }
 
 /* Right Section: Main Calculator Content */
 .calculator-content {
-    width: 100%; /* Full width on mobile */
-    padding: 2.5rem;
-    flex-grow: 1; /* Allows content to take available space in flex container */
-    display: block; /* Important: this needs to be block for step-sections to toggle correctly */
-    position: relative; /* For absolutely positioned buttons */
-    padding-bottom: 80px; /* Space for fixed buttons at bottom */
+    width: 100%;
+    padding: 3rem; /* Generous padding */
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    padding-bottom: 100px; /* Space for fixed buttons at bottom */
+    overflow-y: auto; /* ENABLE SCROLLING FOR THIS PANEL */
+    -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
 }
-@media (min-width: 768px) {
+
+@media (max-width: 767px) {
     .calculator-content {
-        width: 65%; /* ~2/3 width on desktop */
-        padding: 3.5rem;
+        padding: 2rem 1.5rem; /* Slightly less padding on mobile */
+        padding-bottom: 100px; /* Consistent bottom padding */
     }
 }
 
 .step-title {
-    font-size: 2rem;
+    font-size: 2.2rem;
     font-weight: 700;
-    color: var(--dark-brand-blue);
+    color: var(--brand-dark-blue);
     margin-top: 0;
     margin-bottom: 1.8rem;
-    border-bottom: 2px solid var(--border-gray); /* Subtle separator */
+    border-bottom: 2px solid var(--border-light); /* Refined separator */
     padding-bottom: 1rem;
 }
 
 .subsection-title {
-    font-size: 1.6rem;
+    font-size: 1.7rem;
     font-weight: 600;
-    color: var(--medium-brand-blue);
-    margin-top: 2rem;
+    color: var(--brand-medium-blue);
+    margin-top: 2.5rem;
     margin-bottom: 1.5rem;
 }
 
-/* Step Sections */
+/* Step Sections (Each step's content) */
 .step-section {
-    display: none; /* Hidden by default, shown by JS */
-    min-height: 400px; /* Ensures content area has consistent height */
-    display: flex; /* Use flex inside step for column layout of elements */
-    flex-direction: column;
-    height: 100%; /* Important for pushing buttons to bottom */
+    display: none;
+    flex-direction: column; /* Content inside steps stacks vertically */
+    flex-grow: 1; /* Allows content to push buttons to bottom */
+    height: 100%;
 }
 
 .step-section.active {
-    display: flex; /* Show as flex when active */
+    display: flex;
 }
 
-/* Form Elements Styling */
+/* Form Elements */
 .form-group {
-    margin-bottom: 1.5rem;
+    margin-bottom: 1.8rem; /* More vertical spacing between form groups */
 }
 
 .form-label {
     display: block;
     font-size: 1.05rem;
     font-weight: 500;
-    color: var(--dark-gray-text);
+    color: var(--text-primary);
     margin-bottom: 0.8rem;
 }
 
 .form-input {
     width: 100%;
-    padding: 0.9rem 1.2rem;
-    border: 1px solid var(--border-gray);
-    border-radius: 0.6rem; /* Slightly more rounded inputs */
+    padding: 1rem 1.2rem; /* Larger padding for better touch targets */
+    border: 1px solid var(--border-medium); /* Slightly darker border */
+    border-radius: var(--radius-md);
     font-size: 1.1rem;
-    color: var(--text-primary-dark);
-    transition: border-color 0.3s ease, box-shadow 0.3s ease;
-    box-sizing: border-box;
-    -webkit-appearance: none; /* Remove default styling for better consistency */
-    -moz-appearance: none;
-    appearance: none;
+    color: var(--text-primary);
+    background-color: var(--bg-light); /* Light background for inputs */
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.05); /* Subtle inner shadow */
+    transition: all 0.3s ease;
 }
 
 .form-input::placeholder {
-    color: rgba(107, 114, 128, 0.7); /* Lighter placeholder text */
+    color: var(--text-secondary);
+    opacity: 0.7;
 }
 
 .form-input:focus {
     outline: none;
-    border-color: var(--light-brand-blue);
-    box-shadow: 0 0 0 3px var(--input-focus-shadow);
+    border-color: var(--brand-accent-blue);
+    box-shadow: 0 0 0 4px rgba(0, 85, 165, 0.15); /* More prominent focus ring */
+    background-color: var(--white);
 }
 
-/* Radio Button Group Styling (Option Group for better semantic meaning) */
+/* Radio/Option Groups */
 .radio-group {
     display: flex;
     flex-wrap: wrap;
-    gap: 1rem; /* Space between radio options */
+    gap: 0.75rem; /* Reduced gap for compact options */
 }
 
 .radio-group label {
     display: flex;
     align-items: center;
-    background-color: var(--light-gray-bg);
-    padding: 0.9rem 1.4rem;
-    border-radius: 0.75rem; /* More rounded pill-like shape */
+    background-color: var(--bg-medium); /* Use medium background for options */
+    padding: 1rem 1.5rem; /* More generous padding for options */
+    border-radius: var(--radius-lg); /* Pill-shaped options */
     cursor: pointer;
-    transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
-    border: 1px solid var(--border-gray);
+    transition: all 0.3s ease;
+    border: 1px solid var(--border-medium);
     font-size: 1rem;
-    font-weight: normal;
-    color: var(--text-primary-dark);
-    user-select: none; /* Prevent text selection on click */
+    font-weight: 500;
+    color: var(--text-primary);
+    user-select: none;
+    box-shadow: var(--shadow-sm); /* Subtle shadow for options */
 }
 
 .radio-group label:hover {
-    background-color: #e8eaec; /* Slightly darker background on hover */
+    background-color: #e0e0e0; /* Darker hover for options */
+    border-color: var(--brand-light-blue);
 }
 
 .radio-group label:has(input:checked) {
-    background-color: #E0F2F1; /* Light green for checked background */
-    border-color: var(--accent-green);
+    background-color: #E0F2F1; /* Light green checked background */
+    border-color: var(--brand-green);
     font-weight: 600;
-    color: var(--success-green);
-    box-shadow: 0 2px 10px rgba(16, 185, 129, 0.15); /* Enhanced shadow for checked item */
+    color: var(--color-success);
+    box-shadow: 0 2px 10px rgba(16, 185, 129, 0.15);
 }
 
 .radio-group input[type="radio"] {
-    /* Hide default radio button and create custom one */
     appearance: none;
     -webkit-appearance: none;
-    width: 1.4rem; /* Custom radio button size */
-    height: 1.4rem;
-    border: 2px solid var(--border-gray);
+    width: 1.5rem; /* Larger custom radio button */
+    height: 1.5rem;
+    border: 2px solid var(--border-medium);
     border-radius: 50%;
     margin-right: 0.8rem;
     position: relative;
     cursor: pointer;
     flex-shrink: 0;
-    transition: border-color 0.3s ease;
+    transition: all 0.3s ease;
 }
 
 .radio-group input[type="radio"]:checked {
-    border-color: var(--accent-green);
+    border-color: var(--brand-green);
+    background-color: var(--brand-green); /* Fill with green when checked */
 }
 
 .radio-group input[type="radio"]:checked::before {
     content: '';
     display: block;
-    width: 0.8rem;
-    height: 0.8rem;
-    background-color: var(--accent-green);
+    width: 0.7rem;
+    height: 0.7rem;
+    background-color: var(--white); /* White dot inside green */
     border-radius: 50%;
     position: absolute;
     top: 50%;
@@ -614,155 +798,141 @@ body {
     transform: translate(-50%, -50%);
 }
 
-/* Button Styling */
+/* Navigation Buttons (fixed at bottom of calculator content) */
 .navigation-buttons {
     display: flex;
     justify-content: space-between;
-    margin-top: auto; /* Pushes buttons to the bottom of the step-section */
-    padding-top: 2rem;
-    border-top: 1px solid var(--border-gray);
-    gap: 1.5rem; /* More space between buttons */
-    flex-wrap: wrap; /* Allow buttons to wrap on small screens */
-
-    /* Make buttons stick to bottom of calculator-content */
+    gap: 1.5rem;
+    flex-wrap: wrap;
     position: absolute;
     bottom: 0;
     left: 0;
     right: 0;
-    padding-left: 2.5rem; /* Match calculator-content padding */
-    padding-right: 2.5rem; /* Match calculator-content padding */
-    background-color: var(--white); /* Ensure background to cover content scroll */
-    box-shadow: 0 -5px 15px rgba(0,0,0,0.05); /* Subtle shadow above buttons */
-    border-bottom-left-radius: 1.25rem; /* Match parent container radius */
-    border-bottom-right-radius: 1.25rem;
+    padding: 1.5rem 3rem; /* Adjusted padding */
+    background-color: var(--white);
+    box-shadow: 0 -5px 15px rgba(0,0,0,0.03);
+    border-top: 1px solid var(--border-light);
+    border-bottom-left-radius: var(--radius-lg);
+    border-bottom-right-radius: var(--radius-lg);
+    z-index: 50; /* Ensure buttons are above scrollable content */
 }
-@media (min-width: 768px) {
-    .navigation-buttons {
-        padding-left: 3.5rem; /* Match calculator-content padding */
-        padding-right: 3.5rem; /* Match calculator-content padding */
-    }
-}
-
-
-.btn {
-    padding: 1rem 2.25rem; /* Generous padding */
-    border: none;
-    border-radius: 0.75rem; /* More rounded buttons */
-    font-size: 1.15rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
-    text-decoration: none; /* For anchor tags acting as buttons */
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    flex-grow: 1; /* Allows buttons to grow to fill space */
-    max-width: 250px; /* Max width for individual buttons */
-}
-@media (max-width: 480px) { /* Stack buttons on very small screens */
-    .btn {
-        flex-grow: 1;
-        max-width: 100%;
-    }
+@media (max-width: 480px) {
     .navigation-buttons {
         flex-direction: column;
-        align-items: center;
+        padding-left: 1.5rem;
+        padding-right: 1.5rem;
+        gap: 1rem;
     }
-}
-
-
-.btn-primary {
-    background-color: var(--accent-green);
-    color: var(--white);
-    box-shadow: var(--button-shadow);
-}
-
-.btn-primary:hover {
-    background-color: var(--success-green); /* Slightly darker green on hover */
-    transform: translateY(-2px);
-    box-shadow: var(--button-hover-shadow);
-}
-
-.btn-secondary {
-    background-color: var(--light-gray-bg);
-    color: var(--dark-gray-text);
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
-}
-
-.btn-secondary:hover {
-    background-color: #DDE1E6; /* Slightly darker gray on hover */
-    transform: translateY(-2px);
-    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+    .btn {
+        width: 100%;
+        max-width: 100%;
+    }
 }
 
 /* Result Box Styling */
 .result-box {
     background-color: #e6f7f5; /* Light green background for result boxes */
     padding: 2rem;
-    border-radius: 0.8rem; /* More rounded */
+    border-radius: var(--radius-md);
     margin-bottom: 1.5rem;
-    border: 1px solid var(--accent-green); /* Green border for clear distinction */
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    border: 1px solid var(--brand-green);
+    box-shadow: var(--shadow-sm);
+    display: flex;
+    flex-direction: column; /* Stack content within result box */
+}
+
+.result-box h4 {
+    color: var(--color-success);
+    font-size: 1.4rem;
+    margin-bottom: 1rem;
+    border-bottom: 1px dashed rgba(4, 120, 87, 0.3); /* Subtle separator */
+    padding-bottom: 0.5rem;
 }
 
 .result-box p {
     font-size: 1.1rem;
-    margin-bottom: 0.6rem;
-    color: var(--dark-gray-text);
+    margin-bottom: 0.7rem;
+    color: var(--text-primary);
 }
-
 .result-box p:last-child {
     margin-bottom: 0;
 }
 
 .highlight-value {
-    font-weight: bold;
-    color: var(--dark-brand-blue); /* Highlight with a strong brand blue */
+    font-weight: 700; /* Bolder highlight */
+    color: var(--brand-dark-blue); /* Stronger highlight color */
+}
+.subtle-text {
+    font-size: 0.95rem;
+    color: var(--text-secondary);
+    margin-top: 0.5rem;
+    line-height: 1.4;
+}
+.final-conclusion {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-top: 2rem;
+    padding: 1rem 1.5rem;
+    border-radius: var(--radius-md);
+    text-align: center;
+    background-color: var(--bg-medium);
+    border: 1px solid var(--border-medium);
+    box-shadow: var(--shadow-sm);
+}
+.final-conclusion.text-success {
+    background-color: #E0F2F1;
+    border-color: var(--brand-green);
+    color: var(--color-success);
+}
+.final-conclusion.text-primary {
+    background-color: #E3F2FD; /* Light blue */
+    border-color: var(--brand-accent-blue);
+    color: var(--brand-medium-blue);
 }
 
 /* Chart Container */
 .chart-container {
     width: 100%;
-    max-width: 500px; /* Increased max width for charts */
-    margin: 1.5rem auto 2.5rem auto; /* More margin at bottom */
+    max-width: 600px; /* Generous width for charts */
+    margin: 2rem auto;
     background-color: var(--white);
-    padding: 1.5rem;
-    border-radius: 0.75rem;
-    box-shadow: var(--main-shadow); /* Consistent shadow for charts */
-    border: 1px solid var(--border-gray);
+    padding: 2rem; /* More padding */
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-md);
+    border: 1px solid var(--border-light);
 }
 
 /* Budgeting Grid for Inputs */
 .budget-input-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); /* Responsive columns */
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); /* Slightly smaller min-width */
     gap: 1.5rem;
     margin-top: 1.5rem;
 }
 
 .budget-input-grid .input-group .budget-allocation {
     font-size: 0.95rem;
-    color: var(--text-secondary-gray);
+    color: var(--text-secondary);
     margin-top: 0.5rem;
     font-weight: 500;
 }
 
 .budget-input-grid .form-input.text-center {
-    text-align: center; /* Center percentage input text */
+    text-align: center;
 }
 
-/* Warning Message Styling */
+/* Warning & Error Messages */
 .warning-message {
-    color: var(--warning-red);
+    color: var(--color-warning);
     font-size: 0.95rem;
     margin-top: 1rem;
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    padding: 0.75rem;
-    background-color: rgba(220, 38, 38, 0.08); /* Very light red background */
-    border-left: 4px solid var(--warning-red);
-    border-radius: 0.5rem;
+    padding: 0.8rem 1rem;
+    background-color: rgba(220, 38, 38, 0.08);
+    border-left: 4px solid var(--color-warning);
+    border-radius: var(--radius-sm);
     font-weight: 500;
 }
 .warning-message i {
@@ -770,17 +940,28 @@ body {
 }
 
 .validation-error-message {
-    color: var(--warning-red);
+    color: var(--color-warning);
     font-size: 0.85rem;
     margin-top: 0.4rem;
     display: block;
     font-weight: 500;
 }
 
+/* Input Disclaimer (for ROI) */
+.input-disclaimer {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    margin-top: 0.5rem;
+    line-height: 1.4;
+}
+.input-disclaimer strong {
+    color: var(--text-primary);
+}
 
-/* --- Utility Classes (Tailwind-like) --- */
+
+/* --- Utility Classes --- */
 .hidden {
-    display: none !important; /* Force hide with !important to ensure it works */
+    display: none !important;
 }
 
 .mt-2 { margin-top: 0.5rem; }
@@ -795,6 +976,45 @@ body {
 .font-semibold { font-weight: 600; }
 .text-lg { font-size: 1.125rem; }
 .text-sm { font-size: 0.875rem; }
-.text-secondary-gray { color: var(--text-secondary-gray); }
+.text-secondary-gray { color: var(--text-secondary); }
 .text-center { text-align: center; }
-.img-fluid { max-width: 100%; height: auto; } /* For responsive images */
+.img-fluid { max-width: 100%; height: auto; }
+
+/* Custom class for calculator result sections */
+.result-section-content {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem; /* Space between result boxes/charts */
+}
+
+/* Hide print button on print media for cleaner PDF/printouts */
+@media print {
+    .navigation-buttons, .main-header, .main-nav, .main-footer, .calculator-sidebar, .calculator-heading, .calculator-description, .email-share-section {
+        display: none !important;
+    }
+    body {
+        background-color: #fff !important;
+    }
+    .calculator-content {
+        padding: 0 !important;
+        margin: 0 !important;
+        box-shadow: none !important;
+        border: none !important;
+        max-height: none !important;
+        overflow-y: visible !important;
+    }
+    .calculator-container {
+        box-shadow: none !important;
+        border: none !important;
+        padding: 0 !important;
+        border-radius: 0 !important;
+        min-height: auto !important;
+    }
+    .step-section.active {
+        display: block !important;
+    }
+    .chart-container {
+        break-inside: avoid; /* Prevent charts from breaking across pages */
+        page-break-inside: avoid;
+    }
+}
