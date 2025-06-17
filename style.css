@@ -236,7 +236,7 @@ a:hover {
     border: none;
     border-radius: var(--radius-md);
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: all 0.3s ease; /* Tailwind hover transition */
     text-decoration: none;
     white-space: nowrap;
 }
@@ -584,7 +584,7 @@ a:hover {
 }
 
 
-/* --- Calculator Page Specific Styles (`loan-vs-sip.html`) --- */
+/* --- Calculator Page Specific Styles (`loan-vs-sip-calculator.html`) --- */
 .calculator-page-main {
     background-color: var(--bg-page);
     padding-top: 3rem;
@@ -729,6 +729,32 @@ a:hover {
     }
 }
 
+/* Global Currency/Unit Toggle */
+.currency-unit-toggle {
+    display: flex;
+    justify-content: flex-end; /* Align to right */
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 2rem; /* Space below the toggles */
+    padding: 0 0; /* Remove padding if added by parent */
+}
+.currency-unit-toggle select {
+    padding: 0.6rem 1rem;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    font-size: 0.95rem;
+    color: var(--text-dark);
+    background-color: var(--bg-card);
+    transition: all 0.2s ease;
+    cursor: pointer;
+}
+.currency-unit-toggle select:focus {
+    outline: none;
+    border-color: var(--brand-primary-light);
+    box-shadow: 0 0 0 3px rgba(99, 166, 233, 0.2);
+}
+
+
 .step-title {
     font-size: 2.2rem;
     font-weight: 700;
@@ -865,6 +891,76 @@ a:hover {
     transform: translate(-50%, -50%);
 }
 
+/* Dropdown for Investment Category */
+.investment-category-select {
+    width: 100%;
+    padding: 1rem 1.2rem;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    font-size: 1.1rem;
+    color: var(--text-dark);
+    background-color: var(--bg-page);
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.05);
+    transition: all 0.3s ease;
+    appearance: none; /* Remove default arrow */
+    -webkit-appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke-width='1.5' stroke='%234A83C0'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M19.5 8.25l-7.5 7.5-7.5-7.5' /%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 1rem center;
+    background-size: 1.5rem;
+}
+.investment-category-select:focus {
+    outline: none;
+    border-color: var(--brand-primary-light);
+    box-shadow: 0 0 0 4px rgba(99, 166, 233, 0.2);
+    background-color: var(--white);
+}
+
+/* Tooltip/Info icon for market reference */
+.info-tooltip-container {
+    position: relative;
+    display: inline-block; /* Allows icon to be next to label */
+    margin-left: 0.5rem;
+    cursor: help;
+}
+.info-tooltip-container .fas.fa-info-circle {
+    color: var(--brand-primary-light);
+    font-size: 0.9em;
+}
+.info-tooltip-text {
+    visibility: hidden;
+    width: 250px; /* Wider tooltip for more text */
+    background-color: var(--brand-primary-dark);
+    color: var(--white);
+    text-align: left;
+    border-radius: var(--radius-sm);
+    padding: 0.8rem 1rem;
+    position: absolute;
+    z-index: 1;
+    bottom: 125%; /* Position above the icon */
+    left: 50%;
+    margin-left: -125px; /* Half of width to center */
+    opacity: 0;
+    transition: opacity 0.3s, visibility 0.3s;
+    font-size: 0.85rem;
+    box-shadow: var(--shadow-md);
+    line-height: 1.4;
+}
+.info-tooltip-text::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: var(--brand-primary-dark) transparent transparent transparent;
+}
+.info-tooltip-container:hover .info-tooltip-text {
+    visibility: visible;
+    opacity: 1;
+}
+
 /* Navigation Buttons (fixed at bottom of calculator content) */
 .navigation-buttons {
     display: flex;
@@ -911,6 +1007,10 @@ a:hover {
     box-shadow: var(--shadow-sm);
     display: flex;
     flex-direction: column;
+    /* Glassmorphism subtle effect */
+    background-color: rgba(230, 247, 245, 0.8); /* Slightly transparent */
+    backdrop-filter: blur(5px); /* Subtle blur for background */
+    border: 1px solid rgba(16, 185, 129, 0.2); /* Softer border */
 }
 
 .result-box h4 {
@@ -1133,7 +1233,6 @@ a:hover {
         background-color: #fff !important;
     }
     .calculator-content {
-        /* Ensure content prints correctly without being cut off */
         padding: 0 !important;
         margin: 0 !important;
         box-shadow: none !important;
