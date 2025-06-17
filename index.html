@@ -1,20 +1,135 @@
-<section id="calculators" class="bg-white rounded-lg shadow-lg p-8 mb-12">
-                <h3 class="text-3xl font-bold text-blue-800 mb-6 text-center">Our Smart Tools</h3>
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                    <div class="bg-blue-50 border border-blue-200 rounded-lg p-6 text-center shadow-sm hover:shadow-md transition-shadow duration-300">
-                        <h4 class="text-2xl font-semibold text-blue-700 mb-3">Smart Buy Planner</h4>
-                        <p class="text-gray-600 mb-4">Compare Home Loan vs SIP for your dream home.</p>
-                        <a href="#" class="inline-block bg-blue-600 text-white py-2 px-6 rounded-full hover:bg-blue-700 transition-colors duration-300">Use Tool</a>
-                    </div>
-                    <div class="bg-gray-50 border border-gray-200 rounded-lg p-6 text-center shadow-sm opacity-70 cursor-not-allowed">
-                        <h4 class="text-2xl font-semibold text-gray-600 mb-3">SIP Calculator</h4>
-                        <p class="text-gray-500 mb-4">Plan your systematic investments.</p>
-                        <span class="inline-block bg-gray-400 text-white py-2 px-6 rounded-full">Coming Soon</span>
-                    </div>
-                     <div class="bg-gray-50 border border-gray-200 rounded-lg p-6 text-center shadow-sm opacity-70 cursor-not-allowed">
-                        <h4 class="text-2xl font-semibold text-gray-600 mb-3">Personal Loan Calculator</h4>
-                        <p class="text-gray-500 mb-4">Calculate your loan EMIs.</p>
-                        <span class="inline-block bg-gray-400 text-white py-2 px-6 rounded-full">Coming Soon</span>
-                    </div>
-                </div>
-            </section>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RajyaFunds - Empowering Your Financial Journey</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <style>
+        /* Basic body font and line height */
+        body {
+            font-family: 'Inter', sans-serif; /* Fallback for Inter, assuming it's loaded via CSS or system */
+            line-height: 1.6;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800">
+
+    <header class="bg-blue-900 text-white p-4 shadow-md">
+        <div class="container mx-auto flex justify-between items-center">
+            <div>
+                <h1 class="text-3xl font-bold">
+                    <span class="text-green-400">RajyaFunds</span>
+                </h1>
+                <p class="text-sm">Empowering Your Financial Journey</p>
+            </div>
+            <p class="text-lg font-medium hidden md:block">Your Path to Financial Clarity</p>
+        </div>
+    </header>
+
+    <nav class="bg-blue-800 text-white py-3 shadow-md">
+        <ul class="container mx-auto flex justify-around">
+            <li><a href="index.html" class="hover:text-blue-200 transition-colors duration-300">Home</a></li>
+            <li><a href="loan-vs-sip-calculator.html" class="hover:text-blue-200 transition-colors duration-300">Calculators</a></li>
+            <li><a href="#articles" class="hover:text-blue-200 transition-colors duration-300">Articles</a></li>
+            <li><a href="#contact" class="hover:text-blue-200 transition-colors duration-300">Contact</a></li>
+        </ul>
+    </nav>
+
+    <section class="bg-gradient-to-r from-blue-700 to-blue-900 text-white py-20 text-center shadow-lg">
+        <div class="container mx-auto">
+            <h2 class="text-5xl font-extrabold mb-4 animate-fadeInUp">Unlock Your Financial Potential</h2>
+            <p class="text-xl mb-8 animate-fadeIn delay-1s">Smart tools and insights for a secure future.</p>
+            <a href="loan-vs-sip-calculator.html" class="bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-8 rounded-full shadow-lg transition-transform transform hover:scale-105 animate-bounceIn delay-2s">
+                Start Your Journey
+            </a>
+        </div>
+    </section>
+
+    <section id="calculators" class="container mx-auto p-6 mt-8 mb-12">
+        <h3 class="text-3xl font-extrabold text-blue-900 mb-8 text-center">Our Smart Tools</h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div class="bg-white border border-blue-200 rounded-lg p-6 text-center shadow-lg hover:shadow-xl transition-shadow duration-300">
+                <h4 class="text-2xl font-semibold text-blue-700 mb-3">Smart Buy Planner: Loan vs SIP</h4>
+                <p class="text-gray-600 mb-4">Empowering your "Buy Now or Invest & Buy Later" decisions.</p>
+                <a href="loan-vs-sip-calculator.html" class="inline-block bg-blue-600 text-white py-3 px-8 rounded-full font-semibold hover:bg-blue-700 transition-colors duration-300 shadow-md">Use Tool</a>
+            </div>
+            <div class="bg-gray-50 border border-gray-200 rounded-lg p-6 text-center shadow-sm opacity-70 cursor-not-allowed">
+                <h4 class="text-2xl font-semibold text-gray-600 mb-3">SIP Calculator</h4>
+                <p class="text-gray-500 mb-4">Plan your systematic investments.</p>
+                <span class="inline-block bg-gray-400 text-white py-2 px-6 rounded-full">Coming Soon</span>
+            </div>
+             <div class="bg-gray-50 border border-gray-200 rounded-lg p-6 text-center shadow-sm opacity-70 cursor-not-allowed">
+                <h4 class="text-2xl font-semibold text-gray-600 mb-3">Personal Loan Calculator</h4>
+                <p class="text-gray-500 mb-4">Calculate your loan EMIs.</p>
+                <span class="inline-block bg-gray-400 text-white py-2 px-6 rounded-full">Coming Soon</span>
+            </div>
+            <div class="bg-gray-50 border border-gray-200 rounded-lg p-6 text-center shadow-sm opacity-70 cursor-not-allowed">
+                <h4 class="text-2xl font-semibold text-gray-600 mb-3">Vehicle Loan Calculator</h4>
+                <p class="text-gray-500 mb-4">Estimate your vehicle loan repayments.</p>
+                <span class="inline-block bg-gray-400 text-white py-2 px-6 rounded-full">Coming Soon</span>
+            </div>
+            <div class="bg-gray-50 border border-gray-200 rounded-lg p-6 text-center shadow-sm opacity-70 cursor-not-allowed">
+                <h4 class="text-2xl font-semibold text-gray-600 mb-3">Retirement Planner</h4>
+                <p class="text-gray-500 mb-4">Secure your golden years.</p>
+                <span class="inline-block bg-gray-400 text-white py-2 px-6 rounded-full">Coming Soon</span>
+            </div>
+            <div class="bg-gray-50 border border-gray-200 rounded-lg p-6 text-center shadow-sm opacity-70 cursor-not-allowed">
+                <h4 class="text-2xl font-semibold text-gray-600 mb-3">Education Loan Calculator</h4>
+                <p class="text-gray-500 mb-4">Plan your education financing.</p>
+                <span class="inline-block bg-gray-400 text-white py-2 px-6 rounded-full">Coming Soon</span>
+            </div>
+            <div class="bg-gray-50 border border-gray-200 rounded-lg p-6 text-center shadow-sm opacity-70 cursor-not-allowed">
+                <h4 class="text-2xl font-semibold text-gray-600 mb-3">Business Loan Calculator</h4>
+                <p class="text-gray-500 mb-4">Calculate your business loan details.</p>
+                <span class="inline-block bg-gray-400 text-white py-2 px-6 rounded-full">Coming Soon</span>
+            </div>
+            <div class="bg-gray-50 border border-gray-200 rounded-lg p-6 text-center shadow-sm opacity-70 cursor-not-allowed">
+                <h4 class="text-2xl font-semibold text-gray-600 mb-3">Net Worth Calculator</h4>
+                <p class="text-gray-500 mb-4">Track your financial health.</p>
+                <span class="inline-block bg-gray-400 text-white py-2 px-6 rounded-full">Coming Soon</span>
+            </div>
+        </div>
+    </section>
+
+    <section id="articles" class="container mx-auto p-6 mt-12 mb-12">
+        <h3 class="text-3xl font-extrabold text-blue-900 mb-8 text-center">Insights & Articles</h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div class="bg-white rounded-lg shadow-md p-6 border border-gray-200">
+                <h4 class="text-xl font-semibold text-blue-700 mb-3">Understanding SIPs</h4>
+                <p class="text-gray-600 mb-4">A comprehensive guide to Systematic Investment Plans.</p>
+                <a href="#" class="text-blue-600 hover:underline">Read More</a>
+            </div>
+            <div class="bg-white rounded-lg shadow-md p-6 border border-gray-200">
+                <h4 class="text-xl font-semibold text-blue-700 mb-3">Home Loan vs. Personal Loan</h4>
+                <p class="text-gray-600 mb-4">Key differences and when to choose which.</p>
+                <a href="#" class="text-blue-600 hover:underline">Read More</a>
+            </div>
+            <div class="bg-white rounded-lg shadow-md p-6 border border-gray-200">
+                <h4 class="text-xl font-semibold text-blue-700 mb-3">Budgeting Basics: 50/30/20 Rule</h4>
+                <p class="text-gray-600 mb-4">Simplify your finances with this easy budgeting method.</p>
+                <a href="#" class="text-blue-600 hover:underline">Read More</a>
+            </div>
+        </div>
+    </section>
+
+    <section id="contact" class="bg-blue-700 text-white py-16 text-center shadow-inner">
+        <div class="container mx-auto">
+            <h3 class="text-3xl font-extrabold mb-4">Have Questions? Get in Touch!</h3>
+            <p class="text-lg mb-8">We're here to help you navigate your financial journey.</p>
+            <a href="mailto:info@rajyafunds.com" class="bg-white text-blue-700 font-bold py-3 px-8 rounded-full shadow-lg hover:bg-gray-100 transition-colors duration-300">
+                Contact Us
+            </a>
+        </div>
+    </section>
+
+    <footer class="bg-blue-900 text-white py-6 mt-12">
+        <div class="container mx-auto text-center text-sm">
+            &copy; 2025 RajyaFunds. All rights reserved. Your Path to Financial Clarity.
+        </div>
+    </footer>
+
+</body>
+</html>
