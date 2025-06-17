@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', function() {
     let formData = {
         // Step 1 defaults
         goalType: 'buy_home',
-        loanType: 'home_loan', // Default loan type if 'take_loan' is chosen
+        loanType: 'home_loan', // Default loan type if 'take_loan' is chosen, if 'take_loan' is chosen initially
         roi: 8.5, // Default Expected Annual ROI
 
         // Step 2 defaults
@@ -24,6 +24,10 @@ document.addEventListener('DOMContentLoaded', function() {
         budgetSavings: 20,
         desiredEmi: 40000
     };
+
+    // Constants for calculations
+    const PROPERTY_INFLATION_RATE = 0.05; // 5% annual property inflation for home value growth
+    const SIP_INVESTMENT_ROI = 12; // 12% annual ROI for SIP/Lumpsum comparison in Scenario 2
 
     // --- DOM Element References ---
 
@@ -92,20 +96,25 @@ document.addEventListener('DOMContentLoaded', function() {
     const resMonthlySavingPotential = document.getElementById('resMonthlySavingPotential');
     const resRequiredSIP = document.getElementById('resRequiredSIP');
     const resSIPRoi = document.getElementById('resSIPRoi');
+    const resInflationRate = document.getElementById('resInflationRate'); // New for inflation display
 
     const scenario1DownPayment = document.getElementById('scenario1DownPayment');
     const scenario1LoanAmount = document.getElementById('scenario1LoanAmount');
     const scenario1Emi = document.getElementById('scenario1Emi');
     const scenario1Tenure = document.getElementById('scenario1Tenure');
     const scenario1TotalInterest = document.getElementById('scenario1TotalInterest');
+    const scenario1TotalCost = document.getElementById('scenario1TotalCost'); // New for total cost
 
     const scenario2DownPayment = document.getElementById('scenario2DownPayment');
     const scenario2LoanAmount = document.getElementById('scenario2LoanAmount');
     const scenario2Emi = document.getElementById('scenario2Emi');
     const scenario2Tenure = document.getElementById('scenario2Tenure');
     const scenario2TotalInterest = document.getElementById('scenario2TotalInterest');
+    const scenario2TotalCost = document.getElementById('scenario2TotalCost'); // New for total cost
     const scenario2InvestedAmount = document.getElementById('scenario2InvestedAmount');
     const scenario2InvestmentReturn = document.getElementById('scenario2InvestmentReturn');
+    const scenario2SipRoi = document.getElementById('scenario2SipRoi'); // New for SIP ROI
+    const comparisonConclusion = document.getElementById('comparisonConclusion'); // New for final conclusion
 
     // Chart.js instances (initialized to null)
     let budgetChartInstance = null;
@@ -115,23 +124,46 @@ document.addEventListener('DOMContentLoaded', function() {
 
     /**
      * Formats a number as Indian Rupees, converting to Lakhs or Crores if applicable.
+     * Applies Indian comma formatting (e.g., 1,00,000).
      * @param {number} amount - The amount to format.
+     * @param {number} decimalPlaces - Number of decimal places to show.
      * @returns {string} Formatted currency string.
      */
-    function formatCurrency(amount) {
+    function formatCurrency(amount, decimalPlaces = 0) {
         if (amount === null || isNaN(amount)) return 'N/A';
-        // Handle cases where amount is 0 or very small negative values from calculations
-        if (Math.abs(amount) < 0.01) return `₹0`; // Display very small values as 0
+        const roundedAmount = parseFloat(amount.toFixed(decimalPlaces)); // Round first for display consistency
 
-        const absAmount = Math.abs(amount);
-        const sign = amount < 0 ? '-' : '';
+        if (Math.abs(roundedAmount) < 1) return `₹0`;
 
-        if (absAmount >= 10000000) { // Crore (100 Lakhs = 1 Crore)
-            return `${sign}₹${(absAmount / 10000000).toLocaleString('en-IN', { maximumFractionDigits: 2 })} Crore`;
-        } else if (absAmount >= 100000) { // Lakhs
-            return `${sign}₹${(absAmount / 100000).toLocaleString('en-IN', { maximumFractionDigits: 2 })} Lakhs`;
+        const isNegative = roundedAmount < 0;
+        let num = Math.abs(roundedAmount);
+        let result = '';
+
+        const toIndianCommas = (n) => {
+            let s = n.toFixed(decimalPlaces).toString();
+            let [integerPart, decimalPart] = s.split('.');
+
+            let lastThree = integerPart.substring(integerPart.length - 3);
+            let otherNumbers = integerPart.substring(0, integerPart.length - 3);
+            if (otherNumbers !== '') {
+                lastThree = ',' + lastThree;
+            }
+            let formatted = otherNumbers.replace(/\B(?=(\d{2})+(?!\d))/g, ",") + lastThree;
+
+            return decimalPart ? `${formatted}.${decimalPart}` : formatted;
+        };
+
+        if (num >= 10000000) { // Crores
+            let crores = num / 10000000;
+            result = `₹${crores.toFixed(decimalPlaces)} Crore`;
+        } else if (num >= 100000) { // Lakhs
+            let lakhs = num / 100000;
+            result = `₹${lakhs.toFixed(decimalPlaces)} Lakhs`;
+        } else {
+            result = `₹${toIndianCommas(num)}`;
         }
-        return `${sign}₹${absAmount.toLocaleString('en-IN', { maximumFractionDigits: 0 })}`;
+
+        return isNegative ? `-${result}` : result;
     }
 
 
@@ -176,7 +208,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const monthlyRate = (annualRate / 12) / 100;
         const months = years * 12;
         if (monthlyRate === 0) return monthlyInvestment * months;
-        // Formula for FV of an ordinary annuity (payments at end of period) * (1 + monthlyRate) for beginning of period
+        // Formula for FV of an ordinary annuity (payments at beginning of period)
         const fv = monthlyInvestment * ((Math.pow(1 + monthlyRate, months) - 1) / monthlyRate) * (1 + monthlyRate);
         return isNaN(fv) || !isFinite(fv) ? 0 : fv;
     }
@@ -217,6 +249,11 @@ document.addEventListener('DOMContentLoaded', function() {
         // Show the current step section
         if (stepSections[stepNumber]) {
             stepSections[stepNumber].classList.remove('hidden');
+            // Ensure the scrollable area is reset to top when a new step is shown
+            const calculatorContent = document.querySelector('.calculator-content');
+            if (calculatorContent) {
+                calculatorContent.scrollTop = 0;
+            }
         }
         // Activate the current step nav item
         if (navItems[stepNumber]) {
@@ -244,12 +281,19 @@ document.addEventListener('DOMContentLoaded', function() {
         // Step 1: Goal Type specific visibility
         if (formData.goalType === 'take_loan') {
             loanTypeSection.classList.remove('hidden');
+            // If "I need another type of loan" is selected, and no loanType is yet chosen, default to Personal Loan
+            if (!document.querySelector('input[name="loanType"]:checked')) {
+                document.querySelector('input[name="loanType"][value="personal_loan"]').checked = true;
+                formData.loanType = 'personal_loan';
+                roiInput.value = 12.0; // Default ROI for personal loan
+                formData.roi = 12.0;
+            }
         } else {
             loanTypeSection.classList.add('hidden');
-            // Ensure loan type is reset to home_loan when 'buy_home' is selected, to avoid invalid state
+            // When 'buy_home' is selected, ensure loanType and ROI are reset to defaults for home loan scenario
             document.querySelector('input[name="loanType"][value="home_loan"]').checked = true;
             formData.loanType = 'home_loan'; // Update formData
-            roiInput.value = 8.5; // Reset ROI
+            roiInput.value = 8.5; // Reset ROI to default for home loan
             formData.roi = 8.5; // Update formData
         }
 
@@ -265,7 +309,7 @@ document.addEventListener('DOMContentLoaded', function() {
         } else {
             homeLoanDetails.classList.add('hidden');
             // Clear home loan specific fields in UI if goal changes away from 'buy_home'
-            // and update formData
+            // and update formData (reset to defaults for a non-home loan scenario if needed)
             targetYearInput.value = new Date().getFullYear() + 5;
             formData.homeLoanTargetYear = new Date().getFullYear() + 5;
             targetAmountInput.value = 50;
@@ -330,11 +374,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // Validation based on the CURRENT step
         if (currentStep === 1) {
-            if (formData.goalType === 'take_loan') {
-                // Ensure a loan type is selected if 'take_loan' is chosen
-                // This scenario is largely covered by 'home_loan' being default checked
-                // but can add explicit check if more loan type options are introduced without defaults
-            }
             if (formData.roi <= 0 || isNaN(formData.roi)) {
                 roiError.classList.remove('hidden');
                 isValid = false;
@@ -470,7 +509,6 @@ document.addEventListener('DOMContentLoaded', function() {
         const currentSavingsLakhs = formData.currentSavings;
         const monthlyIncome = formData.monthlyIncome;
         const annualSIPRoi = formData.roi || 10; // Use user-defined ROI, default 10% for SIP
-        const propertyInflationRate = 0.05; // 5% annual property inflation
 
         // Calculate potential monthly saving based on budget
         const budgetSavingsPercent = formData.budgetSavings;
@@ -478,7 +516,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // Target property value with assumed inflation (5% annual)
         const targetPropertyValueINR = targetAmountLakhs * 100000; // Convert Lakhs to INR
-        const inflationAdjustedTarget = targetPropertyValueINR * Math.pow(1 + propertyInflationRate, yearsToBuy);
+        const inflationAdjustedTarget = targetPropertyValueINR * Math.pow(1 + PROPERTY_INFLATION_RATE, yearsToBuy);
 
         // Calculate the effective amount of current savings that can be invested towards the goal
         let effectiveCurrentSavingsForInvestment = 0;
@@ -522,6 +560,7 @@ document.addEventListener('DOMContentLoaded', function() {
         resMonthlySavingPotential.textContent = formatCurrency(potentialMonthlySavings);
         resRequiredSIP.textContent = formatCurrency(requiredAdditionalSIP);
         resSIPRoi.textContent = annualSIPRoi;
+        resInflationRate.textContent = (PROPERTY_INFLATION_RATE * 100).toFixed(0);
 
         updateBudgetChart(); // Update chart based on latest budget percentages and income
     }
@@ -530,72 +569,66 @@ document.addEventListener('DOMContentLoaded', function() {
      * Calculates and displays results for immediate loan scenarios.
      */
     function calculateImmediateLoanScenarios() {
-        const targetAmountLakhs = formData.homeLoanTargetAmount || 50; // Use home loan target if set, otherwise a default
-        const currentSavingsLakhs = formData.currentSavings;
+        const propertyValueLakhs = formData.homeLoanTargetAmount || 50; // Property value for comparison
+        const propertyValueINR = propertyValueLakhs * 100000;
+        const currentSavingsINR = formData.currentSavings * 100000;
         const loanROI = formData.roi;
         const desiredEmi = formData.desiredEmi;
 
         // Scenario 1: Max Down Payment
-        let downPayment1 = currentSavingsLakhs * 100000; // All current savings as down payment
-        let loanAmount1 = (targetAmountLakhs * 100000) - downPayment1;
+        let downPayment1 = currentSavingsINR; // All current savings as down payment
+        let loanAmount1 = propertyValueINR - downPayment1;
         loanAmount1 = Math.max(0, loanAmount1); // Ensure loan amount is not negative
 
         let tenure1Months = 360; // Max 30 years for a typical home loan
         let emi1 = calculateEMI(loanAmount1, loanROI, tenure1Months);
 
-        // If loan amount is positive and a desired EMI is set, adjust tenure to meet EMI or cap at max
+        // Adjust tenure to meet desired EMI, or cap at max tenure if desired EMI is too low
         if (loanAmount1 > 0 && desiredEmi > 0 && loanROI > 0) {
             const monthlyRate = loanROI / 12 / 100;
-            const logNumerator = (loanAmount1 * monthlyRate);
-            const logDenominator = desiredEmi;
+            const logTerm = 1 - (loanAmount1 * monthlyRate) / desiredEmi;
 
-            // Handle cases where desiredEmi is too low (log(negative) or log(0) is invalid)
-            if (logNumerator >= logDenominator || desiredEmi <= 0) {
+            if (logTerm <= 0) { // Desired EMI is too low for any positive tenure
                  tenure1Months = 360; // Max out tenure
                  emi1 = calculateEMI(loanAmount1, loanROI, tenure1Months); // Recalculate EMI for max tenure
             } else {
-                const calculatedTenure = -Math.log(1 - logNumerator / logDenominator) / Math.log(1 + monthlyRate);
-                if (isNaN(calculatedTenure) || !isFinite(calculatedTenure) || calculatedTenure <= 0) {
-                    tenure1Months = 360;
-                    emi1 = calculateEMI(loanAmount1, loanROI, tenure1Months);
-                } else {
-                    tenure1Months = Math.min(Math.ceil(calculatedTenure), 360); // Cap at max tenure
-                    emi1 = calculateEMI(loanAmount1, loanROI, tenure1Months); // Recalculate EMI based on capped tenure
+                const calculatedTenure = -Math.log(logTerm) / Math.log(1 + monthlyRate);
+                tenure1Months = Math.min(Math.ceil(calculatedTenure), 360); // Cap at max tenure
+                if (emi1 === 0 && calculatedTenure > 0) { // Recalculate EMI if it was 0 due to initial large tenure
+                   emi1 = calculateEMI(loanAmount1, loanROI, tenure1Months);
                 }
             }
         } else if (loanAmount1 <= 0) { // No loan needed
             tenure1Months = 0;
             emi1 = 0;
         }
-
         const totalInterest1 = calculateTotalInterest(loanAmount1, emi1, tenure1Months);
+        const totalOutofPocketCost1 = loanAmount1 + totalInterest1; // What the user *pays* for the loan (principal + interest)
 
         // Scenario 2: Optimized Down Payment & SIP
-        // Example: Use 30% of current savings as down payment, invest the rest
-        let downPayment2 = currentSavingsLakhs * 100000 * 0.3;
-        let loanAmount2 = (targetAmountLakhs * 100000) - downPayment2;
+        const downPaymentPercentage2 = 0.30; // 30% down payment
+        let downPayment2 = propertyValueINR * downPaymentPercentage2;
+        downPayment2 = Math.min(downPayment2, currentSavingsINR); // Don't use more than available savings
+
+        let loanAmount2 = propertyValueINR - downPayment2;
         loanAmount2 = Math.max(0, loanAmount2);
 
-        let tenure2Months = 240; // Example: 20 years
+        let tenure2Months = 240; // Example: 20 years (default for this scenario)
         let emi2 = calculateEMI(loanAmount2, loanROI, tenure2Months);
 
-        // Similar logic to adjust tenure based on desired EMI for Scenario 2
+        // Adjust tenure based on desired EMI for Scenario 2
         if (loanAmount2 > 0 && desiredEmi > 0 && loanROI > 0) {
             const monthlyRate = loanROI / 12 / 100;
-            const logNumerator = (loanAmount2 * monthlyRate);
-            const logDenominator = desiredEmi;
+            const logTerm = 1 - (loanAmount2 * monthlyRate) / desiredEmi;
 
-            if (logNumerator >= logDenominator || desiredEmi <= 0) {
-                tenure2Months = 240;
+            if (logTerm <= 0) {
+                tenure2Months = 240; // Max 20 years for this scenario
                 emi2 = calculateEMI(loanAmount2, loanROI, tenure2Months);
             } else {
-                const calculatedTenure = -Math.log(1 - logNumerator / logDenominator) / Math.log(1 + monthlyRate);
-                if (isNaN(calculatedTenure) || !isFinite(calculatedTenure) || calculatedTenure <= 0) {
-                    tenure2Months = 240;
-                    emi2 = calculateEMI(loanAmount2, loanROI, tenure2Months);
-                } else {
-                    tenure2Months = Math.min(Math.ceil(calculatedTenure), 240); // Cap at max tenure
-                    emi2 = calculateEMI(loanAmount2, loanROI, tenure2Months); // Recalculate EMI based on capped tenure
+                const calculatedTenure = -Math.log(logTerm) / Math.log(1 + monthlyRate);
+                tenure2Months = Math.min(Math.ceil(calculatedTenure), 240); // Cap at max tenure for this scenario
+                if (emi2 === 0 && calculatedTenure > 0) { // Recalculate EMI if it was 0 due to initial large tenure
+                   emi2 = calculateEMI(loanAmount2, loanROI, tenure2Months);
                 }
             }
         } else if (loanAmount2 <= 0) { // No loan needed
@@ -604,11 +637,18 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         const totalInterest2 = calculateTotalInterest(loanAmount2, emi2, tenure2Months);
+        const totalOutofPocketCost2 = loanAmount2 + totalInterest2; // What the user *pays* for the loan (principal + interest)
 
-        const investedSavingsForSIP = currentSavingsLakhs * 100000 - downPayment2; // Remaining savings
-        const sipAnnualROI = 12; // Optimistic 12% annual ROI for SIP comparison
-        const investmentReturnYears = tenure2Months / 12;
-        const futureValueFromInvestment = calculateLumpsumFutureValue(investedSavingsForSIP, sipAnnualROI, investmentReturnYears);
+        // Remaining savings after down payment in Scenario 2 that can be invested
+        const investedSavingsForSIP = currentSavingsINR - downPayment2;
+        const investmentReturnYears = tenure2Months / 12; // Investment period is loan tenure
+        const futureValueFromInvestment = calculateLumpsumFutureValue(investedSavingsForSIP, SIP_INVESTMENT_ROI, investmentReturnYears);
+
+        // Calculate Net Financial Impact / Net Cost for comparison
+        // Lower value is better
+        const netFinancialImpact1 = totalOutofPocketCost1;
+        const netFinancialImpact2 = totalOutofPocketCost2 - futureValueFromInvestment;
+
 
         // Display Scenario 1 Results
         scenario1DownPayment.textContent = formatCurrency(downPayment1);
@@ -616,6 +656,7 @@ document.addEventListener('DOMContentLoaded', function() {
         scenario1Emi.textContent = formatCurrency(emi1);
         scenario1Tenure.textContent = `${Math.ceil(tenure1Months)} months (~${(tenure1Months / 12).toFixed(1)} years)`;
         scenario1TotalInterest.textContent = formatCurrency(totalInterest1);
+        scenario1TotalCost.textContent = formatCurrency(totalOutofPocketCost1); // Display total out-of-pocket cost
 
         // Display Scenario 2 Results
         scenario2DownPayment.textContent = formatCurrency(downPayment2);
@@ -623,10 +664,26 @@ document.addEventListener('DOMContentLoaded', function() {
         scenario2Emi.textContent = formatCurrency(emi2);
         scenario2Tenure.textContent = `${Math.ceil(tenure2Months)} months (~${(tenure2Months / 12).toFixed(1)} years)`;
         scenario2TotalInterest.textContent = formatCurrency(totalInterest2);
+        scenario2TotalCost.textContent = formatCurrency(totalOutofPocketCost2); // Display total out-of-pocket cost
         scenario2InvestedAmount.textContent = formatCurrency(investedSavingsForSIP);
         scenario2InvestmentReturn.textContent = formatCurrency(futureValueFromInvestment);
+        scenario2SipRoi.textContent = SIP_INVESTMENT_ROI;
 
-        updateLoanCompareChart(emi1, emi2, loanAmount1, loanAmount2);
+        // Determine which scenario is more profitable and update the conclusion
+        if (netFinancialImpact1 < netFinancialImpact2) {
+            comparisonConclusion.innerHTML = `<i class="fas fa-arrow-circle-right"></i> Based on these calculations, **Scenario 1 (Max Down Payment)** appears more financially beneficial with a lower net financial impact of ${formatCurrency(netFinancialImpact1)}.`;
+            comparisonConclusion.classList.remove('text-success'); // Ensure correct styling
+            comparisonConclusion.classList.add('text-primary');
+        } else if (netFinancialImpact2 < netFinancialImpact1) {
+            comparisonConclusion.innerHTML = `<i class="fas fa-arrow-circle-right"></i> Based on these calculations, **Scenario 2 (Optimized Down Payment & SIP)** appears more financially beneficial with a lower net financial impact of ${formatCurrency(netFinancialImpact2)} due to the significant returns from investing the remaining savings.`;
+            comparisonConclusion.classList.remove('text-primary'); // Ensure correct styling
+            comparisonConclusion.classList.add('text-success');
+        } else {
+            comparisonConclusion.innerHTML = `<i class="fas fa-info-circle"></i> Both scenarios yield a similar financial outcome. Consider other factors like liquidity or risk appetite. The net financial impact for both is ${formatCurrency(netFinancialImpact1)}.`;
+            comparisonConclusion.classList.remove('text-success', 'text-primary'); // Remove any previous styling
+        }
+
+        updateLoanCompareChart(totalOutofPocketCost1, totalOutofPocketCost2, futureValueFromInvestment);
     }
 
     // --- Charting with Chart.js Functions ---
@@ -653,31 +710,45 @@ document.addEventListener('DOMContentLoaded', function() {
                 datasets: [{
                     data: [needs, wants, savings],
                     backgroundColor: [
-                        '#0055a5', // medium-brand-blue (for Needs)
-                        '#FBBF24', // accent-yellow (for Wants)
-                        '#10B981'  // accent-green (for Savings)
+                        '#0055a5', // brand-accent-blue (for Needs)
+                        '#FBBF24', // brand-yellow (for Wants)
+                        '#10B981'  // brand-green (for Savings)
                     ],
                     borderColor: [
-                        '#0055a5',
-                        '#FBBF24',
-                        '#10B981'
+                        '#ffffff', // White border for slices
+                        '#ffffff',
+                        '#ffffff'
                     ],
-                    borderWidth: 1
+                    borderWidth: 2
                 }]
             },
             options: {
                 responsive: true,
+                maintainAspectRatio: false, // Allow charts to resize more freely
                 plugins: {
                     legend: {
                         position: 'top',
                         labels: {
-                            color: '#333' // Text color for legend labels
+                            color: '#333', // Text color for legend labels
+                            font: {
+                                family: 'Inter',
+                                size: 14
+                            }
                         }
                     },
                     title: {
                         display: true,
                         text: 'Monthly Income Allocation (Percentages)',
-                        color: '#1F2937' // Title color
+                        color: '#1F2937', // Title color
+                        font: {
+                            family: 'Inter',
+                            size: 16,
+                            weight: '600'
+                        },
+                        padding: {
+                            top: 10,
+                            bottom: 20
+                        }
                     },
                     tooltip: {
                         callbacks: {
@@ -700,38 +771,13 @@ document.addEventListener('DOMContentLoaded', function() {
 
     /**
      * Draws or updates the Loan Scenario Comparison Bar Chart.
-     * @param {number} emi1 - EMI for Scenario 1.
-     * @param {number} emi2 - EMI for Scenario 2.
-     * @param {number} loanAmount1 - Principal for Scenario 1.
-     * @param {number} loanAmount2 - Principal for Scenario 2.
+     * @param {number} totalOutofPocketCost1 - Total cost for Scenario 1.
+     * @param {number} totalOutofPocketCost2 - Total cost for Scenario 2.
+     * @param {number} futureValueFromInvestment - Future value of investment from Scenario 2.
      */
-    function updateLoanCompareChart(emi1, emi2, loanAmount1, loanAmount2) {
+    function updateLoanCompareChart(totalOutofPocketCost1, totalOutofPocketCost2, futureValueFromInvestment) {
         if (loanCompareChartInstance) {
             loanCompareChartInstance.destroy();
-        }
-
-        // Use the actual calculated total interests and costs from the scenario calculations
-        const tenure1Months = parseFloat(scenario1Tenure.textContent.split(' ')[0]) || 0;
-        const totalInterest1 = calculateTotalInterest(loanAmount1, emi1, tenure1Months);
-        const totalCost1 = loanAmount1 + totalInterest1;
-
-        const tenure2Months = parseFloat(scenario2Tenure.textContent.split(' ')[0]) || 0;
-        const totalInterest2 = calculateTotalInterest(loanAmount2, emi2, tenure2Months);
-        const totalCost2 = loanAmount2 + totalInterest2;
-
-        let investmentReturn2 = 0;
-        // Need to convert the formatted string back to a number for chart
-        const investmentReturn2Text = scenario2InvestmentReturn.textContent;
-        if (investmentReturn2Text && investmentReturn2Text !== 'N/A' && investmentReturn2Text.startsWith('₹')) {
-            // Remove currency symbol, " Lakhs" or " Crore", commas, then parse
-            let cleanedText = investmentReturn2Text.replace(/₹|,/g, '');
-            if (cleanedText.includes('Lakhs')) {
-                investmentReturn2 = parseFloat(cleanedText.replace('Lakhs', '')) * 100000;
-            } else if (cleanedText.includes('Crore')) {
-                investmentReturn2 = parseFloat(cleanedText.replace('Crore', '')) * 10000000;
-            } else {
-                investmentReturn2 = parseFloat(cleanedText);
-            }
         }
 
         const ctx = document.getElementById('loanCompareChart').getContext('2d');
@@ -740,37 +786,53 @@ document.addEventListener('DOMContentLoaded', function() {
         loanCompareChartInstance = new Chart(ctx, {
             type: 'bar',
             data: {
-                labels: ['Scenario 1 (Max Down Payment)', 'Scenario 2 (Optimized)'],
+                labels: ['Scenario 1', 'Scenario 2'],
                 datasets: [
                     {
                         label: 'Total Loan Cost (Principal + Interest)',
-                        data: [totalCost1, totalCost2],
-                        backgroundColor: '#003366', // dark-brand-blue
-                        borderColor: '#003366',
-                        borderWidth: 1
+                        data: [totalOutofPocketCost1, totalOutofPocketCost2],
+                        backgroundColor: var('--brand-medium-blue'), // Match your brand medium blue
+                        borderColor: var('--brand-medium-blue'),
+                        borderWidth: 1,
+                        stack: 'costs' // Stack costs and benefits
                     },
                     {
-                        label: 'Potential Investment Return (from saved funds)',
-                        data: [0, investmentReturn2], // Only Scenario 2 has this
-                        backgroundColor: '#10B981', // accent-green
-                        borderColor: '#10B981',
-                        borderWidth: 1
+                        label: 'Investment Benefit (reduces net cost)',
+                        data: [0, -futureValueFromInvestment], // Negative to show as reduction
+                        backgroundColor: var('--brand-green'), // Match your brand green
+                        borderColor: var('--brand-green'),
+                        borderWidth: 1,
+                        stack: 'costs' // Stack costs and benefits
                     }
                 ]
             },
             options: {
                 responsive: true,
+                maintainAspectRatio: false,
                 plugins: {
                     legend: {
                         position: 'top',
                         labels: {
-                            color: '#333'
+                            color: '#333',
+                            font: {
+                                family: 'Inter',
+                                size: 14
+                            }
                         }
                     },
                     title: {
                         display: true,
-                        text: 'Loan Scenario Comparison (Total Costs & Returns)',
-                        color: '#1F2937'
+                        text: 'Loan Scenario Financial Impact Comparison',
+                        color: '#1F2937',
+                        font: {
+                            family: 'Inter',
+                            size: 16,
+                            weight: '600'
+                        },
+                         padding: {
+                            top: 10,
+                            bottom: 20
+                        }
                     },
                     tooltip: {
                         callbacks: {
@@ -789,28 +851,100 @@ document.addEventListener('DOMContentLoaded', function() {
                 },
                 scales: {
                     y: {
-                        beginAtZero: true,
+                        beginAtZero: false, // Allow negative values for net impact
                         title: {
                             display: true,
                             text: 'Amount (INR)',
-                            color: '#333'
+                            color: '#333',
+                            font: {
+                                family: 'Inter'
+                            }
                         },
                         ticks: {
                             color: '#333', // Y-axis tick labels color
                             callback: function(value) {
                                 return formatCurrency(value);
+                            },
+                            font: {
+                                family: 'Inter'
                             }
-                        }
+                        },
+                        stacked: true // Stack the bars
                     },
                     x: {
                         ticks: {
-                            color: '#333' // X-axis tick labels color
+                            color: '#333', // X-axis tick labels color
+                            font: {
+                                family: 'Inter'
+                            }
+                        },
+                        grid: {
+                            display: false // Hide vertical grid lines for cleaner look
                         }
                     }
                 }
             }
         });
     }
+
+    // --- PDF Generation and Email Suggestion ---
+
+    window.generatePdfAndSuggestEmail = function() {
+        const element = document.getElementById('step4'); // Target the results step for PDF
+
+        const opt = {
+            margin: 0.5,
+            filename: 'RajyaFunds_Financial_Plan_Summary.pdf',
+            image: { type: 'jpeg', quality: 0.98 },
+            html2canvas: { scale: 2, logging: true, dpi: 192, letterRendering: true },
+            jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
+        };
+
+        // Save the PDF
+        html2pdf().set(opt).from(element).save().then(() => {
+            // After PDF is generated and download suggested, prompt email
+            const subject = encodeURIComponent('Your Financial Plan Summary from RajyaFunds');
+            const body = encodeURIComponent(
+                'Dear User,\n\n' +
+                'Please find attached your personalized financial plan summary from RajyaFunds. ' +
+                'This summary includes the details of your calculations and scenarios.\n\n' +
+                'Remember, this is for illustrative purposes only and does not constitute financial advice. ' +
+                'For detailed financial planning, please consult a qualified advisor.\n\n' +
+                'Thank you for using RajyaFunds!\n\n' +
+                'Best Regards,\n' +
+                'The RajyaFunds Team'
+            );
+            const mailtoLink = `mailto:rajyafunds.in@gmail.com?subject=${subject}&body=${body}`;
+
+            setTimeout(() => {
+                 // Use a custom confirmation modal instead of alert
+                const confirmShare = document.createElement('div');
+                confirmShare.className = 'custom-modal-overlay';
+                confirmShare.innerHTML = `
+                    <div class="custom-modal-content">
+                        <h3>Summary Generated!</h3>
+                        <p>Your financial plan summary PDF has been generated and downloaded.</p>
+                        <p>Would you like to open your email client to send it to yourself or a financial advisor? You will need to manually attach the PDF.</p>
+                        <div class="modal-buttons">
+                            <button class="btn btn-primary" id="modalConfirmSendEmail">Yes, Send Email</button>
+                            <button class="btn btn-secondary" id="modalCancel">No, Thanks</button>
+                        </div>
+                    </div>
+                `;
+                document.body.appendChild(confirmShare);
+
+                document.getElementById('modalConfirmSendEmail').onclick = () => {
+                    window.location.href = mailtoLink;
+                    document.body.removeChild(confirmShare);
+                };
+                document.getElementById('modalCancel').onclick = () => {
+                    document.body.removeChild(confirmShare);
+                };
+
+            }, 1000); // Small delay to ensure PDF download prompt appears first
+        });
+    };
+
 
     // --- Event Listeners (To capture user input and update formData) ---
 
@@ -855,6 +989,13 @@ document.addEventListener('DOMContentLoaded', function() {
     goalTypeRadios.forEach(radio => radio.addEventListener('change', () => {
         collectFormData(); // Update formData with new goalType
         updateVisibilityBasedOnInputs(); // Adjust UI based on new goalType
+        // If loan options are visible, ensure a default is selected if not already
+        if (formData.goalType === 'take_loan' && !document.querySelector('input[name="loanType"]:checked')) {
+            document.querySelector('input[name="loanType"][value="personal_loan"]').checked = true; // Default to personal loan
+            formData.loanType = 'personal_loan';
+            roiInput.value = 12.0; // Default ROI for personal loan
+            formData.roi = 12.0;
+        }
     }));
 
     loanTypeRadios.forEach(radio => radio.addEventListener('change', (e) => {
@@ -865,6 +1006,7 @@ document.addEventListener('DOMContentLoaded', function() {
             case 'personal_loan': roiInput.value = 12.0; break;
             case 'business_loan': roiInput.value = 10.0; break;
             case 'education_loan': roiInput.value = 9.0; break;
+            case 'vehicle_loan': roiInput.value = 9.5; break; // Added vehicle loan
             default: roiInput.value = 8.5; // Fallback
         }
         collectFormData(); // Re-collect to get the new ROI value into formData
@@ -913,6 +1055,62 @@ document.addEventListener('DOMContentLoaded', function() {
     budgetWantsInput.addEventListener('input', () => { collectFormData(); updateBudgetDisplay(); checkBudgetSum(); });
     budgetSavingsInput.addEventListener('input', () => { collectFormData(); updateBudgetDisplay(); checkBudgetSum(); });
     desiredEmiInput.addEventListener('input', collectFormData);
+
+    // --- Custom Modal Styles (For PDF Share) ---
+    // These styles are dynamically added to the body when the modal is created.
+    // They are kept here for completeness and context with the generatePdfAndSuggestEmail function.
+    const customModalStyles = `
+        .custom-modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+        }
+        .custom-modal-content {
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            max-width: 500px;
+            margin: 20px;
+            animation: fadeInScale 0.3s ease-out;
+        }
+        .custom-modal-content h3 {
+            color: var(--brand-dark-blue);
+            font-size: 1.8rem;
+            margin-bottom: 15px;
+        }
+        .custom-modal-content p {
+            color: var(--text-secondary);
+            margin-bottom: 25px;
+            line-height: 1.5;
+        }
+        .custom-modal-content .modal-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+        .custom-modal-content .btn {
+            min-width: 120px;
+        }
+        @keyframes fadeInScale {
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
+        }
+    `;
+
+    // Inject modal styles only once
+    const styleTag = document.createElement('style');
+    styleTag.textContent = customModalStyles;
+    document.head.appendChild(styleTag);
 
 
     // Initialize the calculator on page load
