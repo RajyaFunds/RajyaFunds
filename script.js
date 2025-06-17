@@ -710,9 +710,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 datasets: [{
                     data: [needs, wants, savings],
                     backgroundColor: [
-                        '#0055a5', // brand-accent-blue (for Needs)
-                        '#FBBF24', // brand-yellow (for Wants)
-                        '#10B981'  // brand-green (for Savings)
+                        '#0055a5', // brand-primary-medium (for Needs)
+                        '#FBBF24', // brand-accent-yellow (for Wants)
+                        '#10B981'  // brand-accent-green (for Savings)
                     ],
                     borderColor: [
                         '#ffffff', // White border for slices
@@ -791,16 +791,16 @@ document.addEventListener('DOMContentLoaded', function() {
                     {
                         label: 'Total Loan Cost (Principal + Interest)',
                         data: [totalOutofPocketCost1, totalOutofPocketCost2],
-                        backgroundColor: var('--brand-medium-blue'), // Match your brand medium blue
-                        borderColor: var('--brand-medium-blue'),
+                        backgroundColor: '#2B5A8F', // Using --brand-primary-medium from CSS
+                        borderColor: '#2B5A8F',
                         borderWidth: 1,
                         stack: 'costs' // Stack costs and benefits
                     },
                     {
                         label: 'Investment Benefit (reduces net cost)',
                         data: [0, -futureValueFromInvestment], // Negative to show as reduction
-                        backgroundColor: var('--brand-green'), // Match your brand green
-                        borderColor: var('--brand-green'),
+                        backgroundColor: '#10B981', // Using --brand-accent-green from CSS
+                        borderColor: '#10B981',
                         borderWidth: 1,
                         stack: 'costs' // Stack costs and benefits
                     }
@@ -815,8 +815,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         labels: {
                             color: '#333',
                             font: {
-                                family: 'Inter',
-                                size: 14
+                                family: 'Inter'
                             }
                         }
                     },
@@ -909,7 +908,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 'Please find attached your personalized financial plan summary from RajyaFunds. ' +
                 'This summary includes the details of your calculations and scenarios.\n\n' +
                 'Remember, this is for illustrative purposes only and does not constitute financial advice. ' +
-                'For detailed financial planning, please consult a qualified advisor.\n\n' +
+                'For detailed financial planning, please consult a qualified financial advisor.\n\n' +
                 'Thank you for using RajyaFunds!\n\n' +
                 'Best Regards,\n' +
                 'The RajyaFunds Team'
@@ -1071,9 +1070,10 @@ document.addEventListener('DOMContentLoaded', function() {
             justify-content: center;
             align-items: center;
             z-index: 2000;
+            backdrop-filter: blur(5px); /* Subtle blur effect */
         }
         .custom-modal-content {
-            background-color: #fff;
+            background-color: var(--bg-card);
             padding: 30px;
             border-radius: 10px;
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
@@ -1083,12 +1083,12 @@ document.addEventListener('DOMContentLoaded', function() {
             animation: fadeInScale 0.3s ease-out;
         }
         .custom-modal-content h3 {
-            color: var(--brand-dark-blue);
+            color: var(--brand-primary-dark);
             font-size: 1.8rem;
             margin-bottom: 15px;
         }
         .custom-modal-content p {
-            color: var(--text-secondary);
+            color: var(--text-medium);
             margin-bottom: 25px;
             line-height: 1.5;
         }
