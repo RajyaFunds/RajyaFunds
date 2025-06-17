@@ -1,54 +1,200 @@
-@import url('https://fonts.googleapis.com/css?family=Inter:400,500,600,700&display=swap');
+/* Custom CSS for RajyaFunds Website */
 
+/* General Body Styling */
 body {
-  font-family: 'Inter', system-ui, Arial, sans-serif;
+    font-family: 'Inter', sans-serif; /* A modern, clean sans-serif font */
+    line-height: 1.6;
+    color: #333; /* Dark gray for good readability */
+    background-color: #f8fafc; /* Light off-white background */
 }
 
-/* Custom nav active link styling */
-.nav-link.active {
-  color: #10b981;
-  border-bottom: 2px solid #10b981;
+/* Header & Navigation Consistency */
+header, nav {
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1); /* Subtle shadow for depth */
 }
 
-.nav-link {
-  transition: color 0.2s;
-}
-.nav-link:hover {
-  color: #00775e;
+/* Hero Section Animations */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
-/* Custom modal for accessibility */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes bounceIn {
+    0% {
+        opacity: 0;
+        transform: scale(0.3);
+    }
+    50% {
+        opacity: 1;
+        transform: scale(1.05);
+    }
+    70% {
+        transform: scale(0.9);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+.animate-fadeInUp {
+    animation: fadeInUp 0.8s ease-out forwards;
+}
+
+.animate-fadeIn {
+    animation: fadeIn 1s ease-out forwards;
+}
+
+.animate-bounceIn {
+    animation: bounceIn 0.7s ease-out forwards;
+}
+
+.delay-1s {
+    animation-delay: 0.5s; /* Adjusted for better flow */
+}
+
+.delay-2s {
+    animation-delay: 1s; /* Adjusted for better flow */
+}
+
+/* Calculator Specific Styling */
+
+/* Make hidden steps truly hidden for accessibility and layout */
+.calculator-step.hidden {
+    display: none;
+    /* The JS will handle the transition, but 'display: none' ensures it's out of flow */
+}
+
+/* Form input focus styles */
+.form-input:focus,
+.form-select:focus {
+    border-color: #3b82f6; /* Blue-500 */
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.5); /* Blue-500 with transparency */
+    outline: none;
+}
+
+/* Radio/Checkbox focus styles */
+.form-radio:focus,
+.form-checkbox:focus {
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.5);
+    outline: none;
+}
+
+/* Button hover effects */
+button:hover {
+    transform: translateY(-1px); /* Subtle lift effect */
+}
+
+/* Chart container styling */
+#chartContainer {
+    min-height: 300px; /* Ensure charts have enough space */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Tab button styling */
+.tab-button {
+    transition: all 0.3s ease;
+    border: 1px solid transparent;
+}
+
+.tab-button.active {
+    background-color: #3b82f6; /* Tailwind blue-500 */
+    color: white;
+    border-color: #2563eb; /* Tailwind blue-600 */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.tab-button:not(.active):hover {
+    background-color: #e2e8f0; /* Tailwind gray-200 */
+    color: #2d3748; /* Tailwind gray-800 */
+}
+
+/* Custom Modal Styling */
 #customModal {
-  display: none;
+    z-index: 1000; /* Ensure modal is on top of everything */
 }
-#customModal.show {
-  display: flex;
+#customModal .bg-opacity-75 {
+    background-color: rgba(0, 0, 0, 0.75); /* Darker overlay */
 }
-
-/* Hide spinners for number inputs (Chrome, Safari, Edge) */
-input::-webkit-outer-spin-button,
-input::-webkit-inner-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
-}
-input[type=number] {
-  -moz-appearance: textfield;
+#customModal > div {
+    animation: fadeInScale 0.3s ease-out forwards;
 }
 
-/* Fix for Card shadow and glassmorphism feel */
-.bg-card-blur {
-  background: rgba(255,255,255,0.85);
-  box-shadow: 0 4px 32px rgba(30,58,138,0.07), 0 2px 4px rgba(30,58,138,0.08);
-  backdrop-filter: blur(6px);
-  border-radius: 1.25rem;
+@keyframes fadeInScale {
+    from {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
 }
 
-/* Chart.js custom tooltip styling */
-.chartjs-tooltip {
-  background: #2563eb;
-  color: #fff;
-  border-radius: 6px;
-  padding: 8px 12px;
-  font-size: 0.95rem;
-  box-shadow: 0 2px 8px rgba(16, 52, 87, 0.13);
+/* Tooltip styles (for info icons - though JS part is not implemented yet) */
+.tooltip-container {
+    position: relative;
+    display: inline-block;
+}
+
+.tooltip-text {
+    visibility: hidden;
+    width: 200px;
+    background-color: #333;
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 5px 0;
+    position: absolute;
+    z-index: 1;
+    bottom: 125%; /* Position above the icon */
+    left: 50%;
+    margin-left: -100px;
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+.tooltip-container:hover .tooltip-text {
+    visibility: visible;
+    opacity: 1;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .container {
+        padding-left: 1rem;
+        padding-right: 1rem;
+    }
+    .text-5xl {
+        font-size: 3rem; /* Adjust hero text size */
+    }
+    .text-xl {
+        font-size: 1.125rem;
+    }
+    .grid-cols-1.md:grid-cols-2 {
+        grid-template-columns: 1fr;
+    }
+    .flex-col.sm:flex-row {
+        flex-direction: column;
+    }
+    .calculator-step {
+        padding: 1.5rem;
+    }
 }
