@@ -377,7 +377,7 @@ a:hover {
 .value-prop-list {
     list-style: none;
     padding: 0;
-    margin-top: 2rem;
+    margin: 0;
 }
 .value-prop-list li {
     display: flex;
@@ -618,7 +618,6 @@ a:hover {
     display: flex; /* Flex container for sidebar and content */
     flex-direction: column;
     border: 1px solid var(--border-color);
-    /* No relative positioning here, it's on .calculator-content now */
 }
 
 @media (min-width: 768px) {
@@ -774,15 +773,15 @@ a:hover {
 }
 
 /* Step Sections (Each step's content) */
+/* This is the crucial fix for display. Ensure it's display: flex when active. */
 .step-section {
     display: none; /* Hidden by default */
-    flex-direction: column; /* Organize content within step */
-    flex-grow: 1; /* Allow content to push elements towards bottom (e.g., buttons if not absolute) */
-    /* Removed absolute positioning, height, width, padding to fix navigation */
+    flex-direction: column; /* Organizes content vertically within the step */
+    flex-grow: 1; /* Allows it to take up available space */
 }
 
 .step-section.active {
-    display: flex; /* Show the active step as a flex container */
+    display: flex !important; /* Forces the step content to be visible as a flex container */
 }
 
 
@@ -1246,16 +1245,6 @@ a:hover {
         padding: 0 !important;
         border-radius: 0 !important;
         min-height: auto !important;
-    }
-    .step-section.active {
-        display: flex !important;
-        position: static !important;
-        opacity: 1 !important;
-        height: auto !important;
-        overflow-y: visible !important;
-        z-index: auto !important;
-        padding: 0 !important;
-        background-color: transparent !important;
     }
     .chart-container {
         break-inside: avoid;
