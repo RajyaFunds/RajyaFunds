@@ -74,6 +74,13 @@ document.addEventListener('DOMContentLoaded', function() {
         4: document.getElementById('step4')
     };
 
+    // Buttons
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    const printPdfBtn = document.getElementById('printPdfBtn');
+    const emailShareBtn = document.getElementById('emailShareBtn');
+
+
     const currencySelect = document.getElementById('currencySelect');
     const unitSelect = document.getElementById('unitSelect');
     const currencySymbols = document.querySelectorAll('.currency-symbol');
@@ -129,6 +136,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const loanNowResults = document.getElementById('loanNowResults');
     const investLaterResults = document.getElementById('investLaterResults');
     const summaryAndRecommendation = document.getElementById('summaryAndRecommendation');
+    const comparisonConclusion = document.getElementById('comparisonConclusion'); // Added this reference
 
     const resTargetAmount = document.getElementById('resTargetAmount');
     const resYearsToBuy = document.getElementById('resYearsToBuy');
@@ -146,7 +154,6 @@ document.addEventListener('DOMContentLoaded', function() {
     const scenario1TotalInterest = document.getElementById('scenario1TotalInterest');
     const scenario1TotalCost = document.getElementById('scenario1TotalCost');
 
-    const intelligentSuggestionText = document.getElementById('intelligentSuggestionText');
     const optimizedDownPayment = document.getElementById('optimizedDownPayment');
     const optimizedSIPInvestment = document.getElementById('optimizedSIPInvestment');
 
@@ -545,8 +552,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function performAllCalculationsAndDisplayResults() {
         console.log("performAllCalculationsAndDisplayResults() called.");
-        collectFormData();
+        collectFormData(); // Ensure latest form data is used for calculations
 
+        // Destroy existing chart instances before creating new ones
         if (budgetChartInstance) budgetChartInstance.destroy();
         if (loanNowChartInstance) loanNowChartInstance.destroy();
         if (investLaterChartInstance) investLaterChartInstance.destroy();
@@ -576,10 +584,11 @@ document.addEventListener('DOMContentLoaded', function() {
         scenario1Tenure.textContent = `${years} years ${months} months`;
         scenario1TotalInterest.textContent = formatToDisplayUnit(results.totalInterest, 'amount');
         scenario1TotalCost.textContent = formatToDisplayUnit(results.totalOutofPocketCost, 'amount');
+        document.getElementById('resLoanNowHomeValue').textContent = formatToDisplayUnit(formData.homeLoanTargetAmount * 100000, 'amount', 0); // Display initial home value
     }
 
     function displayInvestLaterResults(results) {
-        resTargetAmount.textContent = formatToDisplayUnit(results.accumulateAmount, 'amount');
+        resTargetAmount.textContent = formatToDisplayUnit(results.accumulateAmount, 'amount'); // Displays inflation-adjusted target
         resYearsToBuy.textContent = results.yearsToBuy;
         resTargetYear.textContent = results.targetYear;
         resInflationRate.textContent = results.inflationRateDisplay;
@@ -587,6 +596,7 @@ document.addEventListener('DOMContentLoaded', function() {
         resMonthlySavingPotential.textContent = formatToDisplayUnit(results.monthlySavingPotential, 'income', 0);
         resRequiredSIP.textContent = formatToDisplayUnit(results.requiredSIP, 'income', 0);
         resSIPRoi.textContent = results.sipRoi;
+        document.getElementById('initialHomeValueSIP').textContent = formatToDisplayUnit(formData.homeLoanTargetAmount * 100000, 'amount', 0); // Display initial home value
     }
 
     function displaySummaryAndRecommendation(loanNowResults, investLaterResults) {
@@ -787,7 +797,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // --- PDF Generation and Email Suggestion ---
 
-    window.generatePdfAndSuggestEmail = function() {
+    function generatePdfAndSuggestEmail() {
         console.log("Generating PDF and suggesting email...");
         const originalHiddenStates = {};
         const allResultSections = document.querySelectorAll('.result-view-section');
@@ -817,7 +827,7 @@ document.addEventListener('DOMContentLoaded', function() {
             allResultSections.forEach(section => {
                 if (originalHiddenStates[section.id]) { section.classList.add('hidden'); }
             });
-            updateResultsView();
+            updateResultsView(); // Re-apply the user's selected result view
             navButtons.style.display = originalNavButtonsDisplay;
             element.removeChild(brandingElement);
 
@@ -862,6 +872,564 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     };
 
+    // --- UI State Management ---
+
+    /**
+     * Hides all validation error messages.
+     */
+    function hideAllErrors() {
+        document.querySelectorAll('.validation-error-message').forEach(el => el.classList.add('hidden'));
+        if (budgetSumWarning) budgetSumWarning.classList.add('hidden');
+    }
+
+    /**
+     * Shows a specific step in the calculator and updates navigation.
+     * @param {number} stepNumber - The step number to display.
+     */
+    function showStep(stepNumber) {
+        console.log("showStep() called for step:", stepNumber);
+        hideAllErrors();
+
+        Object.values(stepSections).forEach(section => section.classList.add('hidden'));
+        Object.values(navItems).forEach(nav => nav.classList.remove('active'));
+
+        if (stepSections[stepNumber]) {
+            stepSections[stepNumber].classList.remove('hidden');
+            const calculatorContent = document.querySelector('.calculator-content');
+            if (calculatorContent) {
+                calculatorContent.scrollTop = 0;
+            }
+            console.log(`Step ${stepNumber} section made visible.`);
+        } else {
+            console.warn(`Attempted to show non-existent step section: ${stepNumber}`);
+            return;
+        }
+
+        if (navItems[stepNumber]) {
+            navItems[stepNumber].classList.add('active');
+            console.log(`Nav item for step ${stepNumber} made active.`);
+        } else {
+            console.warn(`Nav item for step ${stepNumber} not found.`);
+        }
+
+        currentStep = stepNumber;
+
+        history.pushState(null, '', `?step=${currentStep}&${generateUrlParams()}`);
+        console.log("URL updated:", window.location.search);
+
+        collectFormData(); // Always collect latest data
+        initializeFormInputs(); // Re-populate inputs (especially dropdowns/radios)
+        updateVisibilityBasedOnInputs(); // Update conditional UI
+
+        if (currentStep === 3) {
+            displayMonthlyIncome.textContent = formatToDisplayUnit(formData.monthlyIncome, 'income', 0);
+            updateBudgetDisplay();
+        } else if (currentStep === 4) {
+            performAllCalculationsAndDisplayResults();
+            resultsToggleRadios[0].checked = true; // Select 'Summary & Recommendation' initially
+            updateResultsView();
+        }
+        autosaveFormState();
+    }
+
+
+    /**
+     * Validates inputs for the current step.
+     * @returns {boolean} True if all validations pass, false otherwise.
+     */
+    function validateStep() {
+        console.log("validateStep() called for step:", currentStep);
+        let isValid = true;
+        hideAllErrors(); // Clear all errors before re-validating
+
+        // Re-collect form data right before validation to ensure it's fresh
+        collectFormData();
+
+        if (currentStep === 1) {
+            if (roiInput.value === '' || isNaN(parseFloat(roiInput.value)) || parseFloat(roiInput.value) <= 0) {
+                roiError.classList.remove('hidden');
+                isValid = false;
+            }
+        }
+        else if (currentStep === 2) {
+            // Home Goal Details validation (if visible)
+            if (formData.goalType === 'buy_home') {
+                if (targetAmountInput.value === '' || isNaN(parseFloat(targetAmountInput.value)) || parseFloat(targetAmountInput.value) <= 0) {
+                    targetAmountError.classList.remove('hidden');
+                    isValid = false;
+                }
+                if (formData.buyTiming === 'invest_later_sip') {
+                    const currentYear = new Date().getFullYear();
+                    if (targetYearInput.value === '' || isNaN(parseInt(targetYearInput.value)) || parseInt(targetYearInput.value) <= currentYear) {
+                        targetYearError.classList.remove('hidden');
+                        isValid = false;
+                    }
+                    if (inflationRateInput.value === '' || isNaN(parseFloat(inflationRateInput.value)) || parseFloat(inflationRateInput.value) < 0) {
+                        inflationRateError.classList.remove('hidden');
+                        isValid = false;
+                    }
+                }
+            }
+
+            // General financial situation validation (always applicable to step 2)
+            if (currentSavingsInput.value === '' || isNaN(parseFloat(currentSavingsInput.value)) || parseFloat(currentSavingsInput.value) < 0) {
+                currentSavingsError.classList.remove('hidden');
+                isValid = false;
+            }
+            if (monthlyIncomeInput.value === '' || isNaN(parseFloat(monthlyIncomeInput.value)) || parseFloat(monthlyIncomeInput.value) <= 0) {
+                monthlyIncomeError.classList.remove('hidden');
+                isValid = false;
+            }
+
+            // Specific Savings Amount validation (if visible)
+            if (formData.useAllSavings === 'no') {
+                const specificAmount = parseFloat(specificSavingsAmountInput.value);
+                if (specificSavingsAmountInput.value === '' || isNaN(specificAmount) || specificAmount < 0) {
+                    specificSavingsAmountError.textContent = `Please enter a valid amount/percentage.`;
+                    specificSavingsAmountError.classList.remove('hidden');
+                    isValid = false;
+                } else if (formData.savingsInputType === 'absolute') {
+                    // Convert currentSavings from input's unit (e.g., Lakhs) to base INR for comparison
+                    const currentSavingsBase = convertToBaseUnit(parseFloat(currentSavingsInput.value), 'amount');
+                    // Convert specificAmount from input's unit (e.g., Lakhs) to base INR for comparison
+                    const specificAmountBase = convertToBaseUnit(specificAmount, 'amount');
+                    if (specificAmountBase > currentSavingsBase) {
+                        specificSavingsAmountError.textContent = `Amount cannot exceed total savings (${formatToDisplayUnit(currentSavingsBase, 'amount')}).`;
+                        specificSavingsAmountError.classList.remove('hidden');
+                        isValid = false;
+                    }
+                } else { // Percentage input type
+                    if (specificAmount > 100) {
+                        specificSavingsAmountError.textContent = 'Percentage must be between 0-100%.';
+                        specificSavingsAmountError.classList.remove('hidden');
+                        isValid = false;
+                    }
+                }
+            }
+        }
+        else if (currentStep === 3) {
+            if (formData.goalType === 'buy_home') {
+                const sum = (parseFloat(budgetNeedsInput.value) || 0) +
+                            (parseFloat(budgetWantsInput.value) || 0) +
+                            (parseFloat(budgetSavingsInput.value) || 0);
+                if (sum !== 100) {
+                    budgetSumWarning.classList.remove('hidden');
+                    isValid = false;
+                }
+            } else if (formData.goalType === 'take_loan') {
+                const hasDesiredEmi = desiredEmiInput.value !== '' && !isNaN(parseFloat(desiredEmiInput.value)) && parseFloat(desiredEmiInput.value) > 0;
+                const hasFixedTenure = fixedLoanTenureInput.value !== '' && !isNaN(parseInt(fixedLoanTenureInput.value)) && parseInt(fixedLoanTenureInput.value) > 0;
+
+                if (!hasDesiredEmi && !hasFixedTenure) {
+                    desiredEmiError.textContent = 'Enter either Desired EMI or Fixed Loan Tenure.';
+                    desiredEmiError.classList.remove('hidden');
+                    isValid = false;
+                } else if (hasDesiredEmi && hasFixedTenure) {
+                    desiredEmiError.textContent = 'Please enter EITHER Desired EMI OR Fixed Loan Tenure, not both.';
+                    desiredEmiError.classList.remove('hidden');
+                    fixedLoanTenureError.textContent = 'Please enter EITHER Desired EMI OR Fixed Loan Tenure, not both.';
+                    fixedLoanTenureError.classList.remove('hidden');
+                    isValid = false;
+                } else if (hasFixedTenure && (parseInt(fixedLoanTenureInput.value) <= 0 || parseInt(fixedLoanTenureInput.value) > 30)) {
+                    fixedLoanTenureError.textContent = 'Please enter a valid loan tenure (1-30 years).';
+                    fixedLoanTenureError.classList.remove('hidden');
+                    isValid = false;
+                }
+            }
+        }
+        console.log("Validation result for step", currentStep, ":", isValid);
+        return isValid;
+    }
+
+
+    /**
+     * Advances to the next step after validating current step's inputs.
+     */
+    function nextStep() {
+        console.log("nextStep() called.");
+        try {
+            collectFormData(); // Ensure current form data is collected before validation or moving
+
+            if (validateStep()) {
+                // Only send GA event if validation passes
+                if (typeof gtag !== 'undefined') {
+                    gtag('event', `calculator_step_completed`, {
+                        'event_category': 'Calculator',
+                        'event_label': `Step ${currentStep} completed`,
+                        'value': currentStep
+                    });
+                }
+
+                if (currentStep < totalSteps) {
+                    showStep(currentStep + 1);
+                }
+            } else {
+                console.log("Validation failed for step", currentStep);
+            }
+        } catch (error) {
+            console.error("An error occurred in nextStep():", error);
+            // Optionally, display a user-friendly error message on the UI
+        }
+    }
+
+    /**
+     * Goes back to the previous step.
+     */
+    function prevStep() {
+        console.log("prevStep() called.");
+        try {
+            hideAllErrors();
+            if (currentStep > 1) {
+                showStep(currentStep - 1);
+                if (typeof gtag !== 'undefined') {
+                    gtag('event', `calculator_step_back`, {
+                        'event_category': 'Calculator',
+                        'event_label': `Moved back to Step ${currentStep - 1}`,
+                        'value': currentStep - 1
+                    });
+                }
+            }
+        } catch (error) {
+            console.error("An error occurred in prevStep():", error);
+        }
+    }
+
+
+    /**
+     * Dynamically shows/hides sections based on user selections (e.g., loan type, savings use).
+     */
+    function updateVisibilityBasedOnInputs() {
+        console.log("updateVisibilityBasedOnInputs() called. Current formData:", formData);
+
+        // Step 1: Goal Type & Buy Timing
+        if (formData.goalType === 'buy_home') {
+            homeVsSIPQuestion.classList.remove('hidden');
+            loanTypeSection.classList.add('hidden');
+            investmentReturnCategory.classList.remove('hidden'); // This is SIP ROI, visible for buy_home
+            roiInput.value = formData.roi = DEFAULT_LOAN_ROI['home_loan']; // Set default ROI for home loan context
+        } else { // goalType === 'take_loan'
+            homeVsSIPQuestion.classList.add('hidden');
+            loanTypeSection.classList.remove('hidden');
+            investmentReturnCategory.classList.add('hidden'); // Not relevant for simple loan
+            if (!document.querySelector('input[name="loanType"]:checked')) {
+                // If no loan type selected, default to personal loan
+                document.querySelector('input[name="loanType"][value="personal_loan"]').checked = true;
+                formData.loanType = 'personal_loan';
+            }
+            // Set ROI based on selected/default loan type
+            roiInput.value = formData.roi = DEFAULT_LOAN_ROI[formData.loanType];
+        }
+        roiDisclaimer.innerHTML = `<i class="fas fa-info-circle"></i> This is the prevalent industry rate for your selected ${formData.goalType === 'buy_home' ? 'investment/loan' : 'loan type'}. You can adjust it based on your offer.`;
+
+
+        // Step 2: Home Goal Details & Savings Usage
+        if (currentStep === 2) {
+            if (formData.goalType === 'buy_home') {
+                 homeGoalDetails.classList.remove('hidden');
+                 savingsUsagePreference.classList.remove('hidden');
+                 investmentReturnCategory.classList.remove('hidden');
+            } else { // goalType === 'take_loan'
+                homeGoalDetails.classList.add('hidden');
+                savingsUsagePreference.classList.add('hidden');
+                investmentReturnCategory.classList.add('hidden');
+            }
+
+            if (formData.useAllSavings === 'no') {
+                specificSavingsInputDiv.classList.remove('hidden');
+                // Update aria-label for accessibility and also the inline unit display
+                specificSavingsAmountInput.setAttribute('aria-label', `Specific Savings Amount (${formData.savingsInputType === 'absolute' ? formData.unit : '%'})`);
+                const specificSavingsInputParent = specificSavingsAmountInput.previousElementSibling;
+                if (specificSavingsInputParent) {
+                    const unitLabelSpan = specificSavingsInputParent.querySelector('.unit-label');
+                    if (unitLabelSpan) {
+                         unitLabelSpan.textContent = `(${formData.savingsInputType === 'absolute' ? formData.unit : '%'})`;
+                    }
+                }
+            } else {
+                specificSavingsInputDiv.classList.add('hidden');
+            }
+        }
+
+
+        // Step 3: Budgeting vs Immediate Loan Scenario
+        if (currentStep === 3) {
+            if (formData.goalType === 'buy_home') {
+                budgetingSection.classList.remove('hidden');
+                immediateLoanPreference.classList.add('hidden');
+            } else if (formData.goalType === 'take_loan') {
+                budgetingSection.classList.add('hidden'); // Budgeting is still relevant for a loan goal to calculate available income
+                immediateLoanPreference.classList.remove('hidden');
+            }
+            // Update currency symbol for desired EMI input
+            if (desiredEmiInput && desiredEmiInput.previousElementSibling) {
+                const currencySymbolSpan = desiredEmiInput.previousElementSibling.querySelector('.currency-symbol');
+                if (currencySymbolSpan) {
+                    currencySymbolSpan.textContent = formData.currency === 'INR' ? '₹' : '$';
+                }
+            }
+        }
+    }
+
+    /**
+     * Updates the displayed monthly budget allocations based on input percentages and income.
+     */
+    function updateBudgetDisplay() {
+        console.log("updateBudgetDisplay() called.");
+        // Ensure formData is up to date before calculating display values
+        collectFormData();
+
+        const needs = formData.budgetNeeds;
+        const wants = formData.budgetWants;
+        const savings = formData.budgetSavings;
+        const income = formData.monthlyIncome; // This is already in raw INR (absolute value) from collectFormData
+
+        displayNeeds.textContent = formatToDisplayUnit(income * needs / 100, 'income', 0);
+        displayWants.textContent = formatToDisplayUnit(income * wants / 100, 'income', 0);
+        displaySavings.textContent = formatToDisplayUnit(income * savings / 100, 'income', 0);
+
+        checkBudgetSum();
+    }
+
+    /**
+     * Checks if the budget percentages sum up to 100% and shows a warning if not.
+     */
+    function checkBudgetSum() {
+        const needs = parseFloat(budgetNeedsInput.value) || 0;
+        const wants = parseFloat(budgetWantsInput.value) || 0;
+        const savings = parseFloat(budgetSavingsInput.value) || 0;
+        const total = needs + wants + savings;
+
+        if (currentBudgetSumDisplay) currentBudgetSumDisplay.textContent = total;
+        if (budgetSumWarning) {
+            if (total !== 100) {
+                budgetSumWarning.classList.remove('hidden');
+            } else {
+                budgetSumWarning.classList.add('hidden');
+            }
+        }
+    }
+
+    /**
+     * Updates the displayed results view in Step 4 based on radio button selection.
+     */
+    function updateResultsView() {
+        console.log("updateResultsView() called.");
+        const selectedView = document.querySelector('input[name="resultsView"]:checked')?.value;
+
+        // Hide all result sections
+        loanNowResults.classList.add('hidden');
+        investLaterResults.classList.add('hidden');
+        summaryAndRecommendation.classList.add('hidden');
+
+        // Show the selected section
+        if (selectedView === 'loan_now') {
+            loanNowResults.classList.remove('hidden');
+        } else if (selectedView === 'invest_later') {
+            investLaterResults.classList.remove('hidden');
+        } else if (selectedView === 'summary') {
+            summaryAndRecommendation.classList.remove('hidden');
+        }
+    }
+
+
+    /**
+     * Calculates future home value based on inflation and required SIP.
+     * @returns {object} Calculated SIP scenario results.
+     */
+    function calculateFutureHomePlan() {
+        const currentYear = new Date().getFullYear();
+        const yearsToBuy = Math.max(0, formData.homeLoanTargetYear - currentYear);
+        const targetAmountRaw = formData.homeLoanTargetAmount; // This is the raw input value, not yet base unit converted
+        const currentSavingsRaw = formData.currentSavings; // Raw value
+        const monthlyIncomeRaw = formData.monthlyIncome; // Raw value
+
+        // Convert raw input values to base units for calculation
+        const targetAmountInLakhs = convertToBaseUnit(targetAmountRaw, 'amount'); // Converted to INR Lakhs
+        const currentSavingsInLakhs = convertToBaseUnit(currentSavingsRaw, 'amount'); // Converted to INR Lakhs
+        const monthlyIncomeInINR = convertToBaseUnit(monthlyIncomeRaw, 'income'); // Converted to INR (absolute)
+
+        const annualSIPRoi = formData.investmentRoi; // Already a percentage
+        const inflationRate = formData.inflationRate / 100; // Convert percentage to decimal
+
+        const budgetSavingsPercent = formData.budgetSavings;
+        const potentialMonthlySavingsInINR = monthlyIncomeInINR * (budgetSavingsPercent / 100);
+
+        const inflationAdjustedTargetInLakhs = targetAmountInLakhs * Math.pow(1 + inflationRate, yearsToBuy);
+        const inflationAdjustedTargetInINR = inflationAdjustedTargetInLakhs * 100000; // Convert Lakhs to INR
+
+        let effectiveCurrentSavingsForInvestmentInINR = 0;
+        if (formData.useAllSavings === 'yes') {
+            effectiveCurrentSavingsForInvestmentInINR = currentSavingsInLakhs * 100000; // Convert Lakhs to INR
+        } else {
+            if (formData.savingsInputType === 'absolute') {
+                // If specific savings is absolute, it's in the display unit, convert to Lakhs then INR
+                effectiveCurrentSavingsForInvestmentInINR = (convertToBaseUnit(formData.specificSavingsAmount, 'amount')) * 100000;
+            } else { // percentage
+                effectiveCurrentSavingsForInvestmentInINR = (currentSavingsInLakhs * 100000) * (formData.specificSavingsAmount / 100);
+            }
+        }
+        effectiveCurrentSavingsForInvestmentInINR = Math.max(0, effectiveCurrentSavingsForInvestmentInINR);
+
+        const currentSavingsFutureValue = calculateLumpsumFutureValue(effectiveCurrentSavingsForInvestmentInINR, annualSIPRoi, yearsToBuy);
+
+        const amountNeededForGoal = Math.max(0, inflationAdjustedTargetInINR - currentSavingsFutureValue);
+
+        let requiredAdditionalSIP = 0;
+        const monthsToInvest = yearsToBuy * 12;
+
+        if (amountNeededForGoal > 0 && monthsToInvest > 0) {
+            const monthlyRate = (annualSIPRoi / 12) / 100;
+            if (monthlyRate > 0) {
+                // Corrected SIP Future Value formula for calculating required SIP
+                // FV = P * (((1 + r)^n - 1) / r) * (1 + r) for SIP at beginning of period
+                // To find P (requiredAdditionalSIP): P = FV / ((((1 + r)^n - 1) / r) * (1 + r))
+                const futureValueFactor = ((Math.pow(1 + monthlyRate, monthsToInvest) - 1) / monthlyRate) * (1 + monthlyRate);
+                requiredAdditionalSIP = amountNeededForGoal / futureValueFactor;
+            } else {
+                requiredAdditionalSIP = amountNeededForGoal / monthsToInvest; // If ROI is 0
+            }
+        }
+
+        return {
+            targetAmountDisplay: formatToDisplayUnit(targetAmountInLakhs, 'amount'), // For display purpose, pass initial home value in Lakhs
+            yearsToBuy: yearsToBuy,
+            targetYear: formData.homeLoanTargetYear,
+            inflationRateDisplay: formData.inflationRate.toFixed(0),
+            accumulateAmount: inflationAdjustedTargetInINR, // This is the total amount needed (in INR)
+            monthlySavingPotential: potentialMonthlySavingsInINR,
+            requiredSIP: requiredAdditionalSIP,
+            sipRoi: annualSIPRoi,
+            initialSavingsFutureValue: currentSavingsFutureValue, // in INR
+            effectiveCurrentSavingsForInvestment: effectiveCurrentSavingsForInvestmentInINR // in INR
+        };
+    }
+
+    /**
+     * Calculates loan details for the "Loan Now" scenario.
+     * @returns {object} Calculated loan scenario results.
+     */
+    function calculateImmediateLoanScenario() {
+        const propertyValueRaw = formData.homeLoanTargetAmount;
+        const currentSavingsRaw = formData.currentSavings;
+        const desiredEmiRaw = formData.desiredEmi;
+        const monthlyIncomeRaw = formData.monthlyIncome;
+
+        // Convert raw input values to base units for calculation
+        const propertyValueInINR = convertToBaseUnit(propertyValueRaw, 'amount') * 100000; // Convert Lakhs to INR
+        const currentSavingsInINR = convertToBaseUnit(currentSavingsRaw, 'amount') * 100000; // Convert Lakhs to INR
+        const loanROI = formData.roi; // Already a percentage
+        const desiredEmiInINR = convertToBaseUnit(desiredEmiRaw, 'income'); // Already in INR
+        const monthlyIncomeInINR = convertToBaseUnit(monthlyIncomeRaw, 'income'); // Already in INR
+
+        let downPaymentAmount = 0;
+        if (formData.useAllSavings === 'yes') {
+            downPaymentAmount = currentSavingsInINR;
+        } else {
+            if (formData.savingsInputType === 'absolute') {
+                // Specific amount input is in display unit, convert to Lakhs then INR
+                downPaymentAmount = (convertToBaseUnit(formData.specificSavingsAmount, 'amount')) * 100000;
+            } else { // percentage
+                downPaymentAmount = (currentSavingsInINR) * (formData.specificSavingsAmount / 100);
+            }
+        }
+        downPaymentAmount = Math.min(downPaymentAmount, propertyValueInINR);
+        downPaymentAmount = Math.max(0, downPaymentAmount);
+
+        let loanAmount = propertyValueInINR - downPaymentAmount;
+        loanAmount = Math.max(0, loanAmount);
+
+        let loanTenureMonths = 0;
+        let calculatedEmi = 0;
+
+        if (formData.fixedLoanTenure > 0 && !isNaN(formData.fixedLoanTenure)) {
+            loanTenureMonths = formData.fixedLoanTenure * 12;
+            calculatedEmi = calculateEMI(loanAmount, loanROI, loanTenureMonths);
+        } else if (desiredEmiInINR > 0 && !isNaN(desiredEmiInINR)) {
+            calculatedEmi = desiredEmiInINR;
+            loanTenureMonths = calculateTenure(loanAmount, loanROI, calculatedEmi);
+            if (loanTenureMonths === 0 || !isFinite(loanTenureMonths)) {
+                loanTenureMonths = 360; // Fallback to max tenure if EMI too low
+                calculatedEmi = calculateEMI(loanAmount, loanROI, loanTenureMonths);
+            } else {
+                loanTenureMonths = Math.min(Math.ceil(loanTenureMonths), 360);
+            }
+        } else { // Fallback if neither is provided correctly, assume max tenure
+            loanTenureMonths = 360;
+            calculatedEmi = calculateEMI(loanAmount, loanROI, loanTenureMonths);
+        }
+
+        const totalInterest = calculateTotalInterest(loanAmount, calculatedEmi, loanTenureMonths);
+        const totalOutofPocketCost = loanAmount + totalInterest;
+
+        let affordabilityWarning = false;
+        const monthlyLoanCost = calculatedEmi;
+        const budgetSavingsPercentage = formData.budgetSavings;
+        const availableForSavingsAndDebt = monthlyIncomeInINR * (budgetSavingsPercentage / 100);
+        // Warning if loan cost exceeds available budget significantly
+        if (monthlyLoanCost > availableForSavingsAndDebt * 1.2) {
+            affordabilityWarning = true;
+        }
+
+        return {
+            downPayment: downPaymentAmount,
+            loanAmount: loanAmount,
+            emi: calculatedEmi,
+            tenureMonths: loanTenureMonths,
+            totalInterest: totalInterest,
+            totalOutofPocketCost: totalOutofPocketCost,
+            affordabilityWarning: affordabilityWarning
+        };
+    }
+
+
+    /**
+     * Collects all current form data from the UI elements into the formData object.
+     * IMPORTANT: This reads the RAW values from the input fields.
+     * Conversions to base units (INR, INR Lakhs) for calculations happen *inside*
+     * the calculation functions (e.g., `calculateFutureHomePlan`).
+     */
+    function collectFormData() {
+        console.log("collectFormData() called.");
+        // Global UI settings
+        formData.currency = currencySelect.value;
+        formData.unit = unitSelect.value;
+
+        // Step 1
+        formData.goalType = document.querySelector('input[name="goalType"]:checked')?.value || formData.goalType;
+        formData.buyTiming = document.querySelector('input[name="buyTiming"]:checked')?.value || formData.buyTiming;
+        formData.loanType = document.querySelector('input[name="loanType"]:checked')?.value || formData.loanType;
+        formData.roi = parseFloat(roiInput.value) || DEFAULT_LOAN_ROI[formData.loanType];
+
+        // Step 2
+        formData.homeLoanTargetAmount = parseFloat(targetAmountInput.value || 0); // Raw value from input
+        formData.homeLoanTargetYear = parseInt(targetYearInput.value || 0);
+        formData.inflationRate = parseFloat(inflationRateInput.value || 0);
+        formData.currentSavings = parseFloat(currentSavingsInput.value || 0); // Raw value from input
+        formData.monthlyIncome = parseFloat(monthlyIncomeInput.value || 0); // Raw value from input
+        formData.useAllSavings = document.querySelector('input[name="useAllSavings"]:checked')?.value || formData.useAllSavings;
+        formData.specificSavingsAmount = parseFloat(specificSavingsAmountInput.value || 0); // Raw value from input
+        formData.savingsInputType = document.querySelector('input[name="savingsInputType"]:checked')?.value || formData.savingsInputType;
+
+        const selectedInvestmentOption = investmentCategorySelect.options[investmentCategorySelect.selectedIndex];
+        if (selectedInvestmentOption) {
+            formData.investmentRoi = parseFloat(selectedInvestmentOption.value);
+            formData.investmentCategory = Object.keys(INVESTMENT_CAGR).find(key => INVESTMENT_CAGR[key] === formData.investmentRoi) || 'large_cap';
+        } else {
+            formData.investmentRoi = INVESTMENT_CAGR['large_cap'];
+            formData.investmentCategory = 'large_cap';
+        }
+
+        // Step 3
+        formData.budgetNeeds = parseFloat(budgetNeedsInput.value || 0);
+        formData.budgetWants = parseFloat(budgetWantsInput.value || 0);
+        formData.budgetSavings = parseFloat(budgetSavingsInput.value || 0);
+        formData.desiredEmi = parseFloat(desiredEmiInput.value || 0); // Raw value from input
+        formData.fixedLoanTenure = parseInt(fixedLoanTenureInput.value || 0);
+
+        autosaveFormState();
+        console.log("formData after collection:", formData);
+    }
+
     // --- Initialization and Event Listeners ---
 
     /**
@@ -893,7 +1461,6 @@ document.addEventListener('DOMContentLoaded', function() {
         const savingsTypeRadio = document.querySelector(`input[name="savingsInputType"][value="${formData.savingsInputType}"]`);
         if(savingsTypeRadio) savingsTypeRadio.checked = true;
         
-        // Set investment category dropdown.
         const investmentOption = investmentCategorySelect.querySelector(`option[value="${formData.investmentRoi}"]`);
         if (investmentOption) {
             investmentCategorySelect.value = formData.investmentRoi;
@@ -909,16 +1476,14 @@ document.addEventListener('DOMContentLoaded', function() {
         budgetSavingsInput.value = formData.budgetSavings;
         fixedLoanTenureInput.value = formData.fixedLoanTenure;
 
-        // Directly set raw numeric values for inputs from formData
         targetAmountInput.value = formData.homeLoanTargetAmount;
         currentSavingsInput.value = formData.currentSavings;
         monthlyIncomeInput.value = formData.monthlyIncome;
         specificSavingsAmountInput.value = formData.specificSavingsAmount;
         desiredEmiInput.value = formData.desiredEmi;
 
-        updateVisibilityBasedOnInputs(); // Ensure conditional sections are correct from start
-        // After inputs are set, update display elements that show derived values
-        if (currentStep === 3) { // Only if on Step 3, update these displays immediately
+        updateVisibilityBasedOnInputs();
+        if (currentStep === 3) {
              displayMonthlyIncome.textContent = formatToDisplayUnit(formData.monthlyIncome, 'income', 0);
              updateBudgetDisplay();
         }
@@ -927,6 +1492,32 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // --- Attach Event Listeners ---
     console.log("Attaching event listeners...");
+
+    // Add event listeners to the buttons (after ensuring they exist)
+    if (nextBtn) {
+        nextBtn.addEventListener('click', nextStep);
+    } else {
+        console.warn("Next button with ID 'nextBtn' not found.");
+    }
+
+    if (prevBtn) {
+        prevBtn.addEventListener('click', prevStep);
+    } else {
+        console.warn("Previous button with ID 'prevBtn' not found.");
+    }
+
+    if (printPdfBtn) {
+        printPdfBtn.addEventListener('click', generatePdfAndSuggestEmail);
+    } else {
+        console.warn("Print PDF button with ID 'printPdfBtn' not found.");
+    }
+
+    if (emailShareBtn) {
+        emailShareBtn.addEventListener('click', generatePdfAndSuggestEmail); // Reusing for now
+    } else {
+        console.warn("Email Share button with ID 'emailShareBtn' not found.");
+    }
+
 
     // Global Toggles
     currencySelect.addEventListener('change', () => { collectFormData(); initializeFormInputs(); if (currentStep === 4) performAllCalculationsAndDisplayResults(); autosaveFormState(); });
@@ -993,8 +1584,8 @@ document.addEventListener('DOMContentLoaded', function() {
     resultsToggleRadios.forEach(radio => radio.addEventListener('change', updateResultsView));
 
     // --- Initial Setup on Page Load ---
-    restoreFormState();
-    showStep(currentStep);
+    restoreFormState(); // This will load data and call initializeFormInputs
+    showStep(currentStep); // This will then display the correct step and update sidebar
 });
 
 // Polyfill for Intl.NumberFormat for older browsers (if absolutely necessary)
