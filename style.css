@@ -1,87 +1,54 @@
+@import url('https://fonts.googleapis.com/css?family=Inter:400,500,600,700&display=swap');
+
 body {
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background-color: #f8fafc;
-  color: #111827;
-  margin: 0;
-  padding: 0;
-  line-height: 1.6;
+  font-family: 'Inter', system-ui, Arial, sans-serif;
 }
 
-.container {
-  max-width: 800px;
-  margin: 40px auto;
-  padding: 24px;
-  background: white;
-  border-radius: 12px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+/* Custom nav active link styling */
+.nav-link.active {
+  color: #10b981;
+  border-bottom: 2px solid #10b981;
 }
 
-h1, h2 {
-  text-align: center;
-  color: #1f2937;
+.nav-link {
+  transition: color 0.2s;
+}
+.nav-link:hover {
+  color: #00775e;
 }
 
-input[type="number"] {
-  width: 100%;
-  padding: 12px;
-  margin: 10px 0 20px;
-  border: 1px solid #d1d5db;
-  border-radius: 8px;
-  font-size: 1rem;
-  background-color: #ffffff;
-  transition: border-color 0.3s ease-in-out;
-}
-
-input[type="number"]:focus {
-  outline: none;
-  border-color: #3b82f6;
-  background-color: #f0f9ff;
-}
-
-button {
-  background-color: #3b82f6;
-  color: white;
-  border: none;
-  padding: 12px 20px;
-  font-size: 1rem;
-  border-radius: 8px;
-  cursor: pointer;
-  margin: 10px 8px 0 0;
-  transition: background-color 0.3s ease;
-}
-
-button:hover {
-  background-color: #2563eb;
-}
-
-.step {
-  margin-bottom: 20px;
-}
-
-.hidden {
+/* Custom modal for accessibility */
+#customModal {
   display: none;
 }
-
-.result-box {
-  background-color: #f1f5f9;
-  border-left: 6px solid #3b82f6;
-  padding: 16px;
-  border-radius: 8px;
-  margin-top: 20px;
-  font-size: 1rem;
+#customModal.show {
+  display: flex;
 }
 
-.text-green-700 {
-  color: #15803d;
-  font-weight: bold;
+/* Hide spinners for number inputs (Chrome, Safari, Edge) */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+input[type=number] {
+  -moz-appearance: textfield;
 }
 
-.text-red-700 {
-  color: #b91c1c;
-  font-weight: bold;
+/* Fix for Card shadow and glassmorphism feel */
+.bg-card-blur {
+  background: rgba(255,255,255,0.85);
+  box-shadow: 0 4px 32px rgba(30,58,138,0.07), 0 2px 4px rgba(30,58,138,0.08);
+  backdrop-filter: blur(6px);
+  border-radius: 1.25rem;
 }
 
-canvas {
-  margin-top: 30px;
-  max-width: 100%;
+/* Chart.js custom tooltip styling */
+.chartjs-tooltip {
+  background: #2563eb;
+  color: #fff;
+  border-radius: 6px;
+  padding: 8px 12px;
+  font-size: 0.95rem;
+  box-shadow: 0 2px 8px rgba(16, 52, 87, 0.13);
 }
