@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Articles - RajyaFunds: Your Path to Financial Clarity</title>
-    <link rel="stylesheet" href="../style.css">
+    <title>RajyaFunds: Empowering Your Financial Journey</title>
+    <link rel="stylesheet" href="style.css">
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
@@ -18,18 +18,36 @@
             font-weight: 600;
             border-bottom: 2px solid #1e3a8a;
         }
-        .article-card {
+        .hero-section {
+            background-color: #f4f8ff; /* Soft light blue */
+        }
+        .section-title {
+            color: #1e3a8a; /* Primary Brand Blue */
+        }
+        .card-item {
             background-color: #ffffff;
             border-radius: 0.75rem;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
             transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
         }
-        .article-card:hover {
+        .card-item:hover {
             transform: translateY(-5px);
             box-shadow: 0 8px 12px rgba(0, 0, 0, 0.1);
         }
-        .section-title {
-            color: #1e3a8a; /* Primary Brand Blue */
+        /* Animation for hero section text */
+        @keyframes slideInFromLeft {
+            0% { transform: translateX(-100%); opacity: 0; }
+            100% { transform: translateX(0); opacity: 1; }
+        }
+        @keyframes fadeIn {
+            0% { opacity: 0; }
+            100% { opacity: 1; }
+        }
+        .animate-slide-in {
+            animation: slideInFromLeft 1s ease-out forwards;
+        }
+        .animate-fade-in {
+            animation: fadeIn 1.5s ease-out forwards;
         }
     </style>
 </head>
@@ -38,7 +56,7 @@
     <header class="main-header py-4 px-6 md:px-10 shadow-sm">
         <div class="container mx-auto flex flex-col md:flex-row justify-between items-center">
             <div class="flex flex-col md:flex-row items-center mb-3 md:mb-0">
-                <a href="../index.html" class="text-2xl md:text-3xl font-bold flex items-center group">
+                <a href="index.html" class="text-2xl md:text-3xl font-bold flex items-center group">
                     <span class="text-[#1e3a8a]">Rajya</span><span class="rajyafunds-logo">Funds</span>
                 </a>
                 <span class="text-sm md:text-base text-gray-600 md:ml-4 mt-1 md:mt-0">Empowering Your Financial Journey</span>
@@ -52,43 +70,82 @@
     <!-- Main Navigation -->
     <nav class="main-nav bg-white shadow-md py-3 px-6 md:px-10 sticky top-0 z-50">
         <div class="container mx-auto flex justify-center space-x-6 md:space-x-10 text-lg font-medium">
-            <a href="../index.html" class="text-gray-700 hover:text-[#2563eb] py-2 transition-all duration-200">Home</a>
-            <a href="../loan-vs-sip-calculator.html" class="text-gray-700 hover:text-[#2563eb] py-2 transition-all duration-200">Calculators</a>
-            <a href="index.html" class="text-gray-700 hover:text-[#2563eb] py-2 transition-all duration-200 active">Articles</a>
+            <a href="index.html" class="text-gray-700 hover:text-[#2563eb] py-2 transition-all duration-200 active">Home</a>
+            <a href="loan-vs-sip-calculator.html" class="text-gray-700 hover:text-[#2563eb] py-2 transition-all duration-200">Calculators</a>
+            <a href="articles/index.html" class="text-gray-700 hover:text-[#2563eb] py-2 transition-all duration-200">Articles</a>
             <a href="#contact" class="text-gray-700 hover:text-[#2563eb] py-2 transition-all duration-200">Contact</a>
         </div>
     </nav>
 
-    <main class="container mx-auto px-4 py-8 md:py-12">
-        <h1 class="text-3xl md:text-4xl font-bold mb-8 text-center section-title">RajyaFunds Articles & Insights</h1>
+    <main>
+        <!-- Hero Section -->
+        <section class="hero-section py-16 md:py-24 text-center">
+            <div class="container mx-auto px-4">
+                <h1 class="text-4xl md:text-6xl font-bold text-[#1e3a8a] leading-tight mb-4 animate-slide-in">
+                    Make Smarter Financial Decisions
+                </h1>
+                <p class="text-lg md:text-xl text-gray-700 max-w-3xl mx-auto mb-8 animate-fade-in" style="animation-delay: 0.5s;">
+                    RajyaFunds empowers Indian youth and professionals with intelligent tools for financial planning, simplifying complex decisions like "buy now or invest and buy later."
+                </p>
+                <a href="loan-vs-sip-calculator.html" class="inline-block bg-[#10b981] text-white text-xl md:text-2xl px-8 py-4 rounded-xl font-bold hover:bg-[#0d9973] transition-all duration-300 transform hover:scale-105 shadow-lg animate-fade-in" style="animation-delay: 1s;">
+                    Start Your Financial Journey
+                </a>
+            </div>
+        </section>
 
-        <section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            <!-- Example Article Card 1 -->
-            <div class="article-card p-6 flex flex-col justify-between">
-                <div>
-                    <h2 class="text-xl md:text-2xl font-semibold text-[#1e3a8a] mb-3">Understanding Loan vs. SIP: A Comprehensive Guide</h2>
-                    <p class="text-gray-600 text-sm mb-4">Explore the pros and cons of taking a loan now versus investing through SIP to achieve your financial goals later.</p>
+        <!-- Features/Calculator Link Section -->
+        <section class="py-12 md:py-20 px-4">
+            <div class="container mx-auto">
+                <h2 class="text-3xl md:text-4xl font-bold text-center mb-10 section-title">Our Tools for Financial Clarity</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12">
+                    <div class="card-item p-6 md:p-8 flex flex-col items-center text-center">
+                        <div class="text-5xl mb-4 text-[#38bdf8]">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-16 h-16"><path d="M21 11.5a2.5 2.5 0 0 0-5 0v2.5a2.5 2.5 0 0 1-5 0V11.5a2.5 2.5 0 0 0-5 0V14a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V7.5a2.5 2.5 0 0 1 5 0v2.5a2.5 2.5 0 0 0 5 0V7.5a2.5 2.5 0 0 1 5 0V10a2 2 0 0 0 2 2h2a2 2 0 0 0 2-2v-2.5Z"/></svg>
+                        </div>
+                        <h3 class="text-xl md:text-2xl font-semibold mb-3 text-[#1e3a8a]">Loan vs. SIP Comparison Calculator</h3>
+                        <p class="text-gray-600 mb-6">
+                            Make informed decisions about immediate asset acquisition via loan vs. future acquisition via SIP. Compare net financial outcomes.
+                        </p>
+                        <a href="loan-vs-sip-calculator.html" class="inline-block bg-[#2563eb] text-white px-6 py-3 rounded-lg font-medium hover:bg-[#1e3a8a] transition-all duration-200">
+                            Use Calculator
+                        </a>
+                    </div>
+                    <div class="card-item p-6 md:p-8 flex flex-col items-center text-center">
+                        <div class="text-5xl mb-4 text-[#38bdf8]">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-16 h-16"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><line x1="10" y1="9" x2="10" y2="9"/></svg>
+                        </div>
+                        <h3 class="text-xl md:text-2xl font-semibold mb-3 text-[#1e3a8a]">Financial Articles & Insights</h3>
+                        <p class="text-gray-600 mb-6">
+                            Explore a library of articles designed to simplify complex financial concepts and empower your decision-making.
+                        </p>
+                        <a href="articles/index.html" class="inline-block bg-[#2563eb] text-white px-6 py-3 rounded-lg font-medium hover:bg-[#1e3a8a] transition-all duration-200">
+                            Read Articles
+                        </a>
+                    </div>
                 </div>
-                <a href="article1.html" class="inline-block bg-[#10b981] text-white px-6 py-2 rounded-lg font-medium hover:bg-[#0d9973] transition-all duration-200 text-center mt-4">Read Article</a>
             </div>
+        </section>
 
-            <!-- Example Article Card 2 -->
-            <div class="article-card p-6 flex flex-col justify-between">
-                <div>
-                    <h2 class="text-xl md:text-2xl font-semibold text-[#1e3a8a] mb-3">The Power of Compounding: How Your Investments Grow</h2>
-                    <p class="text-gray-600 text-sm mb-4">Discover how compounding can significantly boost your wealth over the long term. Essential for every investor!</p>
+        <!-- About Owner / Contact Section -->
+        <section class="py-12 md:py-20 px-4 bg-[#eef2f7]">
+            <div class="container mx-auto text-center">
+                <h2 class="text-3xl md:text-4xl font-bold mb-8 section-title">About RajyaFunds & Contact Us</h2>
+                <div class="max-w-2xl mx-auto text-gray-700 text-lg">
+                    <p class="mb-4">
+                        RajyaFunds is built with a passion for simplifying personal finance for everyone, especially the young and aspiring professionals in India. Our mission is to provide clear, actionable insights and powerful tools to help you navigate your financial journey with confidence.
+                    </p>
+                    <p class="mb-6">
+                        We believe that informed financial decisions are the cornerstone of a secure and prosperous future.
+                    </p>
+                    <p class="text-xl font-semibold text-[#1e3a8a]">
+                        Have questions or feedback?
+                    </p>
+                    <p class="mt-4">
+                        <a href="mailto:rajyafunds.in@gmail.com" id="contact" class="text-[#2563eb] hover:text-[#1e3a8a] transition-colors duration-200 text-lg font-medium">
+                            Email us at rajyafunds.in@gmail.com
+                        </a>
+                    </p>
                 </div>
-                <a href="article2.html" class="inline-block bg-[#10b981] text-white px-6 py-2 rounded-lg font-medium hover:bg-[#0d9973] transition-all duration-200 text-center mt-4">Read Article</a>
-            </div>
-
-            <!-- "Coming Soon" Placeholders -->
-            <div class="article-card p-6 text-center flex flex-col items-center justify-center bg-gray-50 border-2 border-dashed border-gray-300">
-                <h2 class="text-xl md:text-2xl font-semibold text-gray-500 mb-2">More Articles Coming Soon!</h2>
-                <p class="text-gray-400 text-sm">Stay tuned for insightful financial content.</p>
-            </div>
-            <div class="article-card p-6 text-center flex flex-col items-center justify-center bg-gray-50 border-2 border-dashed border-gray-300">
-                <h2 class="text-xl md:text-2xl font-semibold text-gray-500 mb-2">More Articles Coming Soon!</h2>
-                <p class="text-gray-400 text-sm">Stay tuned for insightful financial content.</p>
             </div>
         </section>
     </main>
@@ -98,9 +155,9 @@
         <div class="container mx-auto px-4 text-center">
             <p class="mb-4">&copy; 2025 RajyaFunds. All rights reserved.</p>
             <div class="flex justify-center space-x-6">
-                <a href="../index.html" class="text-gray-300 hover:text-white transition-colors duration-200">Home</a>
-                <a href="../loan-vs-sip-calculator.html" class="text-gray-300 hover:text-white transition-colors duration-200">Calculators</a>
-                <a href="index.html" class="text-gray-300 hover:text-white transition-colors duration-200">Articles</a>
+                <a href="index.html" class="text-gray-300 hover:text-white transition-colors duration-200">Home</a>
+                <a href="loan-vs-sip-calculator.html" class="text-gray-300 hover:text-white transition-colors duration-200">Calculators</a>
+                <a href="articles/index.html" class="text-gray-300 hover:text-white transition-colors duration-200">Articles</a>
                 <a href="mailto:rajyafunds.in@gmail.com" id="contact" class="text-gray-300 hover:text-white transition-colors duration-200">Contact Us</a>
             </div>
             <p class="mt-4 text-gray-400 text-sm">
@@ -108,5 +165,7 @@
             </p>
         </div>
     </footer>
+
+    <script src="script.js"></script>
 </body>
 </html>
