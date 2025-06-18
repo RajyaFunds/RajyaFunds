@@ -1,289 +1,1795 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Smart Buy Planner: Loan vs SIP - RajyaFunds</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js" integrity="sha512-GsIDtaDY9Ik5vmFVgSgPDN7jPnZmPRzkVMLfLFefMVsEwHcHzKihV2gQaVXRzPQAInC5LfkEF8tKB4zhWcK7Sg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-
-    <style>
-        body {
-            font-family: 'Inter', sans-serif;
-            line-height: 1.6;
-            color: #333;
-        }
-        .step-container {
-            transition: opacity 0.5s ease-in-out;
-        }
-        .hidden {
-            display: none;
-            opacity: 0;
-            height: 0;
-            overflow: hidden;
-        }
-        .visible {
-            opacity: 1;
-            height: auto;
-        }
-        /* For the custom modal */
-        #customModal {
-            transition: opacity 0.3s ease-in-out;
-        }
-    </style>
-</head>
-<body class="bg-gray-50">
-
-    <header class="bg-blue-900 text-white p-4 shadow-md">
-        <div class="container mx-auto flex justify-between items-center">
-            <div>
-                <h1 class="text-3xl font-bold">
-                    <span class="text-green-400">RajyaFunds</span>
-                </h1>
-                <p class="text-sm">Empowering Your Financial Journey</p>
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Loan vs. SIP Calculator - RajyaFunds</title>
+        <link rel="stylesheet" href="style.css">
+        <script src="https://cdn.tailwindcss.com"></script>
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+        <!-- Chart.js for visualizations -->
+        <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.0/dist/chart.min.js"></script>
+        <!-- html2pdf.js for PDF generation -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+        <style>
+            body { font-family: 'Inter', sans-serif; }
+            .rajyafunds-logo { color: #10b981; } /* CTA Green */
+            .main-header {
+                background-color: #eef2f7; /* Light background */
+            }
+            .main-nav a.active {
+                color: #1e3a8a; /* Primary Brand Blue */
+                font-weight: 600;
+                border-bottom: 2px solid #1e3a8a;
+            }
+            .calculator-card {
+                background-color: #ffffff;
+                border-radius: 1rem; /* More rounded corners */
+                box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1), 0 4px 6px rgba(0, 0, 0, 0.05); /* Stronger shadow */
+            }
+            .calculator-input-group label {
+                color: #1e3a8a; /* Primary Brand Blue for labels */
+                font-weight: 500;
+            }
+            .calculator-input-group input[type="number"],
+            .calculator-input-group select,
+            .calculator-input-group textarea {
+                border-color: #d1d5db; /* Light gray border */
+                border-radius: 0.5rem; /* Rounded input fields */
+                padding: 0.75rem 1rem;
+                transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+            }
+            .calculator-input-group input[type="number"]:focus,
+            .calculator-input-group select:focus,
+            .calculator-input-group textarea:focus {
+                border-color: #3b82f6; /* Accent blue on focus */
+                outline: none;
+                box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.25); /* Focus ring */
+            }
+            /* Custom modal styling */
+            .modal-overlay {
+                background-color: rgba(0, 0, 0, 0.6);
+                z-index: 1000; /* Ensure it's on top */
+            }
+            .modal-content {
+                background-color: #ffffff;
+                border-radius: 1rem;
+                box-shadow: 0 20px 25px rgba(0, 0, 0, 0.2), 0 8px 10px rgba(0, 0, 0, 0.08);
+                max-width: 90%;
+                width: 400px;
+                z-index: 1001;
+            }
+            .modal-content h3 {
+                color: #1e3a8a;
+            }
+            .chart-container {
+                position: relative;
+                height: 40vh; /* Adjust height as needed */
+                width: 100%;
+                max-width: 800px; /* Max width for larger screens */
+                margin: 0 auto;
+            }
+            @media (max-width: 768px) {
+                .chart-container {
+                    height: 50vh; /* Taller on smaller screens */
+                }
+            }
+            .section-title {
+                color: #1e3a8a; /* Primary Brand Blue */
+            }
+            /* Custom range slider styling */
+            input[type="range"] {
+                -webkit-appearance: none;
+                width: 100%;
+                height: 8px;
+                background: #d1d5db;
+                border-radius: 5px;
+                outline: none;
+                opacity: 0.7;
+                -webkit-transition: .2s;
+                transition: opacity .2s;
+            }
+            input[type="range"]:hover {
+                opacity: 1;
+            }
+            input[type="range"]::-webkit-slider-thumb {
+                -webkit-appearance: none;
+                appearance: none;
+                width: 20px;
+                height: 20px;
+                border-radius: 50%;
+                background: #3b82f6;
+                cursor: pointer;
+                border: 2px solid #ffffff;
+                box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.5);
+            }
+            input[type="range"]::-moz-range-thumb {
+                width: 20px;
+                height: 20px;
+                border-radius: 50%;
+                background: #3b82f6;
+                cursor: pointer;
+                border: 2px solid #ffffff;
+                box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.5);
+            }
+        </style>
+    </head>
+    <body class="bg-[#f9fafb] text-[#111827]">
+        <!-- Main Header -->
+        <header class="main-header py-4 px-6 md:px-10 shadow-sm">
+            <div class="container mx-auto flex flex-col md:flex-row justify-between items-center">
+                <div class="flex flex-col md:flex-row items-center mb-3 md:mb-0">
+                    <a href="index.html" class="text-2xl md:text-3xl font-bold flex items-center group">
+                        <span class="text-[#1e3a8a]">Rajya</span><span class="rajyafunds-logo">Funds</span>
+                    </a>
+                    <span class="text-sm md:text-base text-gray-600 md:ml-4 mt-1 md:mt-0">Empowering Your Financial Journey</span>
+                </div>
+                <div class="text-base md:text-xl font-semibold text-[#1e3a8a]">
+                    Your Path to Financial Clarity
+                </div>
             </div>
-            <p class="text-lg font-medium hidden md:block">Your Path to Financial Clarity</p>
-        </div>
-    </header>
+        </header>
 
-    <nav class="bg-blue-800 text-white py-3 shadow-md">
-        <ul class="container mx-auto flex justify-around">
-            <li><a href="index.html" class="hover:text-blue-200 transition-colors duration-300">Home</a></li>
-            <li><a href="loan-vs-sip-calculator.html" class="hover:text-blue-200 transition-colors duration-300">Calculators</a></li>
-            <li><a href="#articles" class="hover:text-blue-200 transition-colors duration-300">Articles</a></li>
-            <li><a href="#contact" class="hover:text-blue-200 transition-colors duration-300">Contact</a></li>
-        </ul>
-    </nav>
+        <!-- Main Navigation -->
+        <nav class="main-nav bg-white shadow-md py-3 px-6 md:px-10 sticky top-0 z-50">
+            <div class="container mx-auto flex justify-center space-x-6 md:space-x-10 text-lg font-medium">
+                <a href="index.html" class="text-gray-700 hover:text-[#2563eb] py-2 transition-all duration-200">Home</a>
+                <a href="loan-vs-sip-calculator.html" class="text-gray-700 hover:text-[#2563eb] py-2 transition-all duration-200 active">Calculators</a>
+                <a href="articles/index.html" class="text-gray-700 hover:text-[#2563eb] py-2 transition-all duration-200">Articles</a>
+                <a href="#contact" class="text-gray-700 hover:text-[#2563eb] py-2 transition-all duration-200">Contact</a>
+            </div>
+        </nav>
 
-    <main class="container mx-auto p-6 my-8">
-        <div id="smart-buy-planner-section" class="bg-white rounded-lg shadow-xl p-8 max-w-4xl mx-auto border border-blue-200">
-            <h2 class="text-3xl font-extrabold text-blue-800 mb-6 text-center">Smart Buy Planner: Loan vs. SIP</h2>
-            <p class="text-gray-600 mb-8 text-center">Make informed decisions about your big purchases. Compare buying now with a loan versus investing and buying later.</p>
+        <main class="container mx-auto px-4 py-8 md:py-12" id="calculator-content">
+            <h1 class="text-3xl md:text-4xl font-bold mb-8 text-center section-title">Loan vs. SIP Comparison Calculator</h1>
 
-            <div class="flex justify-end items-center space-x-4 mb-8">
+            <!-- Global Currency & Unit Toggle -->
+            <div class="flex justify-end items-center mb-6 space-x-4">
                 <div class="flex items-center space-x-2">
-                    <label for="currencyToggle" class="text-sm font-medium text-gray-700">Currency:</label>
-                    <select id="currencyToggle" class="border border-gray-300 rounded-md shadow-sm p-2 text-sm focus:ring-blue-500 focus:border-blue-500">
-                        <option value="INR">INR</option>
-                        <option value="USD">USD</option>
+                    <label for="currency-toggle" class="text-gray-700 font-medium">Currency:</label>
+                    <select id="currency-toggle" class="p-2 border rounded-md text-gray-700 focus:ring-[#38bdf8] focus:border-[#38bdf8]">
+                        <option value="INR">₹ Rupees</option>
+                        <option value="USD">$ US Dollars</option>
                     </select>
                 </div>
                 <div class="flex items-center space-x-2">
-                    <label for="unitToggle" class="text-sm font-medium text-gray-700">Unit:</label>
-                    <select id="unitToggle" class="border border-gray-300 rounded-md shadow-sm p-2 text-sm focus:ring-blue-500 focus:border-blue-500">
-                        <option value="Lakhs">Lakhs</option>
-                        <option value="Millions">Millions</option>
-                        <option value="Crores">Crores</option>
+                    <label for="unit-toggle" class="text-gray-700 font-medium">Unit:</label>
+                    <select id="unit-toggle" class="p-2 border rounded-md text-gray-700 focus:ring-[#38bdf8] focus:border-[#38bdf8]">
+                        <option value="none">Units</option>
+                        <option value="lakh">Lakhs (INR only)</option>
+                        <option value="million">Millions</option>
+                        <option value="crore">Crores (INR only)</option>
                     </select>
                 </div>
             </div>
 
-            <form id="smartBuyForm">
+            <div class="calculator-card p-6 md:p-10 shadow-lg">
+                <form id="calculator-form" class="space-y-6">
 
-                <div id="step-1" class="step-container">
-                    <h3 class="text-2xl font-bold text-blue-700 mb-5">Step 1: Define Your Goal</h3>
-                    <div class="mb-6 bg-blue-50 p-4 rounded-md border border-blue-200">
-                        <label class="block text-lg font-semibold text-gray-800 mb-3">What is your primary objective?</label>
-                        <div class="flex flex-col space-y-3">
-                            <label class="inline-flex items-center">
-                                <input type="radio" name="goal" id="homeGoalRadio" value="home" class="form-radio h-5 w-5 text-blue-600">
-                                <span class="ml-2 text-gray-700 text-base">Home Goal (Buying a house/property)</span>
-                            </label>
-                            <label class="inline-flex items-center">
-                                <input type="radio" name="goal" id="otherLoanRadio" value="otherLoan" class="form-radio h-5 w-5 text-blue-600">
-                                <span class="ml-2 text-gray-700 text-base">Other Loan Goal (Personal loan, car loan, etc.)</span>
-                            </label>
-                        </div>
-                    </div>
+                    <!-- Step 1: Define Your Goal & Loan Intent -->
+                    <div id="step-1" class="calculator-step">
+                        <h2 class="text-2xl md:text-3xl font-semibold mb-6 section-title">Step 1: Define Your Goal & Loan Intent</h2>
 
-                    <div id="homeGoalSpecific" class="mb-6 bg-green-50 p-4 rounded-md border border-green-200 hidden">
-                        <label class="block text-lg font-semibold text-gray-800 mb-3">For your Home Goal, what is your plan?</label>
-                        <div class="flex flex-col space-y-3">
-                            <label class="inline-flex items-center">
-                                <input type="radio" name="homePlan" id="buyNowRadio" value="buyNow" class="form-radio h-5 w-5 text-green-600">
-                                <span class="ml-2 text-gray-700 text-base">Buy Now (with a loan)</span>
-                            </label>
-                            <label class="inline-flex items-center">
-                                <input type="radio" name="homePlan" id="buyLaterRadio" value="buyLater" class="form-radio h-5 w-5 text-green-600">
-                                <span class="ml-2 text-gray-700 text-base">Invest Now, Buy Later (Save up for a larger down payment)</span>
-                            </label>
-                        </div>
-                    </div>
-
-                    <div class="mb-4">
-                        <label for="expectedAnnualROI" class="block text-sm font-medium text-gray-700">Expected Annual ROI (for Loan Interest / Investment Returns, in %)</label>
-                        <input type="number" id="expectedAnnualROI" name="expectedAnnualROI" step="0.1" placeholder="e.g., 8.5" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring-blue-500 focus:border-blue-500">
-                        <p class="text-xs text-gray-500 mt-1">This will be used for both loan interest calculations and general investment return estimates.</p>
-                    </div>
-
-                    <div class="flex justify-end">
-                        <button type="button" id="nextBtn1" class="bg-blue-600 text-white px-8 py-3 rounded-md hover:bg-blue-700 transition-colors duration-300">Next</button>
-                    </div>
-                </div>
-
-                <div id="step-2" class="step-container hidden">
-                    <h3 class="text-2xl font-bold text-blue-700 mb-5">Step 2: Enter Your Financial Details</h3>
-
-                    <div class="mb-4">
-                        <label for="monthlyIncome" class="block text-sm font-medium text-gray-700">Your Current Monthly Income (in selected unit)</label>
-                        <input type="number" id="monthlyIncome" name="monthlyIncome" step="any" placeholder="e.g., 50" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring-blue-500 focus:border-blue-500">
-                    </div>
-
-                    <div class="mb-4">
-                        <label for="currentSavings" class="block text-sm font-medium text-gray-700">Your Current Total Savings (in selected unit)</label>
-                        <input type="number" id="currentSavings" name="currentSavings" step="any" placeholder="e.g., 10" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring-blue-500 focus:border-blue-500">
-                    </div>
-
-                    <div id="homeGoalDetails" class="hidden bg-purple-50 p-4 rounded-md border border-purple-200 mb-6">
-                        <h4 class="text-lg font-semibold text-gray-800 mb-3">Home-Specific Details</h4>
-                        <div class="mb-4">
-                            <label for="homeValue" class="block text-sm font-medium text-gray-700">Target Home Value (in selected unit)</label>
-                            <input type="number" id="homeValue" name="homeValue" step="any" placeholder="e.g., 100" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring-blue-500 focus:border-blue-500">
-                        </div>
-                        <div class="mb-4">
-                            <label for="targetYear" class="block text-sm font-medium text-gray-700">Target Year to Buy (e.g., 5 years from now)</label>
-                            <input type="number" id="targetYear" name="targetYear" step="1" placeholder="e.g., 5" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring-blue-500 focus:border-blue-500">
-                        </div>
-                        <div class="mb-4">
-                            <label for="homeInflationRate" class="block text-sm font-medium text-gray-700">Expected Annual Home Price Inflation Rate (%)</label>
-                            <input type="number" id="homeInflationRate" name="homeInflationRate" step="0.1" placeholder="e.g., 6.5" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring-blue-500 focus:border-blue-500">
+                        <div class="calculator-input-group mb-4">
+                            <label for="loan-type" class="block text-sm mb-2">1.1 What type of loan/financial goal?</label>
+                            <select id="loan-type" class="w-full border rounded-md p-3">
+                                <option value="Home">Home Loan</option>
+                                <option value="Personal">Personal Loan</option>
+                                <option value="Business">Business Loan</option>
+                                <option value="Gold">Gold Loan</option>
+                                <option value="Vehicle">Vehicle Loan</option>
+                                <option value="Education">Education Loan</option>
+                                <option value="Credit Card">Credit Card (as Personal Loan)</option>
+                                <option value="Other">Other (Please specify)</option>
+                            </select>
+                            <input type="text" id="other-loan-type" class="w-full border rounded-md p-3 mt-2 hidden" placeholder="Specify other loan type">
                         </div>
 
-                        <div class="mb-4">
-                            <label for="savingsDownPaymentPreference" class="block text-sm font-medium text-gray-700">How would you like to consider your Down Payment?</label>
-                            <select id="savingsDownPaymentPreference" name="savingsDownPaymentPreference" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring-blue-500 focus:border-blue-500">
-                                <option value="full">Use full current savings as down payment</option>
-                                <option value="percentage">Specify a percentage of home value</option>
-                                <option value="amount">Specify an exact amount</option>
+                        <div class="calculator-input-group mb-4">
+                            <label class="block text-sm mb-2">1.2 When to achieve goal/take loan?</label>
+                            <div class="flex items-center space-x-4">
+                                <label class="flex items-center">
+                                    <input type="radio" name="goal-timing" value="immediately" id="goal-timing-immediately" class="mr-2 text-[#3b82f6]"> Immediately (Scenario A)
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="radio" name="goal-timing" value="future" id="goal-timing-future" class="mr-2 text-[#3b82f6]"> In the Future (via SIP) (Scenario B)
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="calculator-input-group mb-4 hidden" id="target-year-group">
+                            <label for="target-year" class="block text-sm mb-2">By what year do you plan to achieve this goal?</label>
+                            <select id="target-year" class="w-full border rounded-md p-3">
+                                <!-- Years populated by JS -->
                             </select>
                         </div>
-                        <div id="downPaymentValueInput" class="mb-4 hidden">
-                            <label for="downPaymentValue" class="block text-sm font-medium text-gray-700">Down Payment Value</label>
-                            <input type="number" id="downPaymentValue" name="downPaymentValue" step="any" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring-blue-500 focus:border-blue-500">
+                    </div>
+
+                    <!-- Step 2: Goal Value and Inflation Projection -->
+                    <div id="step-2" class="calculator-step hidden">
+                        <h2 class="text-2xl md:text-3xl font-semibold mb-6 section-title">Step 2: Goal Value and Inflation Projection</h2>
+
+                        <div class="calculator-input-group mb-4">
+                            <label for="current-goal-value" class="block text-sm mb-2">2.1 Current estimated cost/value of your goal/asset?</label>
+                            <input type="number" id="current-goal-value" class="w-full border rounded-md p-3" min="0" placeholder="e.g., 5000000" required>
                         </div>
-                    </div>
 
-                    <div id="investmentReturnCategoryDiv" class="mb-6 bg-teal-50 p-4 rounded-md border border-teal-200 hidden">
-                        <label for="investmentReturnCategory" class="block text-lg font-semibold text-gray-800 mb-3">Choose an Investment Return Category</label>
-                        <p class="text-sm text-gray-600 mb-3">This will help refine the Expected Annual ROI based on typical market returns for different risk profiles.</p>
-                        <select id="investmentReturnCategory" name="investmentReturnCategory" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring-blue-500 focus:border-blue-500">
-                            <option value="homeLoan">Home Loan Rate (Default ROI)</option>
-                            <option value="largeCap">Equity Large Cap (e.g., Nifty 50)</option>
-                            <option value="midCap">Equity Mid Cap</option>
-                            <option value="smallCap">Equity Small Cap</option>
-                            <option value="balanced">Balanced Funds (Equity & Debt Mix)</option>
-                            <option value="conservative">Conservative (e.g., Debt Funds, FD)</option>
-                        </select>
-                    </div>
-
-                    <div id="loanPreferenceSection" class="hidden mt-6 p-4 border rounded-lg bg-gray-50">
-                        <h4 class="text-lg font-semibold text-gray-800 mb-3">Loan Preferences</h4>
-                        <p class="text-sm text-gray-600 mb-3">Provide details for your loan, if applicable to your goal.</p>
-                        <div class="mb-4">
-                            <label for="desiredMonthlyEMI" class="block text-sm font-medium text-gray-700">Desired Monthly EMI (in selected unit)</label>
-                            <input type="number" id="desiredMonthlyEMI" name="desiredMonthlyEMI" step="any" placeholder="e.g., 20" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring-blue-500 focus:border-blue-500">
+                        <div class="calculator-input-group mb-4">
+                            <label for="inflation-rate" class="block text-sm mb-2">2.3 Assumed average annual inflation rate for this asset?</label>
+                            <input type="number" id="inflation-rate" class="w-full border rounded-md p-3" min="0" max="100" step="0.1" value="6.5" required>
+                            <span class="text-gray-600 text-sm"> % (Default: 6.5%)</span>
                         </div>
                         <div class="mb-4">
-                            <label for="customLoanTenure" class="block text-sm font-medium text-gray-700">Custom Loan Tenure (in years)</label>
-                            <input type="number" id="customLoanTenure" name="customLoanTenure" step="1" placeholder="e.g., 10" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring-blue-500 focus:border-blue-500">
+                            <p class="text-gray-700 text-sm">Future cost of your goal (inflation adjusted): <span id="projected-future-cost" class="font-semibold text-[#1e3a8a]"></span></p>
                         </div>
-                        <p class="text-sm text-gray-500">Enter either a desired EMI or a custom tenure, or both.</p>
                     </div>
 
+                    <!-- Step 3: User Financial Profile -->
+                    <div id="step-3" class="calculator-step hidden">
+                        <h2 class="text-2xl md:text-3xl font-semibold mb-6 section-title">Step 3: User Financial Profile</h2>
 
-                    <div class="flex justify-between mt-8">
-                        <button type="button" id="backBtn2" class="bg-gray-300 text-gray-800 px-8 py-3 rounded-md hover:bg-gray-400 transition-colors duration-300">Back</button>
-                        <button type="button" id="nextBtn2" class="bg-blue-600 text-white px-8 py-3 rounded-md hover:bg-blue-700 transition-colors duration-300">Next</button>
+                        <div class="calculator-input-group mb-4">
+                            <label for="current-savings" class="block text-sm mb-2">3.1 Total current savings/lump sum available?</label>
+                            <input type="number" id="current-savings" class="w-full border rounded-md p-3" min="0" placeholder="e.g., 1000000" required>
+                        </div>
+
+                        <div class="calculator-input-group mb-4 hidden" id="down-payment-group">
+                            <label for="down-payment-type" class="block text-sm mb-2">3.2 Portion of savings for down payment (if loan)?</label>
+                            <select id="down-payment-type" class="w-full border rounded-md p-3 mb-2">
+                                <option value="percentage">Percentage of Goal Value</option>
+                                <option value="absolute">Absolute Amount</option>
+                            </select>
+                            <input type="number" id="down-payment-value" class="w-full border rounded-md p-3" min="0" placeholder="e.g., 20" required>
+                            <span class="text-gray-600 text-sm" id="down-payment-unit">%</span>
+                        </div>
+
+                        <div class="calculator-input-group mb-4">
+                            <label for="monthly-income" class="block text-sm mb-2">3.3 Monthly net (take-home) income?</label>
+                            <input type="number" id="monthly-income" class="w-full border rounded-md p-3" min="0" placeholder="e.g., 80000" required>
+                        </div>
+
+                        <div class="calculator-input-group mb-4">
+                            <label for="existing-emis" class="block text-sm mb-2">3.4 Existing monthly loan EMIs or other significant debt payments?</label>
+                            <input type="number" id="existing-emis" class="w-full border rounded-md p-3" min="0" value="0" placeholder="e.g., 10000">
+                        </div>
                     </div>
-                </div>
 
-                <div id="step-3" class="step-container hidden">
-                    <h3 class="text-2xl font-bold text-blue-700 mb-5">Step 3: Allocate Your Monthly Budget</h3>
-                    <p class="text-gray-600 mb-6">Allocate your monthly income into Needs, Wants, and Savings. Percentages must sum to 100%.</p>
+                    <!-- Step 4: Loan Scenario Details (Conditional) -->
+                    <div id="step-4" class="calculator-step hidden">
+                        <h2 class="text-2xl md:text-3xl font-semibold mb-6 section-title">Step 4: Loan Scenario Details</h2>
 
-                    <div class="mb-4">
-                        <label for="needsBudgetPct" class="block text-sm font-medium text-gray-700">Needs (%)</label>
-                        <input type="number" id="needsBudgetPct" name="needsBudgetPct" min="0" max="100" step="1" value="50" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring-blue-500 focus:border-blue-500">
-                        <p id="needsAmount" class="text-sm text-gray-500 mt-1"></p>
+                        <div class="calculator-input-group mb-4">
+                            <label for="loan-amount" class="block text-sm mb-2">4.1 Loan amount required:</label>
+                            <input type="number" id="loan-amount" class="w-full border rounded-md p-3 bg-gray-100" readonly>
+                        </div>
+
+                        <div class="calculator-input-group mb-4">
+                            <label for="loan-tenure" class="block text-sm mb-2">4.2 Preferred loan repayment tenure (Years)?</label>
+                            <select id="loan-tenure" class="w-full border rounded-md p-3">
+                                <option value="5">5 Years</option>
+                                <option value="10">10 Years</option>
+                                <option value="15">15 Years</option>
+                                <option value="20">20 Years</option>
+                                <option value="25">25 Years</option>
+                                <option value="30">30 Years</option>
+                            </select>
+                        </div>
+
+                        <div class="calculator-input-group mb-4">
+                            <label for="loan-interest-rate" class="block text-sm mb-2">4.3 Expected annual interest rate (ROI) on this loan?</label>
+                            <input type="number" id="loan-interest-rate" class="w-full border rounded-md p-3" min="0" max="30" step="0.1" value="8.5" required>
+                            <span class="text-gray-600 text-sm">%</span>
+                        </div>
+
+                        <div class="calculator-input-group mb-4">
+                            <label for="max-emi" class="block text-sm mb-2">4.4 Maximum EMI comfortable paying monthly (Optional)?</label>
+                            <input type="number" id="max-emi" class="w-full border rounded-md p-3" min="0" placeholder="e.g., 25000">
+                        </div>
                     </div>
-                    <div class="mb-4">
-                        <label for="wantsBudgetPct" class="block text-sm font-medium text-gray-700">Wants (%)</label>
-                        <input type="number" id="wantsBudgetPct" name="wantsBudgetPct" min="0" max="100" step="1" value="30" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring-blue-500 focus:border-blue-500">
-                        <p id="wantsAmount" class="text-sm text-gray-500 mt-1"></p>
-                    </div>
-                    <div class="mb-4">
-                        <label for="savingsBudgetPct" class="block text-sm font-medium text-gray-700">Savings/Investment (%)</label>
-                        <input type="number" id="savingsBudgetPct" name="savingsBudgetPct" min="0" max="100" step="1" value="20" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring-blue-500 focus:border-blue-500">
-                        <p id="savingsAmount" class="text-sm text-gray-500 mt-1"></p>
-                    </div>
 
-                    <p id="budgetSumWarning" class="text-red-600 text-sm mt-2 hidden">Budget percentages must sum to 100%!</p>
+                    <!-- Step 5: SIP Strategy Details -->
+                    <div id="step-5" class="calculator-step hidden">
+                        <h2 class="text-2xl md:text-3xl font-semibold mb-6 section-title">Step 5: SIP Strategy Details</h2>
 
-                    <div class="flex justify-between mt-8">
-                        <button type="button" id="backBtn3" class="bg-gray-300 text-gray-800 px-8 py-3 rounded-md hover:bg-gray-400 transition-colors duration-300">Back</button>
-                        <button type="button" id="nextBtn3" class="bg-blue-600 text-white px-8 py-3 rounded-md hover:bg-blue-700 transition-colors duration-300">Calculate Plan</button>
-                    </div>
-                </div>
+                        <div class="calculator-input-group mb-4">
+                            <label for="initial-sip-investment" class="block text-sm mb-2">5.1 Current savings (leftover after down payment, if applicable) for initial SIP investment:</label>
+                            <input type="number" id="initial-sip-investment" class="w-full border rounded-md p-3 bg-gray-100" readonly>
+                        </div>
 
-                <div id="step-4" class="step-container hidden">
-                    <h3 class="text-2xl font-bold text-blue-700 mb-5">Step 4: Your Smart Buy Plan</h3>
+                        <div class="calculator-input-group mb-4">
+                            <label for="monthly-sip-amount" class="block text-sm mb-2">5.2 Monthly SIP amount you can consistently afford?</label>
+                            <input type="number" id="monthly-sip-amount" class="w-full border rounded-md p-3" min="0" required>
+                            <p class="text-gray-600 text-sm mt-1">Suggested based on 20% of net income after existing EMIs.</p>
+                        </div>
 
-                    <div id="smartPlanOutput" class="hidden">
-                        <div id="loanNowResultsSection" class="bg-white p-6 rounded-lg shadow-md mb-6 hidden">
+                        <div class="calculator-input-group mb-4">
+                            <label for="sip-return-rate" class="block text-sm mb-2">5.3 Expected average annual return rate (ROI) on SIP investments?</label>
+                            <input type="number" id="sip-return-rate" class="w-full border rounded-md p-3" min="0" max="30" step="0.1" value="14.0" required>
+                            <span class="text-gray-600 text-sm">%</span>
+                        </div>
+
+                        <div class="calculator-input-group mb-4">
+                            <label for="risk-profile" class="block text-sm mb-2">5.4 Investment risk profile?</label>
+                            <select id="risk-profile" class="w-full border rounded-md p-3 mb-2">
+                                <option value="Conservative">Conservative</option>
+                                <option value="Moderate">Moderate</option>
+                                <option value="Aggressive">Aggressive</option>
+                            </select>
+                            <div id="sip-allocation-suggestions" class="bg-[#f9fafb] p-3 rounded-md text-sm text-gray-700">
+                                <!-- Allocation suggestions will be displayed here by JS -->
                             </div>
-                        <div id="investLaterResultsSection" class="bg-white p-6 rounded-lg shadow-md mb-6 hidden">
+                            <button type="button" id="manual-allocation-toggle" class="mt-2 text-[#2563eb] hover:underline">Manual Override</button>
+                            <div id="manual-allocation-inputs" class="mt-3 grid grid-cols-2 gap-3 hidden">
+                                <div class="col-span-2 text-sm text-gray-600 mb-1">Total should add up to 100%</div>
+                                <div><label>Large Cap %:</label><input type="number" class="w-full border rounded-md p-2" id="alloc-large-cap" min="0" max="100" value="0"></div>
+                                <div><label>Mid Cap %:</label><input type="number" class="w-full border rounded-md p-2" id="alloc-mid-cap" min="0" max="100" value="0"></div>
+                                <div><label>Small Cap %:</label><input type="number" class="w-full border rounded-md p-2" id="alloc-small-cap" min="0" max="100" value="0"></div>
+                                <div><label>Hybrid %:</label><input type="number" class="w-full border rounded-md p-2" id="alloc-hybrid" min="0" max="100" value="0"></div>
+                                <div><label>Debt %:</label><input type="number" class="w-full border rounded-md p-2" id="alloc-debt" min="0" max="100" value="0"></div>
+                                <div class="col-span-2 text-right font-semibold text-[#1e3a8a]" id="total-allocation">% Total: 0%</div>
                             </div>
-                    </div>
-
-
-                    <div id="recommendationOutput" class="bg-blue-50 p-6 rounded-lg shadow-md mb-6">
-                        <h4 class="text-xl font-bold text-blue-700 mb-3">Your Smart Recommendation:</h4>
-                        <p id="finalRecommendation" class="text-gray-700 text-lg mb-4"></p>
-
-                        <h5 class="text-lg font-semibold text-gray-800 mb-2">Intelligent Suggestions:</h5>
-                        <ul id="intelligentSuggestions" class="list-disc list-inside text-gray-600 space-y-1">
-                            </ul>
-                    </div>
-
-                    <div id="comparisonCharts" class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
-                        <div class="bg-white p-4 rounded-lg shadow-md">
-                            <canvas id="budgetChart"></canvas>
-                        </div>
-                        <div class="bg-white p-4 rounded-lg shadow-md">
-                            <canvas id="loanComparisonChart"></canvas>
                         </div>
                     </div>
 
-                    <div class="flex justify-between items-center mt-8">
-                        <button type="button" id="backBtn4" class="bg-gray-300 text-gray-800 px-8 py-3 rounded-md hover:bg-gray-400 transition-colors duration-300">Back</button>
-                        <button type="button" id="generatePdfBtn" class="bg-green-600 text-white px-8 py-3 rounded-md hover:bg-green-700 transition-colors duration-300">Generate PDF</button>
+                    <!-- Step 6: Review Inputs -->
+                    <div id="step-6" class="calculator-step hidden">
+                        <h2 class="text-2xl md:text-3xl font-semibold mb-6 section-title">Step 6: Review Your Inputs</h2>
+                        <div id="review-summary" class="bg-[#f4f8ff] p-6 rounded-lg text-gray-800 space-y-3">
+                            <!-- Summary populated by JS -->
+                        </div>
+                    </div>
+
+                    <!-- Navigation Buttons -->
+                    <div class="flex justify-between mt-8">
+                        <button type="button" id="prev-step" class="bg-gray-200 text-gray-800 px-6 py-3 rounded-lg font-medium hover:bg-gray-300 transition-all duration-200">Previous</button>
+                        <button type="button" id="next-step" class="bg-[#2563eb] text-white px-8 py-3 rounded-lg font-medium hover:bg-[#1e3a8a] transition-all duration-200">Next</button>
+                        <button type="submit" id="calculate-btn" class="bg-[#10b981] text-white px-8 py-3 rounded-lg font-medium hover:bg-[#0d9973] transition-all duration-200 hidden">Calculate</button>
+                    </div>
+                </form>
+
+                <!-- Results Section -->
+                <div id="calculator-results" class="hidden mt-12 pt-8 border-t border-gray-200">
+                    <h2 class="text-3xl md:text-4xl font-bold mb-6 text-center section-title">Your Financial Projections</h2>
+
+                    <!-- Result Tabs -->
+                    <div class="flex justify-center mb-6 space-x-4">
+                        <button type="button" class="result-tab-btn px-6 py-3 rounded-lg font-medium text-gray-700 hover:bg-gray-100 transition-all duration-200 active-tab" data-tab="summary">Summary & Recommendation</button>
+                        <button type="button" class="result-tab-btn px-6 py-3 rounded-lg font-medium text-gray-700 hover:bg-gray-100 transition-all duration-200" data-tab="loan-results">Loan Now Details</button>
+                        <button type="button" class="result-tab-btn px-6 py-3 rounded-lg font-medium text-gray-700 hover:bg-gray-100 transition-all duration-200" data-tab="sip-results">SIP First Details</button>
+                    </div>
+
+                    <!-- Result Content Areas -->
+                    <div id="result-content-summary" class="result-content bg-[#f4f8ff] p-6 md:p-8 rounded-lg shadow-inner">
+                        <h3 class="text-2xl font-bold mb-4 text-[#1e3a8a]">Overall Comparison</h3>
+                        <p id="overall-recommendation" class="text-lg mb-6 leading-relaxed"></p>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                            <div>
+                                <h4 class="text-xl font-semibold mb-2 text-[#1e3a8a]">Scenario A: Loan Now + Invest Surplus</h4>
+                                <p><strong>Total Outflow:</strong> <span id="summary-loan-total-paid" class="font-semibold text-red-600"></span></p>
+                                <p><strong>Projected Savings Growth:</strong> <span id="summary-loan-sip-corpus" class="font-semibold text-green-600"></span></p>
+                                <p><strong>Net Financial Impact:</strong> <span id="summary-loan-net-impact" class="font-bold text-lg"></span></p>
+                            </div>
+                            <div>
+                                <h4 class="text-xl font-semibold mb-2 text-[#1e3a8a]">Scenario B: SIP First, Then Buy</h4>
+                                <p><strong>Total Investment:</strong> <span id="summary-sip-total-invested" class="font-semibold text-red-600"></span></p>
+                                <p><strong>Total Accumulated Corpus:</strong> <span id="summary-sip-total-corpus" class="font-semibold text-green-600"></span></p>
+                                <p><strong>Net Financial Impact:</strong> <span id="summary-sip-net-impact" class="font-bold text-lg"></span></p>
+                            </div>
+                        </div>
+
+                        <div class="chart-container mb-8">
+                            <canvas id="costComparisonChart"></canvas>
+                        </div>
+                        <div class="chart-container mb-8">
+                            <canvas id="monthlyOutflowChart"></canvas>
+                        </div>
+
+                        <p class="text-sm text-gray-600 mt-4">
+                            Explore options for Home Loans: <a href="#" class="text-[#2563eb] hover:underline">Click Here</a> | Find top-performing SIPs: <a href="#" class="text-[#2563eb] hover:underline">Click Here</a>
+                        </p>
+                    </div>
+
+                    <div id="result-content-loan-results" class="result-content hidden bg-[#f4f8ff] p-6 md:p-8 rounded-lg shadow-inner">
+                        <h3 class="text-2xl font-bold mb-4 text-[#1e3a8a]">Scenario A: Loan Now + Invest Surplus</h3>
+                        <div class="space-y-3 mb-6">
+                            <p><strong>Goal Current Value:</strong> <span id="loan-res-goal-current"></span></p>
+                            <p><strong>Down Payment:</strong> <span id="loan-res-down-payment"></span></p>
+                            <p><strong>Loan Amount:</strong> <span id="loan-res-loan-amount"></span></p>
+                            <p><strong>Loan Tenure:</strong> <span id="loan-res-loan-tenure"></span> years</p>
+                            <p><strong>Loan Interest Rate:</strong> <span id="loan-res-loan-interest"></span>% annually</p>
+                            <p><strong>Calculated Monthly EMI:</strong> <span id="loan-res-emi" class="font-bold text-xl text-red-600"></span></p>
+                            <p><strong>Total Interest Paid:</strong> <span id="loan-res-total-interest"></span></p>
+                            <p><strong>Total Amount Paid (Principal + Interest):</strong> <span id="loan-res-total-paid"></span></p>
+                        </div>
+                        <h4 class="text-xl font-semibold mb-2 text-[#1e3a8a]">Affordability Analysis:</h4>
+                        <p id="loan-affordability" class="mb-6"></p>
+                        <h4 class="text-xl font-semibold mb-2 text-[#1e3a8a]">Investing Remaining Savings:</h4>
+                        <div class="space-y-3 mb-6">
+                            <p><strong>Initial Investment (after DP):</strong> <span id="loan-res-initial-sip"></span></p>
+                            <p><strong>Monthly SIP (Suggested):</strong> <span id="loan-res-monthly-sip-suggestion"></span></p>
+                            <p><strong>Projected SIP Corpus by Loan End:</strong> <span id="loan-res-sip-corpus-projection" class="font-bold text-xl text-green-600"></span></p>
+                        </div>
+
+                        <h4 class="text-xl font-semibold mb-4 text-[#1e3a8a]">Loan Amortization Schedule</h4>
+                        <div class="overflow-x-auto mb-6 max-h-96">
+                            <table class="min-w-full bg-white border border-gray-200 rounded-lg">
+                                <thead>
+                                    <tr class="bg-gray-100 text-gray-600 uppercase text-sm leading-normal">
+                                        <th class="py-3 px-6 text-left border-b">Month</th>
+                                        <th class="py-3 px-6 text-left border-b">EMI</th>
+                                        <th class="py-3 px-6 text-left border-b">Principal</th>
+                                        <th class="py-3 px-6 text-left border-b">Interest</th>
+                                        <th class="py-3 px-6 text-left border-b">Balance</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="amortization-table-body" class="text-gray-700 text-sm font-light">
+                                    <!-- Amortization data will be inserted here by JS -->
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="chart-container mb-8">
+                            <canvas id="loanAmortizationChart"></canvas>
+                        </div>
+                    </div>
+
+                    <div id="result-content-sip-results" class="result-content hidden bg-[#f4f8ff] p-6 md:p-8 rounded-lg shadow-inner">
+                        <h3 class="text-2xl font-bold mb-4 text-[#1e3a8a]">Scenario B: SIP First, Then Buy</h3>
+                        <div class="space-y-3 mb-6">
+                            <p><strong>Goal Current Value:</strong> <span id="sip-res-goal-current"></span></p>
+                            <p><strong>Target Year:</strong> <span id="sip-res-target-year"></span></p>
+                            <p><strong>Assumed Inflation:</strong> <span id="sip-res-inflation-rate"></span>% annually</p>
+                            <p><strong>Future Goal Value (Inflation Adjusted):</strong> <span id="sip-res-future-goal-value" class="font-bold text-xl text-[#1e3a8a]"></span></p>
+                        </div>
+
+                        <h4 class="text-xl font-semibold mb-2 text-[#1e3a8a]">SIP Investment Plan:</h4>
+                        <div class="space-y-3 mb-6">
+                            <p><strong>Initial Lump Sum Investment:</strong> <span id="sip-res-initial-lumpsum"></span></p>
+                            <p><strong>Monthly SIP Amount (Required):</strong> <span id="sip-res-monthly-sip-required" class="font-bold text-xl text-red-600"></span></p>
+                            <p><strong>Expected SIP Return Rate:</strong> <span id="sip-res-sip-return-rate"></span>% annually</p>
+                            <p><strong>Total Investment through SIPs:</strong> <span id="sip-res-total-sip-investment"></span></p>
+                            <p><strong>Total Accumulated Corpus by Target Year:</strong> <span id="sip-res-accumulated-corpus" class="font-bold text-xl text-green-600"></span></p>
+                        </div>
+                        <h4 class="text-xl font-semibold mb-2 text-[#1e3a8a]">Affordability Analysis:</h4>
+                        <p id="sip-affordability" class="mb-6"></p>
+
+                        <h4 class="text-xl font-semibold mb-2 text-[#1e3a8a]">Suggested Investment Diversification:</h4>
+                        <p id="sip-diversification" class="mb-6 leading-relaxed"></p>
+
+                        <div class="chart-container mb-8">
+                            <canvas id="sipGrowthChart"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="flex justify-center mt-8">
+                        <button type="button" id="download-pdf-btn" class="bg-[#1e3a8a] text-white px-8 py-3 rounded-lg font-medium hover:bg-[#2563eb] transition-all duration-200">Download Results as PDF</button>
                     </div>
                 </div>
+            </div>
+        </main>
 
-            </form>
-        </div>
-    </main>
-
-    <footer class="bg-blue-900 text-white py-6 mt-12">
-        <div class="container mx-auto text-center text-sm">
-            &copy; 2025 RajyaFunds. All rights reserved. Your Path to Financial Clarity.
-        </div>
-    </footer>
-
-    <div id="customModal" class="fixed inset-0 bg-gray-800 bg-opacity-75 flex items-center justify-center z-50 hidden">
-        <div class="bg-white rounded-lg shadow-xl p-6 w-full max-w-sm mx-auto">
-            <h3 id="modalTitle" class="text-xl font-bold text-gray-800 mb-4">Notification</h3>
-            <p id="modalMessage" class="text-gray-700 mb-6">This is a modal message.</p>
-            <div class="flex justify-end">
-                <button id="modalCloseBtn" class="bg-blue-600 text-white px-6 py-2 rounded-md hover:bg-blue-700">Close</button>
+        <!-- Custom Modal for Warnings/Errors -->
+        <div id="custom-modal" class="hidden fixed inset-0 flex items-center justify-center modal-overlay">
+            <div class="modal-content p-6 text-center">
+                <h3 id="modal-title" class="text-xl font-bold mb-4"></h3>
+                <p id="modal-message" class="text-gray-700 mb-6"></p>
+                <button id="modal-close-btn" class="bg-[#2563eb] text-white px-6 py-2 rounded-lg font-medium hover:bg-[#1e3a8a] transition-all duration-200">Okay</button>
             </div>
         </div>
-    </div>
+
+        <!-- Footer Section -->
+        <footer class="bg-gray-800 text-white py-8 mt-12">
+            <div class="container mx-auto px-4 text-center">
+                <p class="mb-4">&copy; 2025 RajyaFunds. All rights reserved.</p>
+                <div class="flex justify-center space-x-6">
+                    <a href="index.html" class="text-gray-300 hover:text-white transition-colors duration-200">Home</a>
+                    <a href="loan-vs-sip-calculator.html" class="text-gray-300 hover:text-white transition-colors duration-200">Calculators</a>
+                    <a href="articles/index.html" class="text-gray-300 hover:text-white transition-colors duration-200">Articles</a>
+                    <a href="mailto:rajyafunds.in@gmail.com" id="contact" class="text-gray-300 hover:text-white transition-colors duration-200">Contact Us</a>
+                </div>
+                <p class="mt-4 text-gray-400 text-sm">
+                    Disclaimer: The information provided on this website is for educational and informational purposes only and does not constitute financial advice. Please consult a qualified financial professional before making any financial decisions.
+                </p>
+            </div>
+        </footer>
+
+        <script>
+            // Helper function to format numbers based on currency and unit
+            function formatCurrency(amount, currency, unit) {
+                if (amount === null || isNaN(amount)) return 'N/A';
+                let formattedAmount = amount;
+                let unitSymbol = '';
+
+                if (currency === 'INR') {
+                    if (unit === 'lakh' && amount >= 100000) {
+                        formattedAmount /= 100000;
+                        unitSymbol = ' Lakhs';
+                    } else if (unit === 'crore' && amount >= 10000000) {
+                        formattedAmount /= 10000000;
+                        unitSymbol = ' Crores';
+                    } else if (unit === 'million' && amount >= 1000000) { // Also support millions for INR
+                        formattedAmount /= 1000000;
+                        unitSymbol = ' Million';
+                    }
+                } else if (currency === 'USD') {
+                    if (unit === 'million' && amount >= 1000000) {
+                        formattedAmount /= 1000000;
+                        unitSymbol = ' Million';
+                    }
+                }
+                
+                let options = {
+                    minimumFractionDigits: 0,
+                    maximumFractionDigits: 2
+                };
+
+                let prefix = '';
+                if (currency === 'INR') prefix = '₹ ';
+                else if (currency === 'USD') prefix = '$ ';
+
+                // Handle negative numbers for formatting
+                const isNegative = formattedAmount < 0;
+                formattedAmount = Math.abs(formattedAmount);
+
+                let parts = formattedAmount.toFixed(2).split('.');
+                let integerPart = parts[0];
+                let decimalPart = parts[1];
+
+                // Indian Lakh/Crore formatting or standard international
+                if (currency === 'INR' && (unit === 'lakh' || unit === 'crore' || unit === 'none')) {
+                    let lastThree = integerPart.substring(integerPart.length - 3);
+                    let otherNumbers = integerPart.substring(0, integerPart.length - 3);
+                    if (otherNumbers != '') {
+                        lastThree = ',' + lastThree;
+                    }
+                    let formattedInteger = otherNumbers.replace(/\B(?=(\d{2})+(?!\d))/g, ",") + lastThree;
+                    return (isNegative ? '-' : '') + prefix + formattedInteger + (decimalPart === '00' ? '' : '.' + decimalPart) + unitSymbol;
+                } else {
+                    return (isNegative ? '-' : '') + prefix + new Intl.NumberFormat('en-IN', options).format(formattedAmount) + unitSymbol;
+                }
+            }
 
 
-    <script src="script.js"></script>
-</body>
-</html>
+            // Custom Modal Functions
+            function showModal(title, message) {
+                document.getElementById('modal-title').textContent = title;
+                document.getElementById('modal-message').textContent = message;
+                document.getElementById('custom-modal').classList.remove('hidden');
+            }
+
+            function hideModal() {
+                document.getElementById('custom-modal').classList.add('hidden');
+            }
+
+            document.getElementById('modal-close-btn').addEventListener('click', hideModal);
+
+            // Global variables for currency and unit
+            let currentCurrency = 'INR';
+            let currentUnit = 'none'; // 'none', 'lakh', 'million', 'crore'
+
+            // Utility to update all numeric input placeholders with currency/unit
+            function updateInputPlaceholders() {
+                const inputs = document.querySelectorAll('input[type="number"], #monthly-sip-amount, #current-savings, #down-payment-value, #monthly-income, #existing-emis, #max-emi');
+                inputs.forEach(input => {
+                    const originalPlaceholder = input.getAttribute('data-original-placeholder');
+                    if (!originalPlaceholder) {
+                        input.setAttribute('data-original-placeholder', input.placeholder);
+                    }
+                    if (input.placeholder) {
+                         // Only update for placeholders that represent amounts
+                        if (input.id === 'current-goal-value' || input.id === 'current-savings' ||
+                            input.id === 'down-payment-value' || input.id === 'monthly-income' ||
+                            input.id === 'existing-emis' || input.id === 'max-emi' ||
+                            input.id === 'monthly-sip-amount') {
+                            input.placeholder = formatCurrency(parseFloat(originalPlaceholder || 0), currentCurrency, 'none').replace('0.00', '').trim();
+                        }
+                    }
+                });
+            }
+
+            // Event Listeners for Currency and Unit Toggles
+            document.getElementById('currency-toggle').addEventListener('change', (e) => {
+                currentCurrency = e.target.value;
+                // If INR is not selected, disable Lakhs and Crores
+                if (currentCurrency !== 'INR') {
+                    const unitToggle = document.getElementById('unit-toggle');
+                    unitToggle.querySelector('option[value="lakh"]').disabled = true;
+                    unitToggle.querySelector('option[value="crore"]').disabled = true;
+                    if (currentUnit === 'lakh' || currentUnit === 'crore') {
+                        unitToggle.value = 'none'; // Reset to default unit if incompatible
+                        currentUnit = 'none';
+                    }
+                } else {
+                    document.getElementById('unit-toggle').querySelector('option[value="lakh"]').disabled = false;
+                    document.getElementById('unit-toggle').querySelector('option[value="crore"]').disabled = false;
+                }
+                updateInputPlaceholders();
+                updateCalculationsAndResults(); // Re-render results with new formatting
+            });
+
+            document.getElementById('unit-toggle').addEventListener('change', (e) => {
+                currentUnit = e.target.value;
+                updateInputPlaceholders();
+                updateCalculationsAndResults(); // Re-render results with new formatting
+            });
+
+            // Form Navigation Logic
+            let currentStep = 1;
+            const totalSteps = 6;
+            const steps = [];
+            for (let i = 1; i <= totalSteps; i++) {
+                steps.push(document.getElementById(`step-${i}`));
+            }
+
+            const prevBtn = document.getElementById('prev-step');
+            const nextBtn = document.getElementById('next-step');
+            const calculateBtn = document.getElementById('calculate-btn');
+            const calculatorResultsDiv = document.getElementById('calculator-results');
+
+            function showStep(stepNum) {
+                steps.forEach((step, index) => {
+                    if (index + 1 === stepNum) {
+                        step.classList.remove('hidden');
+                    } else {
+                        step.classList.add('hidden');
+                    }
+                });
+
+                // Update button visibility
+                prevBtn.classList.toggle('hidden', stepNum === 1);
+                nextBtn.classList.toggle('hidden', stepNum === totalSteps);
+                calculateBtn.classList.toggle('hidden', stepNum !== totalSteps);
+
+                // Hide results section when navigating steps
+                calculatorResultsDiv.classList.add('hidden');
+
+                // Autoscroll to top of form when step changes
+                document.getElementById('calculator-form').scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+                // Restore data from sessionStorage
+                loadFormData();
+                updateDynamicFields();
+            }
+
+            function validateStep(stepNum) {
+                let isValid = true;
+                const currentStepElement = steps[stepNum - 1];
+
+                // Clear previous error messages
+                currentStepElement.querySelectorAll('.error-message').forEach(el => el.remove());
+
+                // Simple required field validation
+                const requiredInputs = currentStepElement.querySelectorAll('[required]');
+                requiredInputs.forEach(input => {
+                    if (!input.value.trim() && !input.classList.contains('hidden')) { // Ignore hidden fields
+                        isValid = false;
+                        const errorMessage = document.createElement('p');
+                        errorMessage.classList.add('text-red-500', 'text-sm', 'mt-1', 'error-message');
+                        errorMessage.textContent = 'This field is required.';
+                        input.parentNode.insertBefore(errorMessage, input.nextSibling);
+                    }
+                });
+
+                // Specific validations
+                if (stepNum === 1) {
+                    const goalTiming = document.querySelector('input[name="goal-timing"]:checked');
+                    if (!goalTiming) {
+                        isValid = false;
+                        showModal('Input Error', 'Please select when you plan to achieve your goal.');
+                    } else if (goalTiming.value === 'future' && !document.getElementById('target-year').value) {
+                        isValid = false;
+                        showModal('Input Error', 'Please select a target year for your goal.');
+                    }
+                } else if (stepNum === 2) {
+                    const currentGoalValue = parseFloat(document.getElementById('current-goal-value').value);
+                    if (isNaN(currentGoalValue) || currentGoalValue <= 0) {
+                        isValid = false;
+                        showModal('Input Error', 'Please enter a valid current estimated cost/value for your goal.');
+                    }
+                } else if (stepNum === 3) {
+                    const currentSavings = parseFloat(document.getElementById('current-savings').value);
+                    const monthlyIncome = parseFloat(document.getElementById('monthly-income').value);
+                    if (isNaN(currentSavings) || currentSavings < 0) {
+                        isValid = false;
+                        showModal('Input Error', 'Please enter valid current savings.');
+                    }
+                    if (isNaN(monthlyIncome) || monthlyIncome <= 0) {
+                        isValid = false;
+                        showModal('Input Error', 'Please enter a valid monthly net income.');
+                    }
+                    const goalTiming = document.querySelector('input[name="goal-timing"]:checked').value;
+                    if (goalTiming === 'immediately') {
+                        const downPaymentType = document.getElementById('down-payment-type').value;
+                        const downPaymentValue = parseFloat(document.getElementById('down-payment-value').value);
+                        if (isNaN(downPaymentValue) || downPaymentValue < 0) {
+                            isValid = false;
+                            showModal('Input Error', 'Please enter a valid down payment value.');
+                        }
+                        if (downPaymentType === 'percentage' && (downPaymentValue < 0 || downPaymentValue > 100)) {
+                            isValid = false;
+                            showModal('Input Error', 'Down payment percentage must be between 0 and 100.');
+                        }
+                    }
+                } else if (stepNum === 5) {
+                    const monthlySIPAmount = parseFloat(document.getElementById('monthly-sip-amount').value);
+                    if (isNaN(monthlySIPAmount) || monthlySIPAmount < 0) {
+                        isValid = false;
+                        showModal('Input Error', 'Please enter a valid monthly SIP amount.');
+                    }
+                    const sipReturnRate = parseFloat(document.getElementById('sip-return-rate').value);
+                    if (isNaN(sipReturnRate) || sipReturnRate < 0) {
+                        isValid = false;
+                        showModal('Input Error', 'Please enter a valid SIP return rate.');
+                    }
+
+                    // Validate manual allocation if toggled
+                    const manualAllocationInputs = document.getElementById('manual-allocation-inputs');
+                    if (!manualAllocationInputs.classList.contains('hidden')) {
+                        const allocs = ['alloc-large-cap', 'alloc-mid-cap', 'alloc-small-cap', 'alloc-hybrid', 'alloc-debt'];
+                        let totalAlloc = 0;
+                        allocs.forEach(id => {
+                            const val = parseFloat(document.getElementById(id).value) || 0;
+                            totalAlloc += val;
+                        });
+                        if (totalAlloc !== 100) {
+                            isValid = false;
+                            showModal('Allocation Error', 'Total SIP allocation percentage must add up to 100%.');
+                        }
+                    }
+                }
+
+                if (!isValid) {
+                    // Prevent proceeding if validation fails and a modal was shown
+                    return false;
+                }
+                return true;
+            }
+
+            nextBtn.addEventListener('click', () => {
+                if (validateStep(currentStep)) {
+                    saveFormData(); // Save data before moving
+                    currentStep++;
+                    showStep(currentStep);
+                }
+            });
+
+            prevBtn.addEventListener('click', () => {
+                saveFormData(); // Save data before moving back
+                currentStep--;
+                showStep(currentStep);
+            });
+
+            document.getElementById('calculator-form').addEventListener('submit', (e) => {
+                e.preventDefault();
+                if (validateStep(currentStep)) {
+                    saveFormData(); // Save final data
+                    calculateResults();
+                }
+            });
+
+            // Session Storage for Data Persistence
+            function saveFormData() {
+                const formData = {};
+                document.querySelectorAll('#calculator-form input, #calculator-form select, #calculator-form textarea').forEach(input => {
+                    if (input.type === 'radio') {
+                        if (input.checked) {
+                            formData[input.id] = input.value;
+                        }
+                    } else if (input.type === 'checkbox') {
+                        formData[input.id] = input.checked;
+                    } else {
+                        formData[input.id] = input.value;
+                    }
+                });
+                sessionStorage.setItem('rajyafundsCalculatorData', JSON.stringify(formData));
+            }
+
+            function loadFormData() {
+                const savedData = sessionStorage.getItem('rajyafundsCalculatorData');
+                if (savedData) {
+                    const formData = JSON.parse(savedData);
+                    for (const id in formData) {
+                        const input = document.getElementById(id);
+                        if (input) {
+                            if (input.type === 'radio') {
+                                if (input.value === formData[id]) {
+                                    input.checked = true;
+                                }
+                            } else if (input.type === 'checkbox') {
+                                input.checked = formData[id];
+                            } else {
+                                input.value = formData[id];
+                            }
+                        }
+                    }
+                }
+            }
+
+            // Update dynamic fields like Future Goal Value, Loan Amount, Suggested SIP
+            function updateDynamicFields() {
+                const goalTiming = document.querySelector('input[name="goal-timing"]:checked')?.value;
+                const currentGoalValue = parseFloat(document.getElementById('current-goal-value').value) || 0;
+                const inflationRate = parseFloat(document.getElementById('inflation-rate').value) || 0;
+                const targetYear = parseInt(document.getElementById('target-year').value);
+                const currentYear = new Date().getFullYear();
+                const yearsToTarget = targetYear - currentYear;
+
+                // Step 1: Goal Timing visibility
+                const targetYearGroup = document.getElementById('target-year-group');
+                if (goalTiming === 'future') {
+                    targetYearGroup.classList.remove('hidden');
+                } else {
+                    targetYearGroup.classList.add('hidden');
+                }
+
+                // Step 2: Projected Future Cost
+                if (!isNaN(currentGoalValue) && currentGoalValue > 0 && !isNaN(inflationRate) && inflationRate >= 0 && yearsToTarget > 0) {
+                    const futureValue = currentGoalValue * Math.pow(1 + (inflationRate / 100), yearsToTarget);
+                    document.getElementById('projected-future-cost').textContent = formatCurrency(futureValue, currentCurrency, currentUnit);
+                } else {
+                    document.getElementById('projected-future-cost').textContent = 'N/A';
+                }
+
+                // Step 3: Down Payment visibility and calculation
+                const downPaymentGroup = document.getElementById('down-payment-group');
+                if (goalTiming === 'immediately') {
+                    downPaymentGroup.classList.remove('hidden');
+                    const downPaymentType = document.getElementById('down-payment-type').value;
+                    document.getElementById('down-payment-unit').textContent = (downPaymentType === 'percentage' ? '%' : formatCurrency(0, currentCurrency, 'none').replace('0.00','').trim());
+                } else {
+                    downPaymentGroup.classList.add('hidden');
+                }
+
+                const currentSavings = parseFloat(document.getElementById('current-savings').value) || 0;
+                let calculatedDownPayment = 0;
+                if (goalTiming === 'immediately') {
+                    const downPaymentType = document.getElementById('down-payment-type').value;
+                    const downPaymentValue = parseFloat(document.getElementById('down-payment-value').value) || 0;
+
+                    if (downPaymentType === 'percentage') {
+                        calculatedDownPayment = (downPaymentValue / 100) * currentGoalValue;
+                    } else { // absolute
+                        calculatedDownPayment = downPaymentValue;
+                    }
+                    // Ensure down payment doesn't exceed current savings
+                    calculatedDownPayment = Math.min(calculatedDownPayment, currentSavings);
+                }
+
+                // Step 4: Loan Amount
+                const loanAmountInput = document.getElementById('loan-amount');
+                if (goalTiming === 'immediately') {
+                    const loanAmount = currentGoalValue - calculatedDownPayment;
+                    loanAmountInput.value = loanAmount.toFixed(0); // Set raw value, formatting done on display
+                    // Set default loan interest rate based on loan type
+                    const loanType = document.getElementById('loan-type').value;
+                    const loanInterestRateInput = document.getElementById('loan-interest-rate');
+                    const defaultLoanRates = {
+                        "Home": 8.5,
+                        "Personal": 12.0,
+                        "Business": 16.0,
+                        "Gold": 10.0,
+                        "Vehicle": 9.5,
+                        "Education": 9.5,
+                        "Credit Card": 18.0,
+                        "Other": 12.0
+                    };
+                    if (loanInterestRateInput.value === '8.5' || loanInterestRateInput.value === '') { // Only update if default or empty
+                        loanInterestRateInput.value = defaultLoanRates[loanType] || 8.5;
+                    }
+                } else {
+                    loanAmountInput.value = 0;
+                }
+
+                // Step 5: Initial SIP Investment (after DP) and Monthly SIP Suggestion
+                const initialSipInvestment = currentSavings - calculatedDownPayment;
+                document.getElementById('initial-sip-investment').value = Math.max(0, initialSipInvestment).toFixed(0);
+
+                const monthlyIncome = parseFloat(document.getElementById('monthly-income').value) || 0;
+                const existingEmis = parseFloat(document.getElementById('existing-emis').value) || 0;
+                const suggestedMonthlySIP = Math.max(0, (monthlyIncome * 0.20) - existingEmis);
+                const monthlySIPAmountInput = document.getElementById('monthly-sip-amount');
+                if (monthlySIPAmountInput.value === '' || parseFloat(monthlySIPAmountInput.value) === 0) { // Only suggest if empty or zero
+                    monthlySIPAmountInput.value = suggestedMonthlySIP.toFixed(0);
+                }
+
+                // Set default SIP return rate based on risk profile
+                const riskProfile = document.getElementById('risk-profile').value;
+                const sipReturnRateInput = document.getElementById('sip-return-rate');
+                const defaultSipRates = {
+                    "Conservative": 11.0, // Hybrid/Debt heavy
+                    "Moderate": 14.0, // Large Cap heavy
+                    "Aggressive": 17.0 // Mid/Small Cap heavy
+                };
+                // Only update if default value or empty or if previous update was from risk profile
+                // This prevents overwriting user's manual input if they adjusted it
+                const currentSipRate = parseFloat(sipReturnRateInput.value);
+                const prevRiskProfile = sipReturnRateInput.getAttribute('data-prev-risk-profile');
+
+                if (prevRiskProfile === riskProfile || sipReturnRateInput.value === '' || (currentSipRate === 11.0 || currentSipRate === 14.0 || currentSipRate === 17.0)) {
+                    sipReturnRateInput.value = defaultSipRates[riskProfile] || 14.0;
+                }
+                sipReturnRateInput.setAttribute('data-prev-risk-profile', riskProfile);
+
+                updateSIPAllocationSuggestions();
+            }
+
+            // Event listeners for dynamic updates
+            document.getElementById('goal-timing-immediately').addEventListener('change', updateDynamicFields);
+            document.getElementById('goal-timing-future').addEventListener('change', updateDynamicFields);
+            document.getElementById('current-goal-value').addEventListener('input', updateDynamicFields);
+            document.getElementById('inflation-rate').addEventListener('input', updateDynamicFields);
+            document.getElementById('target-year').addEventListener('change', updateDynamicFields);
+            document.getElementById('current-savings').addEventListener('input', updateDynamicFields);
+            document.getElementById('down-payment-type').addEventListener('change', updateDynamicFields);
+            document.getElementById('down-payment-value').addEventListener('input', updateDynamicFields);
+            document.getElementById('monthly-income').addEventListener('input', updateDynamicFields);
+            document.getElementById('existing-emis').addEventListener('input', updateDynamicFields);
+            document.getElementById('loan-type').addEventListener('change', updateDynamicFields);
+            document.getElementById('risk-profile').addEventListener('change', updateDynamicFields);
+            document.getElementById('other-loan-type').addEventListener('input', updateDynamicFields); // For re-calculating loan defaults if 'Other' is active
+
+            // Populate Target Year dropdown (Current Year + 1 to Current Year + 30)
+            function populateTargetYears() {
+                const targetYearSelect = document.getElementById('target-year');
+                const currentYear = new Date().getFullYear();
+                for (let i = 1; i <= 30; i++) {
+                    const year = currentYear + i;
+                    const option = document.createElement('option');
+                    option.value = year;
+                    option.textContent = year;
+                    targetYearSelect.appendChild(option);
+                }
+                targetYearSelect.value = currentYear + 10; // Default to 10 years out
+            }
+
+            // Loan Type "Other" handling
+            document.getElementById('loan-type').addEventListener('change', (e) => {
+                const otherLoanTypeInput = document.getElementById('other-loan-type');
+                if (e.target.value === 'Other') {
+                    otherLoanTypeInput.classList.remove('hidden');
+                    otherLoanTypeInput.setAttribute('required', 'true');
+                } else {
+                    otherLoanTypeInput.classList.add('hidden');
+                    otherLoanTypeInput.removeAttribute('required');
+                    otherLoanTypeInput.value = ''; // Clear value when hidden
+                }
+            });
+
+            // SIP Allocation Suggestions & Manual Override
+            const sipAllocationSuggestions = {
+                "Conservative": { "Debt": 60, "Large Cap": 20, "Hybrid": 20, "Mid Cap": 0, "Small Cap": 0 },
+                "Moderate": { "Large Cap": 50, "Hybrid": 30, "Mid Cap": 20, "Debt": 0, "Small Cap": 0 },
+                "Aggressive": { "Mid Cap": 40, "Small Cap": 30, "Large Cap": 20, "Hybrid": 10, "Debt": 0 }
+            };
+
+            function updateSIPAllocationSuggestions() {
+                const riskProfile = document.getElementById('risk-profile').value;
+                const suggestionDiv = document.getElementById('sip-allocation-suggestions');
+                const manualAllocationInputs = document.getElementById('manual-allocation-inputs');
+                const manualToggle = document.getElementById('manual-allocation-toggle');
+
+                if (manualAllocationInputs.classList.contains('hidden')) { // Only update auto-suggestions if not in manual mode
+                    const allocations = sipAllocationSuggestions[riskProfile];
+                    let html = '<strong>Suggested Allocation:</strong><br>';
+                    for (const type in allocations) {
+                        if (allocations[type] > 0) {
+                            html += `${type}: ${allocations[type]}%<br>`;
+                        }
+                    }
+                    suggestionDiv.innerHTML = html;
+
+                    // Set values for hidden manual inputs based on suggestion for potential future toggle
+                    document.getElementById('alloc-large-cap').value = allocations['Large Cap'] || 0;
+                    document.getElementById('alloc-mid-cap').value = allocations['Mid Cap'] || 0;
+                    document.getElementById('alloc-small-cap').value = allocations['Small Cap'] || 0;
+                    document.getElementById('alloc-hybrid').value = allocations['Hybrid'] || 0;
+                    document.getElementById('alloc-debt').value = allocations['Debt'] || 0;
+                    updateTotalAllocation(); // Update total for internal check
+                }
+            }
+
+            document.getElementById('manual-allocation-toggle').addEventListener('click', () => {
+                const manualAllocationInputs = document.getElementById('manual-allocation-inputs');
+                const suggestionDiv = document.getElementById('sip-allocation-suggestions');
+                const toggleButton = document.getElementById('manual-allocation-toggle');
+
+                if (manualAllocationInputs.classList.contains('hidden')) {
+                    manualAllocationInputs.classList.remove('hidden');
+                    suggestionDiv.classList.add('hidden');
+                    toggleButton.textContent = 'Use Suggested Allocation';
+                    updateTotalAllocation(); // Ensure total is updated on toggle
+                } else {
+                    manualAllocationInputs.classList.add('hidden');
+                    suggestionDiv.classList.remove('hidden');
+                    toggleButton.textContent = 'Manual Override';
+                    updateSIPAllocationSuggestions(); // Recalculate based on current risk profile
+                }
+            });
+
+            function updateTotalAllocation() {
+                const allocs = ['alloc-large-cap', 'alloc-mid-cap', 'alloc-small-cap', 'alloc-hybrid', 'alloc-debt'];
+                let total = 0;
+                allocs.forEach(id => {
+                    total += parseFloat(document.getElementById(id).value) || 0;
+                });
+                document.getElementById('total-allocation').textContent = `% Total: ${total}%`;
+                if (total !== 100) {
+                    document.getElementById('total-allocation').classList.remove('text-[#1e3a8a]');
+                    document.getElementById('total-allocation').classList.add('text-red-500');
+                } else {
+                    document.getElementById('total-allocation').classList.remove('text-red-500');
+                    document.getElementById('total-allocation').classList.add('text-[#1e3a8a]');
+                }
+            }
+
+            document.getElementById('manual-allocation-inputs').querySelectorAll('input[type="number"]').forEach(input => {
+                input.addEventListener('input', updateTotalAllocation);
+            });
+
+            // Review Summary Update
+            function updateReviewSummary() {
+                const summaryDiv = document.getElementById('review-summary');
+                const goalTiming = document.querySelector('input[name="goal-timing"]:checked')?.value;
+
+                let html = `
+                    <h3 class="text-xl font-bold text-[#1e3a8a] mb-3">Goal & Intent:</h3>
+                    <p><strong>Loan/Goal Type:</strong> ${document.getElementById('loan-type').value} ${document.getElementById('loan-type').value === 'Other' ? `(${document.getElementById('other-loan-type').value})` : ''}</p>
+                    <p><strong>Goal Timing:</strong> ${goalTiming === 'immediately' ? 'Immediately (Scenario A)' : 'In the Future (Scenario B)'}</p>
+                `;
+
+                if (goalTiming === 'future') {
+                    html += `<p><strong>Target Year:</strong> ${document.getElementById('target-year').value}</p>`;
+                }
+
+                html += `
+                    <h3 class="text-xl font-bold text-[#1e3a8a] mt-4 mb-3">Goal Value & Inflation:</h3>
+                    <p><strong>Current Goal Value:</strong> ${formatCurrency(parseFloat(document.getElementById('current-goal-value').value), currentCurrency, currentUnit)}</p>
+                    <p><strong>Inflation Rate:</strong> ${document.getElementById('inflation-rate').value}%</p>
+                    <p><strong>Future Cost (Inflation Adjusted):</strong> ${document.getElementById('projected-future-cost').textContent}</p>
+                `;
+
+                html += `
+                    <h3 class="text-xl font-bold text-[#1e3a8a] mt-4 mb-3">Financial Profile:</h3>
+                    <p><strong>Total Current Savings:</strong> ${formatCurrency(parseFloat(document.getElementById('current-savings').value), currentCurrency, currentUnit)}</p>
+                `;
+                if (goalTiming === 'immediately') {
+                    const dpType = document.getElementById('down-payment-type').value;
+                    const dpVal = document.getElementById('down-payment-value').value;
+                    const currentGoalValue = parseFloat(document.getElementById('current-goal-value').value) || 0;
+                    let displayDp = '';
+                    if(dpType === 'percentage') {
+                        const calculatedDp = (parseFloat(dpVal) / 100) * currentGoalValue;
+                        displayDp = `${dpVal}% (${formatCurrency(calculatedDp, currentCurrency, currentUnit)})`;
+                    } else {
+                        displayDp = formatCurrency(parseFloat(dpVal), currentCurrency, currentUnit);
+                    }
+                    html += `<p><strong>Down Payment:</strong> ${displayDp}</p>`;
+                }
+                html += `
+                    <p><strong>Monthly Net Income:</strong> ${formatCurrency(parseFloat(document.getElementById('monthly-income').value), currentCurrency, currentUnit)}</p>
+                    <p><strong>Existing Monthly EMIs:</strong> ${formatCurrency(parseFloat(document.getElementById('existing-emis').value), currentCurrency, currentUnit)}</p>
+                `;
+
+                if (goalTiming === 'immediately') {
+                    html += `
+                        <h3 class="text-xl font-bold text-[#1e3a8a] mt-4 mb-3">Loan Details (Scenario A):</h3>
+                        <p><strong>Loan Amount Required:</strong> ${formatCurrency(parseFloat(document.getElementById('loan-amount').value), currentCurrency, currentUnit)}</p>
+                        <p><strong>Loan Tenure:</strong> ${document.getElementById('loan-tenure').value} Years</p>
+                        <p><strong>Loan Interest Rate:</strong> ${document.getElementById('loan-interest-rate').value}%</p>
+                        <p><strong>Max EMI Comfortable:</strong> ${document.getElementById('max-emi').value ? formatCurrency(parseFloat(document.getElementById('max-emi').value), currentCurrency, currentUnit) : 'Not specified'}</p>
+                    `;
+                }
+
+                html += `
+                    <h3 class="text-xl font-bold text-[#1e3a8a] mt-4 mb-3">SIP Strategy Details:</h3>
+                    <p><strong>Initial SIP Investment:</strong> ${formatCurrency(parseFloat(document.getElementById('initial-sip-investment').value), currentCurrency, currentUnit)}</p>
+                    <p><strong>Monthly SIP Amount:</strong> ${formatCurrency(parseFloat(document.getElementById('monthly-sip-amount').value), currentCurrency, currentUnit)}</p>
+                    <p><strong>SIP Return Rate:</strong> ${document.getElementById('sip-return-rate').value}%</p>
+                    <p><strong>Risk Profile:</strong> ${document.getElementById('risk-profile').value}</p>
+                `;
+                const manualAllocationInputs = document.getElementById('manual-allocation-inputs');
+                if (!manualAllocationInputs.classList.contains('hidden')) {
+                    html += `<p class="ml-4"><strong>Manual Allocation:</strong></p>`;
+                    html += `<ul class="list-disc list-inside ml-8 text-sm">`;
+                    ['alloc-large-cap', 'alloc-mid-cap', 'alloc-small-cap', 'alloc-hybrid', 'alloc-debt'].forEach(id => {
+                        const val = parseFloat(document.getElementById(id).value) || 0;
+                        const type = id.replace('alloc-', '').replace('-', ' ').split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
+                        if (val > 0) {
+                            html += `<li>${type}: ${val}%</li>`;
+                        }
+                    });
+                    html += `</ul>`;
+                }
+
+
+                summaryDiv.innerHTML = html;
+            }
+
+            // Calculations Logic
+            let costComparisonChart, monthlyOutflowChart, loanAmortizationChart, sipGrowthChart;
+
+            function calculateResults() {
+                const goalTiming = document.querySelector('input[name="goal-timing"]:checked')?.value;
+                const currentGoalValue = parseFloat(document.getElementById('current-goal-value').value) || 0;
+                const inflationRate = parseFloat(document.getElementById('inflation-rate').value) / 100 || 0;
+                const targetYear = parseInt(document.getElementById('target-year').value);
+                const currentSavings = parseFloat(document.getElementById('current-savings').value) || 0;
+                const monthlyIncome = parseFloat(document.getElementById('monthly-income').value) || 0;
+                const existingEmis = parseFloat(document.getElementById('existing-emis').value) || 0;
+                const sipReturnRate = parseFloat(document.getElementById('sip-return-rate').value) / 100 || 0;
+
+                const results = {
+                    scenarioA: {},
+                    scenarioB: {}
+                };
+
+                // Scenario A: Loan Immediately + Invest Surplus
+                if (goalTiming === 'immediately') {
+                    const downPaymentType = document.getElementById('down-payment-type').value;
+                    let downPaymentValue = parseFloat(document.getElementById('down-payment-value').value) || 0;
+                    let calculatedDownPayment = 0;
+                    if (downPaymentType === 'percentage') {
+                        calculatedDownPayment = (downPaymentValue / 100) * currentGoalValue;
+                    } else { // absolute
+                        calculatedDownPayment = downPaymentValue;
+                    }
+                    // Ensure down payment doesn't exceed current savings
+                    calculatedDownPayment = Math.min(calculatedDownPayment, currentSavings);
+
+
+                    const loanAmount = currentGoalValue - calculatedDownPayment;
+                    const loanTenureYears = parseFloat(document.getElementById('loan-tenure').value) || 0;
+                    const loanInterestRate = parseFloat(document.getElementById('loan-interest-rate').value) / 100 || 0;
+                    const maxEmiComfortable = parseFloat(document.getElementById('max-emi').value) || 0;
+
+                    const loanTenureMonths = loanTenureYears * 12;
+                    const monthlyLoanInterestRate = loanInterestRate / 12;
+
+                    let monthlyEMI = 0;
+                    if (loanAmount > 0 && loanTenureMonths > 0 && monthlyLoanInterestRate > 0) {
+                        monthlyEMI = (loanAmount * monthlyLoanInterestRate * Math.pow(1 + monthlyLoanInterestRate, loanTenureMonths)) / (Math.pow(1 + monthlyLoanInterestRate, loanTenureMonths) - 1);
+                    } else if (loanAmount > 0 && loanTenureMonths > 0 && monthlyLoanInterestRate === 0) { // Zero interest loan
+                        monthlyEMI = loanAmount / loanTenureMonths;
+                    }
+
+                    const totalInterestPaid = (monthlyEMI * loanTenureMonths) - loanAmount;
+                    const totalPaidScenarioA = calculatedDownPayment + (monthlyEMI * loanTenureMonths);
+
+                    results.scenarioA = {
+                        goalCurrentValue: currentGoalValue,
+                        downPayment: calculatedDownPayment,
+                        loanAmount: loanAmount,
+                        loanTenureYears: loanTenureYears,
+                        loanInterestRate: loanInterestRate * 100,
+                        monthlyEMI: monthlyEMI,
+                        totalInterestPaid: totalInterestPaid,
+                        totalPaid: totalPaidScenarioA,
+                        affordabilityStatus: '',
+                        initialSipInvestment: Math.max(0, currentSavings - calculatedDownPayment)
+                    };
+
+                    // Affordability Check for Loan
+                    const availableForDebtAndSavings = (monthlyIncome * 0.20) - existingEmis;
+                    if (monthlyEMI > availableForDebtAndSavings) {
+                        results.scenarioA.affordabilityStatus = `The calculated EMI of ${formatCurrency(monthlyEMI, currentCurrency, 'none')} exceeds your suggested affordable limit (${formatCurrency(availableForDebtAndSavings, currentCurrency, 'none')}). Consider a smaller loan, longer tenure, or increasing income.`;
+                        showModal('Affordability Alert', results.scenarioA.affordabilityStatus);
+                    } else if (maxEmiComfortable > 0 && monthlyEMI > maxEmiComfortable) {
+                        results.scenarioA.affordabilityStatus = `The calculated EMI of ${formatCurrency(monthlyEMI, currentCurrency, 'none')} exceeds your stated comfortable maximum EMI (${formatCurrency(maxEmiComfortable, currentCurrency, 'none')}). Consider a smaller loan, longer tenure, or re-evaluating your comfort level.`;
+                        showModal('EMI Comfort Alert', results.scenarioA.affordabilityStatus);
+                    } else {
+                        results.scenarioA.affordabilityStatus = `The calculated EMI of ${formatCurrency(monthlyEMI, currentCurrency, 'none')} is within your affordable limits.`;
+                    }
+
+                    // SIP from Remaining Savings (Scenario A)
+                    const monthlySIPA = parseFloat(document.getElementById('monthly-sip-amount').value) || 0;
+                    const initialSIPInvestmentA = Math.max(0, currentSavings - calculatedDownPayment);
+                    let futureValueOfSIP_A = 0;
+                    if (initialSIPInvestmentA > 0) {
+                        futureValueOfSIP_A += initialSIPInvestmentA * Math.pow(1 + (sipReturnRate), loanTenureYears); // Lump sum growth
+                    }
+                    if (monthlySIPA > 0 && loanTenureMonths > 0) {
+                        const monthlySipReturnRate = sipReturnRate / 12;
+                        futureValueOfSIP_A += monthlySIPA * ((Math.pow(1 + monthlySipReturnRate, loanTenureMonths) - 1) / monthlySipReturnRate) * (1 + monthlySipReturnRate);
+                    }
+                    results.scenarioA.sipMonthlyAmount = monthlySIPA;
+                    results.scenarioA.projectedSipCorpus = futureValueOfSIP_A;
+                    results.scenarioA.netFinancialImpact = totalPaidScenarioA - futureValueOfSIP_A; // Total Cost - Total Wealth Created (lower is better)
+
+                    if (loanAmount <= 0 && currentGoalValue > 0) {
+                        results.scenarioA.affordabilityStatus = `You don't need a loan for this goal as your savings cover the full amount or more. Consider investing the entire amount or a larger portion via SIP.`;
+                        showModal('No Loan Needed', results.scenarioA.affordabilityStatus);
+                    }
+
+                } else { // If goal timing is not "immediately", Scenario A values will be N/A
+                    results.scenarioA = {
+                        goalCurrentValue: currentGoalValue,
+                        downPayment: 0,
+                        loanAmount: 0,
+                        loanTenureYears: 0,
+                        loanInterestRate: 0,
+                        monthlyEMI: 0,
+                        totalInterestPaid: 0,
+                        totalPaid: 0,
+                        affordabilityStatus: 'N/A (Goal not set for immediate acquisition)',
+                        initialSipInvestment: 0,
+                        sipMonthlyAmount: 0,
+                        projectedSipCorpus: 0,
+                        netFinancialImpact: Infinity // Set to infinity if not applicable for comparison
+                    };
+                }
+
+
+                // Scenario B: Save via SIP First, then Buy
+                const yearsToTargetB = targetYear - currentYear;
+                const futureGoalValueB = currentGoalValue * Math.pow(1 + inflationRate, yearsToTargetB);
+
+                const futureValueOfCurrentSavingsB = currentSavings * Math.pow(1 + sipReturnRate, yearsToTargetB);
+                const remainingGoalAmountToAccumulate = Math.max(0, futureGoalValueB - futureValueOfCurrentSavingsB);
+
+                let requiredMonthlySIPB = 0;
+                const monthlySipReturnRateB = sipReturnRate / 12;
+                if (remainingGoalAmountToAccumulate > 0 && yearsToTargetB > 0 && monthlySipReturnRateB > 0) {
+                    requiredMonthlySIPB = (remainingGoalAmountToAccumulate * monthlySipReturnRateB) / ((Math.pow(1 + monthlySipReturnRateB, yearsToTargetB * 12) - 1) * (1 + monthlySipReturnRateB));
+                } else if (remainingGoalAmountToAccumulate > 0 && yearsToTargetB > 0 && monthlySipReturnRateB === 0) { // Zero return
+                    requiredMonthlySIPB = remainingGoalAmountToAccumulate / (yearsToTargetB * 12);
+                }
+
+                const totalInvestmentThroughSIPB = currentSavings + (requiredMonthlySIPB * yearsToTargetB * 12);
+                const totalAccumulatedCorpusB = futureValueOfCurrentSavingsB + (requiredMonthlySIPB * ((Math.pow(1 + monthlySipReturnRateB, yearsToTargetB * 12) - 1) / monthlySipReturnRateB) * (1 + monthlySipReturnRateB));
+
+                results.scenarioB = {
+                    goalCurrentValue: currentGoalValue,
+                    targetYear: targetYear,
+                    inflationRate: inflationRate * 100,
+                    futureGoalValue: futureGoalValueB,
+                    initialLumpSum: currentSavings,
+                    requiredMonthlySIP: requiredMonthlySIPB,
+                    sipReturnRate: sipReturnRate * 100,
+                    totalInvestmentThroughSIP: totalInvestmentThroughSIPB,
+                    totalAccumulatedCorpus: totalAccumulatedCorpusB,
+                    affordabilityStatus: '',
+                    diversificationSuggestion: ''
+                };
+
+                // Affordability Check for SIP
+                const availableForSIP = (monthlyIncome * 0.20) - existingEmis;
+                if (requiredMonthlySIPB > availableForSIP) {
+                    results.scenarioB.affordabilityStatus = `The required monthly SIP of ${formatCurrency(requiredMonthlySIPB, currentCurrency, 'none')} exceeds your suggested affordable limit (${formatCurrency(availableForSIP, currentCurrency, 'none')}). Consider a longer timeframe, lower inflation, or increasing savings.`;
+                    showModal('Affordability Alert', results.scenarioB.affordabilityStatus);
+                } else if (requiredMonthlySIPB <= 0 && remainingGoalAmountToAccumulate > 0) {
+                     results.scenarioB.affordabilityStatus = `Your current savings are projected to meet or exceed your future goal value, so no additional monthly SIP is required.`;
+                } else if (remainingGoalAmountToAccumulate <= 0) {
+                    results.scenarioB.affordabilityStatus = `Your current savings are already sufficient to cover the future goal value. You might not need a SIP for this goal.`;
+                } else {
+                    results.scenarioB.affordabilityStatus = `The required monthly SIP of ${formatCurrency(requiredMonthlySIPB, currentCurrency, 'none')} is within your affordable limits.`;
+                }
+
+
+                // SIP Diversification Suggestion
+                const riskProfile = document.getElementById('risk-profile').value;
+                const allocations = sipAllocationSuggestions[riskProfile];
+                let diversificationHtml = `Based on your <strong>${riskProfile}</strong> risk profile, consider an allocation like: `;
+                const manualAllocationInputs = document.getElementById('manual-allocation-inputs');
+                if (!manualAllocationInputs.classList.contains('hidden')) {
+                    diversificationHtml = `Based on your <strong>manual allocation</strong>: `;
+                }
+
+                let allocParts = [];
+                let totalAlloc = 0;
+                ['Large Cap', 'Mid Cap', 'Small Cap', 'Hybrid', 'Debt'].forEach(type => {
+                    let val = 0;
+                    if (!manualAllocationInputs.classList.contains('hidden')) {
+                        const inputId = `alloc-${type.toLowerCase().replace(' ', '-')}`;
+                        val = parseFloat(document.getElementById(inputId).value) || 0;
+                    } else {
+                        val = allocations[type] || 0;
+                    }
+                    totalAlloc += val;
+                    if (val > 0) {
+                        allocParts.push(`${val}% ${type}`);
+                    }
+                });
+
+                if (allocParts.length > 0) {
+                    diversificationHtml += allocParts.join(', ') + '. ';
+                } else {
+                    diversificationHtml += 'No specific allocation details provided.';
+                }
+                if (totalAlloc !== 100 && !manualAllocationInputs.classList.contains('hidden')) {
+                     diversificationHtml += `<br><span class="text-red-600 font-semibold">Warning: Your manual allocation does not sum up to 100%. Current total: ${totalAlloc}%.</span>`;
+                }
+                diversificationHtml += `<br><em>(Disclaimer: This is a general suggestion and not financial advice. Diversification depends on individual goals, market conditions, and risk tolerance. Consult a financial advisor.)</em>`;
+                results.scenarioB.diversificationSuggestion = diversificationHtml;
+
+
+                displayResults(results);
+            }
+
+            function displayResults(results) {
+                calculatorResultsDiv.classList.remove('hidden');
+
+                // General Summary
+                let overallRecommendation = '';
+                const formatOpts = { currency: currentCurrency, unit: currentUnit };
+
+                const netLoanImpact = results.scenarioA.netFinancialImpact;
+                const netSipImpact = results.scenarioB.totalInvestmentThroughSIP - results.scenarioB.totalAccumulatedCorpus; // This is actually Total Invested - Total Corpus, should be negative for gain
+
+                // Re-evaluate net impacts for clearer interpretation:
+                // For Loan: total_cost = total_paid_loan - projected_sip_corpus. We want this to be lower.
+                // For SIP: total_cost = total_sip_invested - total_accumulated_corpus. We want this to be negative (wealth gain)
+                const effectiveCostLoan = results.scenarioA.totalPaid - results.scenarioA.projectedSipCorpus;
+                const effectiveCostSIP = results.scenarioB.totalInvestmentThroughSIP - results.scenarioB.totalAccumulatedCorpus; // This will be negative if corpus > investment
+
+                if (results.scenarioA.totalPaid === 0 && results.scenarioB.totalInvestmentThroughSIP === 0) {
+                    overallRecommendation = "Please enter valid inputs to calculate financial projections.";
+                } else if (results.scenarioA.netFinancialImpact === Infinity && results.scenarioB.totalInvestmentThroughSIP > 0) {
+                    overallRecommendation = `Based on your inputs, Scenario B (SIP First, Then Buy) is the only applicable path, potentially allowing you to accumulate a corpus of ${formatCurrency(results.scenarioB.totalAccumulatedCorpus, currentCurrency, currentUnit)} for your goal.`;
+                } else if (effectiveCostLoan < effectiveCostSIP) {
+                    const savings = Math.abs(effectiveCostSIP - effectiveCostLoan);
+                    overallRecommendation = `Comparing both scenarios, <strong>Scenario A (Loan Now + Invest Surplus)</strong> appears to be more financially favorable, potentially costing you ${formatCurrency(effectiveCostLoan, currentCurrency, currentUnit)} net. This could save you approximately <strong class="text-green-600">${formatCurrency(savings, currentCurrency, currentUnit)}</strong> compared to the SIP first approach.`;
+                } else if (effectiveCostSIP < effectiveCostLoan) {
+                    const savings = Math.abs(effectiveCostLoan - effectiveCostSIP);
+                    overallRecommendation = `Comparing both scenarios, <strong>Scenario B (SIP First, Then Buy)</strong> appears to be more financially favorable, leading to a net wealth accumulation of ${formatCurrency(Math.abs(effectiveCostSIP), currentCurrency, currentUnit)}. This could save you approximately <strong class="text-green-600">${formatCurrency(savings, currentCurrency, currentUnit)}</strong> compared to taking a loan immediately.`;
+                } else {
+                    overallRecommendation = `Both scenarios yield similar financial outcomes. Your choice may depend on factors like immediate need for the asset vs. patience for wealth accumulation.`;
+                }
+
+
+                document.getElementById('overall-recommendation').innerHTML = overallRecommendation;
+
+                document.getElementById('summary-loan-total-paid').textContent = formatCurrency(results.scenarioA.totalPaid, currentCurrency, currentUnit);
+                document.getElementById('summary-loan-sip-corpus').textContent = formatCurrency(results.scenarioA.projectedSipCorpus, currentCurrency, currentUnit);
+                document.getElementById('summary-loan-net-impact').textContent = formatCurrency(effectiveCostLoan, currentCurrency, currentUnit);
+                if (effectiveCostLoan < 0) { document.getElementById('summary-loan-net-impact').classList.add('text-green-600'); document.getElementById('summary-loan-net-impact').classList.remove('text-red-600');}
+                else { document.getElementById('summary-loan-net-impact').classList.add('text-red-600'); document.getElementById('summary-loan-net-impact').classList.remove('text-green-600');}
+
+
+                document.getElementById('summary-sip-total-invested').textContent = formatCurrency(results.scenarioB.totalInvestmentThroughSIP, currentCurrency, currentUnit);
+                document.getElementById('summary-sip-total-corpus').textContent = formatCurrency(results.scenarioB.totalAccumulatedCorpus, currentCurrency, currentUnit);
+                document.getElementById('summary-sip-net-impact').textContent = formatCurrency(effectiveCostSIP, currentCurrency, currentUnit);
+                if (effectiveCostSIP < 0) { document.getElementById('summary-sip-net-impact').classList.add('text-green-600'); document.getElementById('summary-sip-net-impact').classList.remove('text-red-600');}
+                else { document.getElementById('summary-sip-net-impact').classList.add('text-red-600'); document.getElementById('summary-sip-net-impact').classList.remove('text-green-600');}
+
+
+                // Scenario A Details
+                document.getElementById('loan-res-goal-current').textContent = formatCurrency(results.scenarioA.goalCurrentValue, currentCurrency, currentUnit);
+                document.getElementById('loan-res-down-payment').textContent = formatCurrency(results.scenarioA.downPayment, currentCurrency, currentUnit);
+                document.getElementById('loan-res-loan-amount').textContent = formatCurrency(results.scenarioA.loanAmount, currentCurrency, currentUnit);
+                document.getElementById('loan-res-loan-tenure').textContent = results.scenarioA.loanTenureYears;
+                document.getElementById('loan-res-loan-interest').textContent = results.scenarioA.loanInterestRate;
+                document.getElementById('loan-res-emi').textContent = formatCurrency(results.scenarioA.monthlyEMI, currentCurrency, 'none');
+                document.getElementById('loan-res-total-interest').textContent = formatCurrency(results.scenarioA.totalInterestPaid, currentCurrency, currentUnit);
+                document.getElementById('loan-res-total-paid').textContent = formatCurrency(results.scenarioA.totalPaid, currentCurrency, currentUnit);
+                document.getElementById('loan-affordability').textContent = results.scenarioA.affordabilityStatus;
+                document.getElementById('loan-res-initial-sip').textContent = formatCurrency(results.scenarioA.initialSipInvestment, currentCurrency, currentUnit);
+                document.getElementById('loan-res-monthly-sip-suggestion').textContent = formatCurrency(results.scenarioA.sipMonthlyAmount, currentCurrency, 'none');
+                document.getElementById('loan-res-sip-corpus-projection').textContent = formatCurrency(results.scenarioA.projectedSipCorpus, currentCurrency, currentUnit);
+
+                // Scenario B Details
+                document.getElementById('sip-res-goal-current').textContent = formatCurrency(results.scenarioB.goalCurrentValue, currentCurrency, currentUnit);
+                document.getElementById('sip-res-target-year').textContent = results.scenarioB.targetYear;
+                document.getElementById('sip-res-inflation-rate').textContent = results.scenarioB.inflationRate;
+                document.getElementById('sip-res-future-goal-value').textContent = formatCurrency(results.scenarioB.futureGoalValue, currentCurrency, currentUnit);
+                document.getElementById('sip-res-initial-lumpsum').textContent = formatCurrency(results.scenarioB.initialLumpSum, currentCurrency, currentUnit);
+                document.getElementById('sip-res-monthly-sip-required').textContent = formatCurrency(results.scenarioB.requiredMonthlySIP, currentCurrency, 'none');
+                document.getElementById('sip-res-sip-return-rate').textContent = results.scenarioB.sipReturnRate;
+                document.getElementById('sip-res-total-sip-investment').textContent = formatCurrency(results.scenarioB.totalInvestmentThroughSIP, currentCurrency, currentUnit);
+                document.getElementById('sip-res-accumulated-corpus').textContent = formatCurrency(results.scenarioB.totalAccumulatedCorpus, currentCurrency, currentUnit);
+                document.getElementById('sip-affordability').textContent = results.scenarioB.affordabilityStatus;
+                document.getElementById('sip-diversification').innerHTML = results.scenarioB.diversificationSuggestion;
+
+                // Generate and display Amortization Table
+                generateAmortizationTable(results.scenarioA.loanAmount, results.scenarioA.monthlyLoanInterestRate / 12, results.scenarioA.loanTenureYears * 12, results.scenarioA.monthlyEMI);
+
+                // Render Charts
+                renderCharts(results);
+
+                // Show the default summary tab
+                document.querySelectorAll('.result-tab-btn').forEach(btn => btn.classList.remove('active-tab', 'bg-blue-100'));
+                document.querySelectorAll('.result-content').forEach(content => content.classList.add('hidden'));
+                document.querySelector('[data-tab="summary"]').classList.add('active-tab', 'bg-[#e6f0ff]'); // Use a slightly different background for active
+                document.getElementById('result-content-summary').classList.remove('hidden');
+
+                // Scroll to results
+                calculatorResultsDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+
+            function generateAmortizationTable(principal, monthlyRate, totalMonths, monthlyEMI) {
+                const tableBody = document.getElementById('amortization-table-body');
+                tableBody.innerHTML = ''; // Clear previous data
+
+                let balance = principal;
+                const amortizationData = []; // For chart
+
+                for (let month = 1; month <= totalMonths; month++) {
+                    let interestPayment = balance * monthlyRate;
+                    let principalPayment = monthlyEMI - interestPayment;
+
+                    if (principalPayment > balance) { // Handle last payment adjustment
+                        principalPayment = balance;
+                        monthlyEMI = balance + interestPayment; // Adjust EMI for last payment
+                    }
+
+                    balance -= principalPayment;
+                    if (balance < 0) balance = 0; // Ensure balance doesn't go negative
+
+                    const row = tableBody.insertRow();
+                    row.innerHTML = `
+                        <td class="py-2 px-6 border-b">${month}</td>
+                        <td class="py-2 px-6 border-b">${formatCurrency(monthlyEMI, currentCurrency, 'none')}</td>
+                        <td class="py-2 px-6 border-b">${formatCurrency(principalPayment, currentCurrency, 'none')}</td>
+                        <td class="py-2 px-6 border-b">${formatCurrency(interestPayment, currentCurrency, 'none')}</td>
+                        <td class="py-2 px-6 border-b">${formatCurrency(balance, currentCurrency, 'none')}</td>
+                    `;
+                    amortizationData.push({ month, balance, interestPayment, principalPayment });
+                }
+                return amortizationData; // Return for chart
+            }
+
+
+            function renderCharts(results) {
+                // Destroy existing charts if they exist
+                if (costComparisonChart) costComparisonChart.destroy();
+                if (monthlyOutflowChart) monthlyOutflowChart.destroy();
+                if (loanAmortizationChart) loanAmortizationChart.destroy();
+                if (sipGrowthChart) sipGrowthChart.destroy();
+
+                const formatChartValue = (value) => {
+                    return parseFloat(formatCurrency(value, currentCurrency, currentUnit).replace(/[^0-9.-]/g, ''));
+                };
+
+                // Chart 1: Total Cost / Accumulation Comparison
+                const ctx1 = document.getElementById('costComparisonChart').getContext('2d');
+                costComparisonChart = new Chart(ctx1, {
+                    type: 'bar',
+                    data: {
+                        labels: ['Scenario A (Loan Now)', 'Scenario B (SIP First)'],
+                        datasets: [
+                            {
+                                label: 'Net Financial Impact (Lower is Better, Negative is Gain)',
+                                data: [results.scenarioA.netFinancialImpact, results.scenarioB.totalInvestmentThroughSIP - results.scenarioB.totalAccumulatedCorpus],
+                                backgroundColor: [
+                                    results.scenarioA.netFinancialImpact >= 0 ? '#ef4444' : '#22c55e', // Red for cost, green for gain
+                                    (results.scenarioB.totalInvestmentThroughSIP - results.scenarioB.totalAccumulatedCorpus) >= 0 ? '#ef4444' : '#22c55e'
+                                ],
+                                borderColor: [
+                                    results.scenarioA.netFinancialImpact >= 0 ? '#b91c1c' : '#15803d',
+                                    (results.scenarioB.totalInvestmentThroughSIP - results.scenarioB.totalAccumulatedCorpus) >= 0 ? '#b91c1c' : '#15803d'
+                                ],
+                                borderWidth: 1
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            title: {
+                                display: true,
+                                text: 'Net Financial Impact Comparison',
+                                font: { size: 16, weight: 'bold' },
+                                color: '#1e3a8a'
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        let label = context.dataset.label || '';
+                                        if (label) {
+                                            label += ': ';
+                                        }
+                                        label += formatCurrency(context.raw, currentCurrency, currentUnit);
+                                        return label;
+                                    }
+                                }
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                title: {
+                                    display: true,
+                                    text: 'Amount ' + (currentUnit !== 'none' ? `(${currentUnit.charAt(0).toUpperCase() + currentUnit.slice(1)})` : ''),
+                                    color: '#1e3a8a'
+                                },
+                                ticks: {
+                                    callback: function(value) {
+                                        return formatCurrency(value, currentCurrency, currentUnit);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+
+                // Chart 2: Monthly Outflow Comparison
+                const ctx2 = document.getElementById('monthlyOutflowChart').getContext('2d');
+                monthlyOutflowChart = new Chart(ctx2, {
+                    type: 'bar',
+                    data: {
+                        labels: ['Scenario A (Loan EMI)', 'Scenario B (SIP Amount)'],
+                        datasets: [
+                            {
+                                label: 'Monthly Outflow',
+                                data: [results.scenarioA.monthlyEMI, results.scenarioB.requiredMonthlySIP],
+                                backgroundColor: ['#3b82f6', '#10b981'], // Accent Blue, CTA Green
+                                borderColor: ['#1e3a8a', '#0d9973'],
+                                borderWidth: 1
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            title: {
+                                display: true,
+                                text: 'Monthly Outflow Comparison',
+                                font: { size: 16, weight: 'bold' },
+                                color: '#1e3a8a'
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        let label = context.dataset.label || '';
+                                        if (label) {
+                                            label += ': ';
+                                        }
+                                        label += formatCurrency(context.raw, currentCurrency, 'none');
+                                        return label;
+                                    }
+                                }
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                title: {
+                                    display: true,
+                                    text: 'Amount per Month',
+                                    color: '#1e3a8a'
+                                },
+                                ticks: {
+                                    callback: function(value) {
+                                        return formatCurrency(value, currentCurrency, 'none');
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+
+                // Chart 3: SIP Growth Over Time (for Scenario B SIP)
+                const ctx3 = document.getElementById('sipGrowthChart').getContext('2d');
+                const sipGrowthLabels = [];
+                const sipGrowthData = [];
+                const sipInvestmentData = [];
+                let currentInvestment = results.scenarioB.initialLumpSum;
+                let currentCorpus = results.scenarioB.initialLumpSum;
+                const years = results.scenarioB.targetYear - new Date().getFullYear();
+                const monthlySipRateB = (results.scenarioB.sipReturnRate / 100) / 12;
+
+                for (let i = 0; i <= years * 12; i++) {
+                    sipGrowthLabels.push(`Month ${i}`);
+                    if (i > 0) {
+                        currentCorpus = currentCorpus * (1 + monthlySipRateB) + results.scenarioB.requiredMonthlySIP;
+                        currentInvestment += results.scenarioB.requiredMonthlySIP;
+                    }
+                    sipGrowthData.push(currentCorpus);
+                    sipInvestmentData.push(currentInvestment);
+                }
+
+                sipGrowthChart = new Chart(ctx3, {
+                    type: 'line',
+                    data: {
+                        labels: sipGrowthLabels,
+                        datasets: [
+                            {
+                                label: 'Accumulated Corpus',
+                                data: sipGrowthData,
+                                borderColor: '#10b981', // CTA Green
+                                backgroundColor: 'rgba(16, 185, 129, 0.2)',
+                                fill: true,
+                                tension: 0.1
+                            },
+                            {
+                                label: 'Total Investment',
+                                data: sipInvestmentData,
+                                borderColor: '#3b82f6', // Accent Blue
+                                backgroundColor: 'rgba(59, 130, 246, 0.2)',
+                                fill: true,
+                                tension: 0.1
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            title: {
+                                display: true,
+                                text: 'SIP Growth Over Time (Scenario B)',
+                                font: { size: 16, weight: 'bold' },
+                                color: '#1e3a8a'
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        let label = context.dataset.label || '';
+                                        if (label) {
+                                            label += ': ';
+                                        }
+                                        label += formatCurrency(context.raw, currentCurrency, currentUnit);
+                                        return label;
+                                    }
+                                }
+                            }
+                        },
+                        scales: {
+                            x: {
+                                title: {
+                                    display: true,
+                                    text: 'Months',
+                                    color: '#1e3a8a'
+                                }
+                            },
+                            y: {
+                                beginAtZero: true,
+                                title: {
+                                    display: true,
+                                    text: 'Amount ' + (currentUnit !== 'none' ? `(${currentUnit.charAt(0).toUpperCase() + currentUnit.slice(1)})` : ''),
+                                    color: '#1e3a8a'
+                                },
+                                ticks: {
+                                    callback: function(value) {
+                                        return formatCurrency(value, currentCurrency, currentUnit);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+
+                // Chart 4: Loan Amortization Schedule (Interest vs Principal)
+                const ctx4 = document.getElementById('loanAmortizationChart').getContext('2d');
+                const amortizationData = [];
+                if (results.scenarioA.loanAmount > 0) {
+                     // Re-calculate amortization data for chart
+                    let balance = results.scenarioA.loanAmount;
+                    const monthlyRate = results.scenarioA.loanInterestRate / 100 / 12;
+                    const monthlyEMI = results.scenarioA.monthlyEMI;
+                    const totalMonths = results.scenarioA.loanTenureYears * 12;
+
+                    for (let month = 1; month <= totalMonths; month++) {
+                        let interestPayment = balance * monthlyRate;
+                        let principalPayment = monthlyEMI - interestPayment;
+
+                        if (principalPayment > balance) { // Handle last payment adjustment
+                            principalPayment = balance;
+                        }
+                        balance -= principalPayment;
+                        if (balance < 0) balance = 0;
+
+                        amortizationData.push({ month: month, principal: principalPayment, interest: interestPayment, balance: balance });
+                    }
+                }
+
+                loanAmortizationChart = new Chart(ctx4, {
+                    type: 'line', // Can be 'bar' or 'line'
+                    data: {
+                        labels: amortizationData.map(d => d.month),
+                        datasets: [
+                            {
+                                label: 'Principal Paid',
+                                data: amortizationData.map(d => d.principal),
+                                borderColor: '#10b981', // CTA Green
+                                backgroundColor: 'rgba(16, 185, 129, 0.5)',
+                                fill: false,
+                                tension: 0.1
+                            },
+                            {
+                                label: 'Interest Paid',
+                                data: amortizationData.map(d => d.interest),
+                                borderColor: '#ef4444', // Red
+                                backgroundColor: 'rgba(239, 68, 68, 0.5)',
+                                fill: false,
+                                tension: 0.1
+                            },
+                            {
+                                label: 'Remaining Balance',
+                                data: amortizationData.map(d => d.balance),
+                                borderColor: '#3b82f6', // Accent Blue
+                                backgroundColor: 'rgba(59, 130, 246, 0.5)',
+                                fill: false,
+                                tension: 0.1,
+                                borderWidth: 2,
+                                borderDash: [5, 5]
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            title: {
+                                display: true,
+                                text: 'Loan Amortization Schedule (Scenario A)',
+                                font: { size: 16, weight: 'bold' },
+                                color: '#1e3a8a'
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        let label = context.dataset.label || '';
+                                        if (label) {
+                                            label += ': ';
+                                        }
+                                        label += formatCurrency(context.raw, currentCurrency, 'none');
+                                        return label;
+                                    }
+                                }
+                            }
+                        },
+                        scales: {
+                            x: {
+                                title: {
+                                    display: true,
+                                    text: 'Month',
+                                    color: '#1e3a8a'
+                                }
+                            },
+                            y: {
+                                beginAtZero: true,
+                                title: {
+                                    display: true,
+                                    text: 'Amount',
+                                    color: '#1e3a8a'
+                                },
+                                ticks: {
+                                    callback: function(value) {
+                                        return formatCurrency(value, currentCurrency, 'none');
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+
+            // Result Tab Switching
+            document.querySelectorAll('.result-tab-btn').forEach(button => {
+                button.addEventListener('click', (e) => {
+                    document.querySelectorAll('.result-tab-btn').forEach(btn => btn.classList.remove('active-tab', 'bg-[#e6f0ff]'));
+                    document.querySelectorAll('.result-content').forEach(content => content.classList.add('hidden'));
+
+                    e.target.classList.add('active-tab', 'bg-[#e6f0ff]');
+                    document.getElementById(`result-content-${e.target.dataset.tab}`).classList.remove('hidden');
+                });
+            });
+
+            // PDF Download functionality
+            document.getElementById('download-pdf-btn').addEventListener('click', () => {
+                const element = document.getElementById('calculator-results');
+                const opt = {
+                    margin:       0.5,
+                    filename:     'RajyaFunds_Loan_vs_SIP_Report.pdf',
+                    image:        { type: 'jpeg', quality: 0.98 },
+                    html2canvas:  { scale: 2, logging: true, dpi: 192, letterRendering: true },
+                    jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' }
+                };
+                html2pdf().set(opt).from(element).save();
+            });
+
+            // Initial setup
+            document.addEventListener('DOMContentLoaded', () => {
+                populateTargetYears();
+                loadFormData(); // Load data on page load
+                updateInputPlaceholders(); // Set placeholders based on loaded currency/unit
+                updateDynamicFields(); // Update dynamic values based on loaded form
+                showStep(currentStep); // Show the first step
+            });
+        </script>
+    </body>
+    </html>
+    
