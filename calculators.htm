@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Financial Calculators - RajyaFunds</title>
+    <meta name="description" content="Free financial calculators for Indian investors — SIP, EMI, Loan vs SIP, Retirement, Education, and more. Plan your finances smarter with RajyaFunds.">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .rajyafunds-logo { color: #10b981; }
+        .main-header { background-color: #eef2f7; }
+        .main-nav a.active { color: #1e3a8a; font-weight: 600; border-bottom: 2px solid #1e3a8a; }
+        .calc-card {
+            background: #ffffff;
+            border-radius: 1rem;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.07);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .calc-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 24px rgba(0,0,0,0.1);
+        }
+        .calc-card.coming-soon {
+            opacity: 0.7;
+            cursor: not-allowed;
+        }
+        .calc-card.coming-soon:hover {
+            transform: none;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.07);
+        }
+        .badge-live { background: #d1fae5; color: #065f46; }
+        .badge-soon { background: #fef3c7; color: #92400e; }
+    </style>
+</head>
+<body class="bg-[#f9fafb] text-[#111827]">
+
+    <!-- Header -->
+    <header class="main-header py-4 px-6 md:px-10 shadow-sm">
+        <div class="container mx-auto flex flex-col md:flex-row justify-between items-center">
+            <div class="flex flex-col md:flex-row items-center mb-3 md:mb-0">
+                <a href="index.html" class="text-2xl md:text-3xl font-bold flex items-center">
+                    <span class="text-[#1e3a8a]">Rajya</span><span class="rajyafunds-logo">Funds</span>
+                </a>
+                <span class="text-sm md:text-base text-gray-600 md:ml-4 mt-1 md:mt-0">Empowering Your Financial Journey</span>
+            </div>
+            <div class="text-base md:text-xl font-semibold text-[#1e3a8a]">Your Path to Financial Clarity</div>
+        </div>
+    </header>
+
+    <!-- Navigation -->
+    <nav class="main-nav bg-white shadow-md py-3 px-6 md:px-10 sticky top-0 z-50">
+        <div class="container mx-auto flex justify-center space-x-6 md:space-x-10 text-lg font-medium">
+            <a href="index.html" class="text-gray-700 hover:text-[#2563eb] py-2 transition-all duration-200">Home</a>
+            <a href="calculators.html" class="text-gray-700 hover:text-[#2563eb] py-2 transition-all duration-200 active">Calculators</a>
+            <a href="articles/index.html" class="text-gray-700 hover:text-[#2563eb] py-2 transition-all duration-200">Articles</a>
+            <a href="about.html" class="text-gray-700 hover:text-[#2563eb] py-2 transition-all duration-200">About</a>
+            <a href="#contact" class="text-gray-700 hover:text-[#2563eb] py-2 transition-all duration-200">Contact</a>
+        </div>
+    </nav>
+
+    <main class="container mx-auto px-4 py-10 md:py-14">
+
+        <!-- Hero -->
+        <div class="text-center mb-12">
+            <h1 class="text-3xl md:text-4xl font-bold text-[#1e3a8a] mb-3">Financial Calculators</h1>
+            <p class="text-gray-600 text-lg max-w-2xl mx-auto">Free, data-backed tools to help you make smarter financial decisions — from buying a home to planning retirement.</p>
+        </div>
+
+        <!-- Live Calculator -->
+        <div class="mb-10">
+            <h2 class="text-xl font-bold text-[#1e3a8a] mb-4">✅ Available Now</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+
+                <div class="calc-card p-6">
+                    <div class="flex justify-between items-start mb-4">
+                        <div class="text-4xl">🏠</div>
+                        <span class="badge-live text-xs font-semibold px-3 py-1 rounded-full">Live</span>
+                    </div>
+                    <h3 class="text-lg font-bold text-[#1e3a8a] mb-2">Loan vs SIP Decision Calculator</h3>
+                    <p class="text-gray-500 text-sm mb-5">Should you take a loan now or invest via SIP and buy later? Get a data-backed answer with full comparison.</p>
+                    <a href="loan-vs-sip-calculator.html" class="inline-block w-full text-center bg-[#1e3a8a] text-white px-5 py-2.5 rounded-lg font-medium hover:bg-[#2563eb] transition-all duration-200">Use Calculator →</a>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Coming Soon -->
+        <div>
+            <h2 class="text-xl font-bold text-[#1e3a8a] mb-4">🔜 Coming Soon</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+
+                <div class="calc-card coming-soon p-6">
+                    <div class="flex justify-between items-start mb-4">
+                        <div class="text-4xl">📈</div>
+                        <span class="badge-soon text-xs font-semibold px-3 py-1 rounded-full">Coming Soon</span>
+                    </div>
+                    <h3 class="text-lg font-bold text-gray-700 mb-2">SIP Returns Calculator</h3>
+                    <p class="text-gray-400 text-sm mb-5">Calculate how much your monthly SIP will grow over time at different return rates.</p>
+                    <div class="w-full text-center bg-gray-100 text-gray-400 px-5 py-2.5 rounded-lg font-medium">Notify Me</div>
+                </div>
+
+                <div class="calc-card coming-soon p-6">
+                    <div class="flex justify-between items-start mb-4">
+                        <div class="text-4xl">🏦</div>
+                        <span class="badge-soon text-xs font-semibold px-3 py-1 rounded-full">Coming Soon</span>
+                    </div>
+                    <h3 class="text-lg font-bold text-gray-700 mb-2">EMI Calculator</h3>
+                    <p class="text-gray-400 text-sm mb-5">Calculate your monthly EMI for any loan — home, personal, vehicle or education.</p>
+                    <div class="w-full text-center bg-gray-100 text-gray-400 px-5 py-2.5 rounded-lg font-medium">Notify Me</div>
+                </div>
+
+                <div class="calc-card coming-soon p-6">
+                    <div class="flex justify-between items-start mb-4">
+                        <div class="text-4xl">🆚</div>
+                        <span class="badge-soon text-xs font-semibold px-3 py-1 rounded-full">Coming Soon</span>
+                    </div>
+                    <h3 class="text-lg font-bold text-gray-700 mb-2">FD vs SIP Calculator</h3>
+                    <p class="text-gray-400 text-sm mb-5">Compare returns from Fixed Deposits vs Mutual Fund SIPs over the same period.</p>
+                    <div class="w-full text-center bg-gray-100 text-gray-400 px-5 py-2.5 rounded-lg font-medium">Notify Me</div>
+                </div>
+
+                <div class="calc-card coming-soon p-6">
+                    <div class="flex justify-between items-start mb-4">
+                        <div class="text-4xl">👴</div>
+                        <span class="badge-soon text-xs font-semibold px-3 py-1 rounded-full">Coming Soon</span>
+                    </div>
+                    <h3 class="text-lg font-bold text-gray-700 mb-2">Retirement Planner</h3>
+                    <p class="text-gray-400 text-sm mb-5">How much do you need to retire comfortably? Plan your retirement corpus today.</p>
+                    <div class="w-full text-center bg-gray-100 text-gray-400 px-5 py-2.5 rounded-lg font-medium">Notify Me</div>
+                </div>
+
+                <div class="calc-card coming-soon p-6">
+                    <div class="flex justify-between items-start mb-4">
+                        <div class="text-4xl">🎓</div>
+                        <span class="badge-soon text-xs font-semibold px-3 py-1 rounded-full">Coming Soon</span>
+                    </div>
+                    <h3 class="text-lg font-bold text-gray-700 mb-2">Education Loan Calculator</h3>
+                    <p class="text-gray-400 text-sm mb-5">Plan repayment of your education loan and compare with investing alternatives.</p>
+                    <div class="w-full text-center bg-gray-100 text-gray-400 px-5 py-2.5 rounded-lg font-medium">Notify Me</div>
+                </div>
+
+                <div class="calc-card coming-soon p-6">
+                    <div class="flex justify-between items-start mb-4">
+                        <div class="text-4xl">💼</div>
+                        <span class="badge-soon text-xs font-semibold px-3 py-1 rounded-full">Coming Soon</span>
+                    </div>
+                    <h3 class="text-lg font-bold text-gray-700 mb-2">Net Worth Calculator</h3>
+                    <p class="text-gray-400 text-sm mb-5">Track all your assets and liabilities to know your true financial position.</p>
+                    <div class="w-full text-center bg-gray-100 text-gray-400 px-5 py-2.5 rounded-lg font-medium">Notify Me</div>
+                </div>
+
+                <div class="calc-card coming-soon p-6">
+                    <div class="flex justify-between items-start mb-4">
+                        <div class="text-4xl">🚗</div>
+                        <span class="badge-soon text-xs font-semibold px-3 py-1 rounded-full">Coming Soon</span>
+                    </div>
+                    <h3 class="text-lg font-bold text-gray-700 mb-2">Vehicle Loan Calculator</h3>
+                    <p class="text-gray-400 text-sm mb-5">Calculate EMI, total interest and compare buying now vs saving up for your dream vehicle.</p>
+                    <div class="w-full text-center bg-gray-100 text-gray-400 px-5 py-2.5 rounded-lg font-medium">Notify Me</div>
+                </div>
+
+                <div class="calc-card coming-soon p-6">
+                    <div class="flex justify-between items-start mb-4">
+                        <div class="text-4xl">🧾</div>
+                        <span class="badge-soon text-xs font-semibold px-3 py-1 rounded-full">Coming Soon</span>
+                    </div>
+                    <h3 class="text-lg font-bold text-gray-700 mb-2">Tax Saving Calculator</h3>
+                    <p class="text-gray-400 text-sm mb-5">Find out how much tax you can save under 80C, 80D, HRA and NPS deductions.</p>
+                    <div class="w-full text-center bg-gray-100 text-gray-400 px-5 py-2.5 rounded-lg font-medium">Notify Me</div>
+                </div>
+
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white py-8 mt-12" id="contact">
+        <div class="container mx-auto px-4 text-center">
+            <p class="mb-4">&copy; 2025 RajyaFunds. All rights reserved.</p>
+            <div class="flex justify-center space-x-6 flex-wrap gap-y-2">
+                <a href="index.html" class="text-gray-300 hover:text-white transition-colors duration-200">Home</a>
+                <a href="calculators.html" class="text-gray-300 hover:text-white transition-colors duration-200">Calculators</a>
+                <a href="articles/index.html" class="text-gray-300 hover:text-white transition-colors duration-200">Articles</a>
+                <a href="about.html" class="text-gray-300 hover:text-white transition-colors duration-200">About</a>
+                <a href="mailto:rajyafunds.in@gmail.com" class="text-gray-300 hover:text-white transition-colors duration-200">Contact Us</a>
+            </div>
+            <p class="mt-4 text-gray-400 text-sm">Disclaimer: For educational purposes only. Not financial advice.</p>
+        </div>
+    </footer>
+
+</body>
+</html>
