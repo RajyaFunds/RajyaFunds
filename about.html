@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Us - RajyaFunds</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .rajyafunds-logo { color: #10b981; }
+        .main-header { background-color: #eef2f7; }
+        .main-nav a.active {
+            color: #1e3a8a;
+            font-weight: 600;
+            border-bottom: 2px solid #1e3a8a;
+        }
+        .section-title { color: #1e3a8a; }
+        .card {
+            background: #ffffff;
+            border-radius: 1rem;
+            box-shadow: 0 10px 15px rgba(0,0,0,0.07), 0 4px 6px rgba(0,0,0,0.04);
+        }
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -30px;
+            top: 6px;
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background: #1e3a8a;
+            border: 3px solid #eef2f7;
+        }
+        .timeline-line {
+            border-left: 2px solid #d1d5db;
+            padding-left: 24px;
+        }
+    </style>
+</head>
+<body class="bg-[#f9fafb] text-[#111827]">
+
+    <!-- Header -->
+    <header class="main-header py-4 px-6 md:px-10 shadow-sm">
+        <div class="container mx-auto flex flex-col md:flex-row justify-between items-center">
+            <div class="flex flex-col md:flex-row items-center mb-3 md:mb-0">
+                <a href="index.html" class="text-2xl md:text-3xl font-bold flex items-center">
+                    <span class="text-[#1e3a8a]">Rajya</span><span class="rajyafunds-logo">Funds</span>
+                </a>
+                <span class="text-sm md:text-base text-gray-600 md:ml-4 mt-1 md:mt-0">Empowering Your Financial Journey</span>
+            </div>
+            <div class="text-base md:text-xl font-semibold text-[#1e3a8a]">Your Path to Financial Clarity</div>
+        </div>
+    </header>
+
+    <!-- Navigation -->
+    <nav class="main-nav bg-white shadow-md py-3 px-6 md:px-10 sticky top-0 z-50">
+        <div class="container mx-auto flex justify-center space-x-6 md:space-x-10 text-lg font-medium">
+            <a href="index.html" class="text-gray-700 hover:text-[#2563eb] py-2 transition-all duration-200">Home</a>
+            <a href="loan-vs-sip-calculator.html" class="text-gray-700 hover:text-[#2563eb] py-2 transition-all duration-200">Calculators</a>
+            <a href="articles/index.html" class="text-gray-700 hover:text-[#2563eb] py-2 transition-all duration-200">Articles</a>
+            <a href="about.html" class="text-gray-700 hover:text-[#2563eb] py-2 transition-all duration-200 active">About</a>
+            <a href="#contact" class="text-gray-700 hover:text-[#2563eb] py-2 transition-all duration-200">Contact</a>
+        </div>
+    </nav>
+
+    <main class="container mx-auto px-4 py-12 md:py-16 max-w-4xl">
+
+        <!-- Hero Section -->
+        <div class="card p-8 md:p-12 mb-10 text-center">
+            <!-- Profile placeholder -->
+            <div class="w-28 h-28 rounded-full bg-[#1e3a8a] flex items-center justify-center mx-auto mb-6 text-white text-4xl font-bold shadow-lg">
+                RP
+            </div>
+            <h1 class="text-3xl md:text-4xl font-bold section-title mb-2">Raj Pandey</h1>
+            <p class="text-[#10b981] font-semibold text-lg mb-4">Founder, RajyaFunds</p>
+            <p class="text-gray-500 text-base md:text-lg max-w-2xl mx-auto leading-relaxed">
+                Technology Enthusiast &nbsp;·&nbsp; Entrepreneur &nbsp;·&nbsp; Financial Literacy Advocate
+            </p>
+        </div>
+
+        <!-- About Section -->
+        <div class="card p-8 md:p-10 mb-10">
+            <h2 class="text-2xl font-bold section-title mb-6">About RajyaFunds</h2>
+            <p class="text-gray-700 leading-relaxed mb-4">
+                RajyaFunds was founded with a singular mission — to make personal finance simple, accessible, and actionable for every Indian. Whether you are a first-generation investor, a salaried professional, or a young aspirant planning your first major purchase, RajyaFunds provides the tools and insights to help you make confident financial decisions.
+            </p>
+            <p class="text-gray-700 leading-relaxed mb-4">
+                At its core, RajyaFunds is built on the belief that financial clarity should not be the privilege of a few. Complex decisions — such as whether to take a home loan today or invest through SIPs and buy later — deserve data-backed, honest answers. That is exactly what this platform aims to deliver.
+            </p>
+            <p class="text-gray-700 leading-relaxed">
+                From intelligent calculators to in-depth articles, every resource on RajyaFunds is designed to empower you with knowledge and confidence on your financial journey.
+            </p>
+        </div>
+
+        <!-- Founder Section -->
+        <div class="card p-8 md:p-10 mb-10">
+            <h2 class="text-2xl font-bold section-title mb-6">The Founder's Story</h2>
+
+            <p class="text-gray-700 leading-relaxed mb-4">
+                Raj Pandey is a humanities graduate from Jabalpur, Madhya Pradesh, holding a Bachelor's degree in History, Economics & Political Science and a Master's degree in Sociology from Rani Durgavati Vishwavidyalaya (RDVV). His academic foundation gave him a deep understanding of human behaviour, economic systems, and societal structures — knowledge that directly informs how RajyaFunds communicates finance to real people.
+            </p>
+            <p class="text-gray-700 leading-relaxed mb-4">
+                Raj spent several years preparing for the UPSC Civil Services Examination — one of India's most demanding competitive exams. That period, though challenging, sharpened his analytical thinking, research discipline, and understanding of India's economic and policy landscape. These qualities remain central to how RajyaFunds approaches financial education.
+            </p>
+            <p class="text-gray-700 leading-relaxed mb-4">
+                With a growing interest in technology and entrepreneurship, Raj pivoted toward building something tangible. Despite having no formal coding background, he taught himself to work with modern AI tools to design and develop RajyaFunds entirely on his own — a testament to the belief that determination and the right tools can overcome any technical barrier.
+            </p>
+            <p class="text-gray-700 leading-relaxed">
+                His long-term vision is to build a fintech platform that bridges the gap between financial products and the everyday Indian — making wealth-building not just possible, but straightforward.
+            </p>
+        </div>
+
+        <!-- Journey Timeline -->
+        <div class="card p-8 md:p-10 mb-10">
+            <h2 class="text-2xl font-bold section-title mb-8">The Journey</h2>
+            <div class="timeline-line relative space-y-8">
+                <div class="timeline-item relative">
+                    <p class="text-sm text-[#10b981] font-semibold mb-1">Academic Foundation</p>
+                    <h3 class="font-bold text-gray-800 mb-1">BA & MA in Humanities — RDVV, Jabalpur</h3>
+                    <p class="text-gray-600 text-sm">Studied History, Economics, Political Science and Sociology. Built a strong foundation in understanding economic systems, human behaviour, and policy.</p>
+                </div>
+                <div class="timeline-item relative">
+                    <p class="text-sm text-[#10b981] font-semibold mb-1">The UPSC Years</p>
+                    <h3 class="font-bold text-gray-800 mb-1">Civil Services Preparation</h3>
+                    <p class="text-gray-600 text-sm">Invested years in UPSC preparation, developing rigorous analytical skills and an in-depth understanding of India's governance, economy, and financial systems.</p>
+                </div>
+                <div class="timeline-item relative">
+                    <p class="text-sm text-[#10b981] font-semibold mb-1">The Pivot</p>
+                    <h3 class="font-bold text-gray-800 mb-1">Technology & Entrepreneurship</h3>
+                    <p class="text-gray-600 text-sm">Discovered a passion for technology and product building. Began exploring how AI tools could be used to create meaningful, real-world solutions without a traditional engineering background.</p>
+                </div>
+                <div class="timeline-item relative">
+                    <p class="text-sm text-[#10b981] font-semibold mb-1">Today</p>
+                    <h3 class="font-bold text-gray-800 mb-1">Founder — RajyaFunds</h3>
+                    <p class="text-gray-600 text-sm">Built and launched RajyaFunds independently — a financial planning platform featuring intelligent calculators and educational content aimed at empowering Indian youth and professionals.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mission & Values -->
+        <div class="card p-8 md:p-10 mb-10">
+            <h2 class="text-2xl font-bold section-title mb-6">Mission & Values</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="bg-[#f4f8ff] p-5 rounded-xl">
+                    <div class="text-3xl mb-3">🎯</div>
+                    <h3 class="font-bold text-[#1e3a8a] mb-2">Clarity</h3>
+                    <p class="text-gray-600 text-sm">Present financial concepts in plain language — no jargon, no confusion. Every Indian deserves to understand their own money.</p>
+                </div>
+                <div class="bg-[#f4f8ff] p-5 rounded-xl">
+                    <div class="text-3xl mb-3">📊</div>
+                    <h3 class="font-bold text-[#1e3a8a] mb-2">Data-Backed Decisions</h3>
+                    <p class="text-gray-600 text-sm">Every tool and article is grounded in real financial mathematics and current market data — not guesswork.</p>
+                </div>
+                <div class="bg-[#f4f8ff] p-5 rounded-xl">
+                    <div class="text-3xl mb-3">🌱</div>
+                    <h3 class="font-bold text-[#1e3a8a] mb-2">Accessibility</h3>
+                    <p class="text-gray-600 text-sm">Built for every Indian — from Tier 1 cities to Tier 3 towns — regardless of income level or financial literacy background.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Contact CTA -->
+        <div class="card p-8 text-center">
+            <h2 class="text-2xl font-bold section-title mb-3">Get In Touch</h2>
+            <p class="text-gray-600 mb-6">Have a suggestion, feedback, or a collaboration idea? Raj would love to hear from you.</p>
+            <a href="mailto:rajyafunds.in@gmail.com"
+               class="inline-block bg-[#1e3a8a] text-white px-8 py-3 rounded-lg font-medium hover:bg-[#2563eb] transition-all duration-200">
+                ✉ rajyafunds.in@gmail.com
+            </a>
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white py-8 mt-12" id="contact">
+        <div class="container mx-auto px-4 text-center">
+            <p class="mb-4">&copy; 2025 RajyaFunds. All rights reserved.</p>
+            <div class="flex justify-center space-x-6">
+                <a href="index.html" class="text-gray-300 hover:text-white transition-colors duration-200">Home</a>
+                <a href="loan-vs-sip-calculator.html" class="text-gray-300 hover:text-white transition-colors duration-200">Calculators</a>
+                <a href="articles/index.html" class="text-gray-300 hover:text-white transition-colors duration-200">Articles</a>
+                <a href="about.html" class="text-gray-300 hover:text-white transition-colors duration-200">About</a>
+                <a href="mailto:rajyafunds.in@gmail.com" class="text-gray-300 hover:text-white transition-colors duration-200">Contact Us</a>
+            </div>
+            <p class="mt-4 text-gray-400 text-sm">
+                Disclaimer: The information provided on this website is for educational and informational purposes only and does not constitute financial advice. Please consult a qualified financial professional before making any financial decisions.
+            </p>
+        </div>
+    </footer>
+
+</body>
+</html>
